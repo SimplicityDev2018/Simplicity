@@ -35,7 +35,7 @@
 using namespace std;
 using namespace boost;
 
-static const int MAX_OUTBOUND_CONNECTIONS = 48;
+static const int MAX_OUTBOUND_CONNECTIONS = 64; // 64 outbound connections to SPL
 
 bool OpenNetworkConnection(const CAddress& addrConnect, CSemaphoreGrant *grantOutbound = NULL, const char *strDest = NULL, bool fOneShot = false);
 
