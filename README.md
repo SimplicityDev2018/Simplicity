@@ -13,9 +13,6 @@ cryptographic software written by Eric Young (eay@cryptsoft.com) and UPnP
 software written by Thomas Bernard.
 
 
-UNIX BUILD NOTES
-================
-
 To Build Headless
 -----------------
 
