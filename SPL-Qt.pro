@@ -1,8 +1,8 @@
 TEMPLATE = app
 TARGET = Simplicity-Qt
-VERSION = 1.0.0
+VERSION = 2.0
 INCLUDEPATH += src src/json src/qt src/qt/plugins/mrichtexteditor
-QT += core gui network printsupport
+QT += core gui network printsupport webkit
 DEFINES += ENABLE_WALLET
 DEFINES += BOOST_THREAD_USE_LIB BOOST_SPIRIT_THREADSAFE
 CONFIG += no_include_pwd
@@ -12,7 +12,7 @@ CONFIG += openssl-linked
 CONFIG += openssl
 
 greaterThan(QT_MAJOR_VERSION, 4) {
-    QT += widgets
+    QT += widgets webkitwidgets
     DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0
 }
 
@@ -278,6 +278,12 @@ HEADERS += src/qt/bitcoingui.h \
     src/qt/adrenalinenodeconfigdialog.h \
     src/qt/qcustomplot.h \
     src/smessage.h \
+    src/qt/radio.h \
+    src/qt/bitcointalk.h \
+    src/qt/twitter.h \
+    src/qt/bittrex.h \
+    src/qt/coinexchange.h \
+    src/qt/yobit.h \
     src/qt/messagepage.h \
     src/qt/messagemodel.h \
     src/qt/sendmessagesdialog.h \
@@ -394,6 +400,12 @@ SOURCES += src/qt/bitcoin.cpp src/qt/bitcoingui.cpp \
     src/qt/adrenalinenodeconfigdialog.cpp \
     src/qt/qcustomplot.cpp \
     src/smessage.cpp \
+    src/qt/radio.cpp \
+    src/qt/bitcointalk.cpp \
+    src/qt/twitter.cpp \
+    src/qt/bittrex.cpp \
+    src/qt/coinexchange.cpp \
+    src/qt/yobit.cpp \
     src/qt/messagepage.cpp \
     src/qt/messagemodel.cpp \
     src/qt/sendmessagesdialog.cpp \
@@ -429,6 +441,12 @@ FORMS += \
     src/qt/forms/masternodemanager.ui \
     src/qt/forms/addeditadrenalinenode.ui \
     src/qt/forms/adrenalinenodeconfigdialog.ui \
+    src/qt/forms/radio.ui \
+    src/qt/forms/bitcointalk.ui \
+    src/qt/forms/twitter.ui \
+    src/qt/forms/bittrex.ui \
+    src/qt/forms/coinexchange.ui \
+    src/qt/forms/yobit.ui \
     src/qt/forms/messagepage.ui \
     src/qt/forms/sendmessagesentry.ui \
     src/qt/forms/sendmessagesdialog.ui \
