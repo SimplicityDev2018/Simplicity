@@ -66,5 +66,5 @@ cd Simplicity/src/leveldb
 sudo sh build_detect_platform build_config.mk .
 cd
 cd Simplicity
-sudo qmake SPL-qt.pro
+sudo qmake SPL-Qt.pro
 sudo make -jnumofcoreshere

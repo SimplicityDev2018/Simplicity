@@ -97,6 +97,6 @@ cd
 
 cd Simplicity
 
-sudo qmake SPL-qt.pro
+sudo qmake SPL-Qt.pro
 
 sudo make -jnumofcoreshere
