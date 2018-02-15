@@ -161,7 +161,7 @@ login again:
 $ ssh debian@localhost -p 22222
 
 $ git clone https://github.com/devrandom/gitian-builder.git
-$ git clone https://github.com/simplicitydev/Simplicity.git simplicity
+$ git clone https://github.com/SimplicityDev2018/Simplicity.git simplicity
 
 $ cd gitian-builder
 
