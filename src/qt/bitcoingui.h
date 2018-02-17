@@ -6,12 +6,14 @@
 
 #include <stdint.h>
 
-#include "radio.h"
-#include "bitcointalk.h"
-#include "twitter.h"
-#include "bittrex.h"
-#include "coinexchange.h"
-#include "yobit.h"
+//    Uncomment to build SPL Adv
+//
+//#include "radio.h"
+//#include "bitcointalk.h"
+//#include "twitter.h"
+//#include "bittrex.h"
+//#include "coinexchange.h"
+//#include "yobit.h"
 
 class TransactionTableModel;
 class ClientModel;
@@ -88,12 +90,14 @@ private:
     SignVerifyMessageDialog *signVerifyMessageDialog;
     MasternodeManager *masternodeManagerPage;
     MessagePage *messagePage;
-    Radio *radioPage;
-    Bitcointalk *bitcointalkPage;
-    Twitter *twitterPage;
-    Bittrex *bittrexPage;
-    Coinexchange *coinexchangePage;
-    Yobit *yobitPage;
+//    Uncomment to build SPL Adv
+//
+//    Radio *radioPage;
+//    Bitcointalk *bitcointalkPage;
+//    Twitter *twitterPage;
+//    Bittrex *bittrexPage;
+//    Coinexchange *coinexchangePage;
+//    Yobit *yobitPage;
     QLabel* netLabel;
     BlockBrowser *blockBrowser;
     QLabel *labelEncryptionIcon;
@@ -131,12 +135,14 @@ private:
     QAction *masternodeManagerAction;
     QAction *messageAction;
     QAction *blockAction;
-    QAction *radioAction;
-    QAction *bitcointalkAction;
-    QAction *twitterAction;
-    QAction *bittrexAction;
-    QAction *coinexchangeAction;
-    QAction *yobitAction;
+//    Uncomment to build SPL Adv
+//
+//    QAction *radioAction;
+//    QAction *bitcointalkAction;
+//    QAction *twitterAction;
+//    QAction *bittrexAction;
+//    QAction *coinexchangeAction;
+//    QAction *yobitAction;
 
     QSystemTrayIcon *trayIcon;
     Notificator *notificator;
@@ -219,18 +225,20 @@ private slots:
     void gotoVerifyMessageTab(QString addr = "");
     /** Switch to message page*/
     void gotoMessagePage();
-    /** Switch to radio page */
-    void gotoRadioPage();
-    /** Switch to bitcointalk page */
-    void gotoBitcointalkPage();
-    /** Switch to twitter page */
-    void gotoTwitterPage();
-    /** Switch to bittrex page */
-    void gotoBittrexPage();
-    /** Switch to coinexchange page */
-    void gotoCoinexchangePage();
-    /** Switch to yobit page */
-    void gotoYobitPage();
+//    Uncomment to build SPL Adv
+//
+//    /** Switch to radio page */
+//    void gotoRadioPage();
+//    /** Switch to bitcointalk page */
+//    void gotoBitcointalkPage();
+//    /** Switch to twitter page */
+//    void gotoTwitterPage();
+//    /** Switch to bittrex page */
+//    void gotoBittrexPage();
+//    /** Switch to coinexchange page */
+//    void gotoCoinexchangePage();
+//    /** Switch to yobit page */
+//   void gotoYobitPage();
     /** Show configuration dialog */
     void optionsClicked();
     /** Show about dialog */
