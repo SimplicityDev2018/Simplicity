@@ -26,9 +26,8 @@ static const int64_t DARKSEND_FEE = (0.01*COIN);
 static const int64_t DARKSEND_POOL_MAX = (999999999.99*COIN);
 
 /*
-    At 15 signatures, 1/2 of the masternode network can be owned by
+    At 5 signatures, 1/2 of the masternode network can be owned by
     one party without comprimising the security of InstantX
-    (1000/2150.0)**15 = 1.031e-05
 */
 #define INSTANTX_SIGNATURES_REQUIRED           5
 #define INSTANTX_SIGNATURES_TOTAL              15
@@ -72,7 +71,7 @@ static const unsigned int MAX_P2SH_SIGOPS = 15;
 /** The maximum number of sigops we're willing to relay/mine in a single tx */
 static const unsigned int MAX_TX_SIGOPS = MAX_BLOCK_SIGOPS/5;
 /** The maximum number of orphan transactions kept in memory */
-static const unsigned int MAX_ORPHAN_TRANSACTIONS = MAX_BLOCK_SIZE/10;
+static const unsigned int MAX_ORPHAN_TRANSACTIONS = MAX_BLOCK_SIZE/10; //8.5 megabyte
 /** Default for -maxorphanblocks, maximum number of orphan blocks kept in memory */
 static const unsigned int DEFAULT_MAX_ORPHAN_BLOCKS = 650;
 /** The maximum number of entries in an 'inv' protocol message */
@@ -83,14 +82,15 @@ static const int64_t MIN_TX_FEE = 1000000; // 0.01 per kb
 static const int64_t MIN_RELAY_TX_FEE = MIN_TX_FEE;
 /** No amount larger than this (in satoshi) is valid */
 static const int64_t MAX_MONEY = 21000000000 * COIN; // 21 Billion
+/** This is the amount in % to which is returned yearly in interest */
 static const int64_t COIN_YEAR_REWARD = 22.38 * CENT; // 22.38% Per Year
-/** This is the block target time */
-static const int64_t TARGET_SPACING = 1 * 80;
+/** This is the block target time for PoW/PoS mining */
+static const int64_t TARGET_SPACING = 1 * 80; // 80 second block time expected
 inline bool MoneyRange(int64_t nValue) { return (nValue >= 0 && nValue <= MAX_MONEY); }
 /** Threshold for nLockTime: below this value it is interpreted as block number, otherwise as UNIX timestamp. */
 static const unsigned int LOCKTIME_THRESHOLD = 500000000; // Tue Nov  5 00:53:20 1985 UTC
-
-static const int64_t DRIFT = 600;
+/** Future Drift time set in seconds */
+static const int64_t DRIFT = 600; // 10min drift time
 inline int64_t FutureDrift(int64_t nTime) { return nTime + DRIFT; }
 inline int64_t GetMNCollateral(int nHeight) { return 200000; }
 
