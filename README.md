@@ -1,5 +1,12 @@
 # Simplicity
 
+DO NOT BUILD WITH autogen.sh IT IS NOT FULLY IMPLEMENTED YET
+==============================================================
+
+
+
+
+
 UNIX BUILD NOTES
 ====================
 Some notes on how to build Simplicity in Unix.
