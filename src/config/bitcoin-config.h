@@ -73,43 +73,43 @@
 /* #undef HAVE_LIBCRYPT32 */
 
 /* Define to 1 if you have the `crypto' library (-lcrypto). */
-/* #undef HAVE_LIBCRYPTO */
+#define HAVE_LIBCRYPTO 1
 
 /* Define to 1 if you have the `gdi32' library (-lgdi32). */
-/* #undef HAVE_LIBGDI32 */
+#define HAVE_LIBGDI32 1
 
 /* Define to 1 if you have the `imm32' library (-limm32). */
 /* #undef HAVE_LIBIMM32 */
 
 /* Define to 1 if you have the `iphlpapi' library (-liphlpapi). */
-/* #undef HAVE_LIBIPHLPAPI */
+#define HAVE_LIBIPHLPAPI 1
 
 /* Define to 1 if you have the `kernel32' library (-lkernel32). */
-/* #undef HAVE_LIBKERNEL32 */
+#define HAVE_LIBKERNEL32 1
 
 /* Define to 1 if you have the `mingwthrd' library (-lmingwthrd). */
-/* #undef HAVE_LIBMINGWTHRD */
+#define HAVE_LIBMINGWTHRD 1
 
 /* Define to 1 if you have the `miniupnpc' library (-lminiupnpc). */
-/* #undef HAVE_LIBMINIUPNPC */
+#define HAVE_LIBMINIUPNPC 1
 
 /* Define to 1 if you have the `mswsock' library (-lmswsock). */
-/* #undef HAVE_LIBMSWSOCK */
+#define HAVE_LIBMSWSOCK 1
 
 /* Define to 1 if you have the `ole32' library (-lole32). */
-/* #undef HAVE_LIBOLE32 */
+#define HAVE_LIBOLE32 1
 
 /* Define to 1 if you have the `oleaut32' library (-loleaut32). */
 /* #undef HAVE_LIBOLEAUT32 */
 
 /* Define to 1 if you have the `png ' library (-lpng ). */
-/* #undef HAVE_LIBPNG_ */
+#define HAVE_LIBPNG_ 1
 
 /* Define to 1 if you have the `protobuf ' library (-lprotobuf ). */
-/* #undef HAVE_LIBPROTOBUF_ */
+#define HAVE_LIBPROTOBUF_ 1
 
 /* Define to 1 if you have the `qrencode' library (-lqrencode). */
-/* #undef HAVE_LIBQRENCODE */
+#define HAVE_LIBQRENCODE 1
 
 /* Define to 1 if you have the `rpcrt4' library (-lrpcrt4). */
 /* #undef HAVE_LIBRPCRT4 */
@@ -118,16 +118,16 @@
 /* #undef HAVE_LIBSHELL32 */
 
 /* Define to 1 if you have the `shlwapi' library (-lshlwapi). */
-/* #undef HAVE_LIBSHLWAPI */
+#define HAVE_LIBSHLWAPI 1
 
 /* Define to 1 if you have the `ssl' library (-lssl). */
-/* #undef HAVE_LIBSSL */
+#define HAVE_LIBSSL 1
 
 /* Define to 1 if you have the `user32' library (-luser32). */
 /* #undef HAVE_LIBUSER32 */
 
 /* Define to 1 if you have the `uuid' library (-luuid). */
-/* #undef HAVE_LIBUUID */
+#define HAVE_LIBUUID 1
 
 /* Define to 1 if you have the `winmm' library (-lwinmm). */
 /* #undef HAVE_LIBWINMM */
@@ -136,7 +136,7 @@
 /* #undef HAVE_LIBWINSPOOL */
 
 /* Define to 1 if you have the `ws2_32' library (-lws2_32). */
-/* #undef HAVE_LIBWS2_32 */
+#define HAVE_LIBWS2_32 1
 
 /* Define to 1 if you have the `z ' library (-lz ). */
 /* #undef HAVE_LIBZ_ */
@@ -145,16 +145,16 @@
 #define HAVE_MEMORY_H 1
 
 /* Define to 1 if you have the <miniupnpc/miniupnpc.h> header file. */
-/* #undef HAVE_MINIUPNPC_MINIUPNPC_H */
+#define HAVE_MINIUPNPC_MINIUPNPC_H 1
 
 /* Define to 1 if you have the <miniupnpc/miniwget.h> header file. */
-/* #undef HAVE_MINIUPNPC_MINIWGET_H */
+#define HAVE_MINIUPNPC_MINIWGET_H 1
 
 /* Define to 1 if you have the <miniupnpc/upnpcommands.h> header file. */
-/* #undef HAVE_MINIUPNPC_UPNPCOMMANDS_H */
+#define HAVE_MINIUPNPC_UPNPCOMMANDS_H 1
 
 /* Define to 1 if you have the <miniupnpc/upnperrors.h> header file. */
-/* #undef HAVE_MINIUPNPC_UPNPERRORS_H */
+#define HAVE_MINIUPNPC_UPNPERRORS_H 1
 
 /* Define this symbol if you have MSG_NOSIGNAL */
 #define HAVE_MSG_NOSIGNAL 1
@@ -221,7 +221,7 @@
 /* #undef PTHREAD_CREATE_JOINABLE */
 
 /* Define this symbol if qt plugins are static */
-/* #undef QT_STATICPLUGIN */
+#define QT_STATICPLUGIN
 
 /* Define to 1 if you have the ANSI C header files. */
 #define STDC_HEADERS 1
@@ -233,7 +233,7 @@
 /* #undef USE_DBUS */
 
 /* Define if QR support should be compiled in */
-/* #undef USE_QRCODE */
+#define USE_QRCODE
 
 /* UPnP support not compiled if undefined, otherwise value (0 or 1) determines
    default state */
