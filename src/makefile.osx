@@ -19,7 +19,7 @@ LIBPATHS= \
  -L"$(DEPSDIR)/lib" \
  -L"$(DEPSDIR)/Cellar/berkeley-db4/4.8.30/lib"
 
-USE_UPNP:=1
+USE_UPNP:=0
 USE_WALLET:=1
 
 LIBS= -dead_strip
