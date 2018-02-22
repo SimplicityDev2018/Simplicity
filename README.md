@@ -3,8 +3,7 @@
 DO NOT BUILD WITH autogen.sh IT IS NOT FULLY IMPLEMENTED YET
 ==============================================================
 
-
-
+Build Daemon and GUI Wallets with Below Information until this area states otherwise.
 
 
 UNIX BUILD NOTES
