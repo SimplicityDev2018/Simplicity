@@ -41,7 +41,10 @@ namespace Checkpoints
         ( 19887, uint256("0x59433846a94700fa9c120768f2f2d0525e2b0f2311fb5451b5282b83b44e655a"))
         ( 22677, uint256("0x20abf525927417e613d2abd4edd518767588ac26dff9aabe10e7d17756839033"))
         ( 26605, uint256("0xcc96d7b1516aa6733d2bfccbb8dffb94f63bf1d64e9e4decb7b76d5256958a70"))
-        ( 35119, uint256("0x28e91350773eb74782021a2a49d8732ae0036e63b43627a513b4abd706c6885e"));
+        ( 35119, uint256("0x28e91350773eb74782021a2a49d8732ae0036e63b43627a513b4abd706c6885e"))
+        ( 43107, uint256("0xf6bf5f78c30c4e9f81b07be1f6f6424749a4f8ec0a6f4971ed5ba2753606b991"))
+        ;
+
     // TestNet has no checkpoints
     static MapCheckpoints mapCheckpointsTestnet;
 
