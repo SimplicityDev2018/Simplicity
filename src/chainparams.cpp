@@ -79,11 +79,11 @@ public:
         assert(genesis.hashMerkleRoot == uint256("0x40bdd3d5ae84b91a71190094a82948400eb3356e87c5376b64d79509cf552d84"));
 
         
-        base58Prefixes[PUBKEY_ADDRESS] = list_of(18);
-        base58Prefixes[SCRIPT_ADDRESS] = list_of(59);
-        base58Prefixes[SECRET_KEY] =     list_of(93);
-        base58Prefixes[EXT_PUBLIC_KEY] = list_of(0x04)(0x44)(0xD5)(0xBC);
-        base58Prefixes[EXT_SECRET_KEY] = list_of(0x04)(0x44)(0xF0)(0xA3);
+        base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,18);
+        base58Prefixes[SCRIPT_ADDRESS] = std::vector<unsigned char>(1,59);
+        base58Prefixes[SECRET_KEY] =     std::vector<unsigned char>(1,93);
+        base58Prefixes[EXT_PUBLIC_KEY] = list_of(0x04)(0x44)(0xD5)(0xBC).convert_to_container<std::vector<unsigned char> >();
+        base58Prefixes[EXT_SECRET_KEY] = list_of(0x04)(0x44)(0xF0)(0xA3).convert_to_container<std::vector<unsigned char> >();
 
         convertSeed6(vFixedSeeds, pnSeed6_main, ARRAYLEN(pnSeed6_main));
 
@@ -132,11 +132,11 @@ public:
         vFixedSeeds.clear();
         vSeeds.clear();
 
-        base58Prefixes[PUBKEY_ADDRESS] = list_of(27);
-        base58Prefixes[SCRIPT_ADDRESS] = list_of(95);
-        base58Prefixes[SECRET_KEY]     = list_of(98);
-        base58Prefixes[EXT_PUBLIC_KEY] = list_of(0x05)(0x55)(0xCF)(0xB1);
-        base58Prefixes[EXT_SECRET_KEY] = list_of(0x05)(0x55)(0xD4)(0x7A);
+        base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,27);
+        base58Prefixes[SCRIPT_ADDRESS] = std::vector<unsigned char>(1,95);
+        base58Prefixes[SECRET_KEY]     = std::vector<unsigned char>(1,98);
+        base58Prefixes[EXT_PUBLIC_KEY] = list_of(0x05)(0x55)(0xCF)(0xB1).convert_to_container<std::vector<unsigned char> >();
+        base58Prefixes[EXT_SECRET_KEY] = list_of(0x05)(0x55)(0xD4)(0x7A).convert_to_container<std::vector<unsigned char> >();
 
         convertSeed6(vFixedSeeds, pnSeed6_test, ARRAYLEN(pnSeed6_test));
 
