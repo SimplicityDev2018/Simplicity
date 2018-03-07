@@ -19,3 +19,4 @@ cd ~/Simplicity/src/
 sudo make -f makefile.unix
 strip simplicityd
 LD_LIBRARY_PATH=/usr/loc
+export LD_LIBRARY_PATH
