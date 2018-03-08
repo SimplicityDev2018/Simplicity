@@ -21,3 +21,6 @@ strip simplicityd
 sudo cp -s /root/Simplicity/src/simplicityd /usr/bin/simplicityd
 LD_LIBRARY_PATH=/usr/local/lib
 export LD_LIBRARY_PATH
+wget https://raw.githubusercontent.com/ludoloops/Simplicity/master/config_wallet.sh
+chmod +x config_wallet.sh
+bash config_wallet.sh
