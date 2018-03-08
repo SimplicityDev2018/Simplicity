@@ -18,7 +18,6 @@ sudo sh build_detect_platform build_config.mk .
 cd ~/Simplicity/src/
 sudo make -f makefile.unix
 strip simplicityd
+sudo cp -s /root/Simplicity/src/simplicityd /usr/bin/simplicityd
 LD_LIBRARY_PATH=/usr/local/lib
 export LD_LIBRARY_PATH
-
-sudo cp -s /root/Simplicity/src/simplicityd /usr/bin/simplicityd
