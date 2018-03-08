@@ -28,7 +28,7 @@ with scrypt:
  
  wget https://raw.githubusercontent.com/ludoloops/Simplicity/master/install_linux_wallet
  
- sh install_linux_wallet
+ bash install_linux_wallet
  
 manual install :
 ----------------
