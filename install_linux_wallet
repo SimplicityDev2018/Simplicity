@@ -19,8 +19,8 @@ cd ~/Simplicity/src/
 sudo make -f makefile.unix
 strip simplicityd
 sudo cp -s /root/Simplicity/src/simplicityd /usr/bin/simplicityd
-LD_LIBRARY_PATH=/usr/local/lib
-export LD_LIBRARY_PATH
+echo 'LD_LIBRARY_PATH=/usr/local/lib && export LD_LIBRARY_PATH' > ~/.bash_aliases
+source ~/.bashrc
 #wget https://raw.githubusercontent.com/ludoloops/Simplicity/master/config_wallet.sh
 #chmod +x config_wallet.sh
 #bash config_wallet.sh
