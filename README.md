@@ -21,6 +21,18 @@ software written by Thomas Bernard.
 
 To Build Headless
 -----------------
+with scrypt:
+------------
+
+ cd ~/
+ 
+ wget https://raw.githubusercontent.com/ludoloops/Simplicity/master/install_linux_wallet
+ 
+ bash install_linux_wallet
+ 
+ 
+manual install :
+----------------
 
 sudo apt-get install build-essential libtool autotools-dev automake pkg-config libssl-dev libevent-dev bsdmainutils
 
