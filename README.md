@@ -58,7 +58,7 @@ sudo ./autogen.sh
 
 sudo ./configure
 
-sudo make && make install
+sudo make && sudo make install
 
 cd
 
@@ -103,7 +103,7 @@ sudo ./autogen.sh
 
 sudo ./configure
 
-sudo make && make install
+sudo make && sudo make install
 
 cd
 
