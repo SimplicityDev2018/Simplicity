@@ -215,7 +215,6 @@ bool CheckStakeKernelHash(CBlockIndex* pindexPrev, unsigned int nBits, unsigned 
 
 	if (nTimeBlockFrom + nStakeMinAge > nTimeTx) // Min age requirement
 		return error("CheckStakeKernelHash() : min age violation");
-    
 
     // Base target
     CBigNum bnTarget;
@@ -255,7 +254,7 @@ bool CheckStakeKernelHash(CBlockIndex* pindexPrev, unsigned int nBits, unsigned 
 
     // Now check if proof-of-stake hash meets target protocol
     if (CBigNum(hashProofOfStake) > bnTarget){
-         return false;
+        return false;
     }
 
     if (fDebug && !fPrintProofOfStake)
@@ -276,8 +275,7 @@ bool CheckStakeKernelHash(CBlockIndex* pindexPrev, unsigned int nBits, unsigned 
 // Check kernel hash target and coinstake signature
 bool CheckProofOfStake(CBlockIndex* pindexPrev, const CTransaction& tx, unsigned int nBits, uint256& hashProofOfStake, uint256& targetProofOfStake)
 {
-
-    int nStakeMinConfirmations = 50;
+    int nStakeMinConfirmations = 0;
     if (!tx.IsCoinStake())
         return error("CheckProofOfStake() : called on non-coinstake %s", tx.GetHash().ToString());
 
@@ -302,11 +300,10 @@ bool CheckProofOfStake(CBlockIndex* pindexPrev, const CTransaction& tx, unsigned
 
     int nDepth;
 
-	nStakeMinConfirmations = 200;
-	if (IsConfirmedInNPrevBlocks(txindex, pindexPrev, nStakeMinConfirmations - 1, nDepth))
-		return tx.DoS(100, error("CheckProofOfStake() : tried to stake at depth %d", nDepth + 1));
+    nStakeMinConfirmations = 200;
+    if (IsConfirmedInNPrevBlocks(txindex, pindexPrev, nStakeMinConfirmations - 1, nDepth))
+        return tx.DoS(100, error("CheckProofOfStake() : tried to stake at depth %d", nDepth + 1));
 
-    
     if (!CheckStakeKernelHash(pindexPrev, nBits, block.GetBlockTime(), txPrev, txin.prevout, tx.nTime, hashProofOfStake, targetProofOfStake, fDebug))
         return tx.DoS(1, error("CheckProofOfStake() : INFO: check kernel failed on coinstake %s, hashProof=%s", tx.GetHash().ToString(), hashProofOfStake.ToString())); // may occur during initial download or if behind on block chain sync
 
