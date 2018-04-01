@@ -7,7 +7,7 @@ sudo apt-get install build-essential libtool autotools-dev automake pkg-config l
 sudo apt-get install qt5-default qt5-qmake qtbase5-dev-tools qttools5-dev-tools build-essential libboost-dev libboost-system-dev libboost-filesystem-dev libboost-program-options-dev libboost-thread-dev libssl-dev libdb++-dev libminiupnpc-dev git -y 
 sudo apt-get install libdb4.8-dev libdb4.8++-dev libqrencode-dev -y
 cd ~/
-git clone https://github.com/SimplicityDev2018/Simplicity.git
+git clone https://github.com/ComputerCraftr/Simplicity.git
 cd ~/Simplicity/src/secp256k1
 chmod +x autogen.sh
 sudo ./autogen.sh
