@@ -18,6 +18,9 @@
         <file alias="transaction_3">res/icons/clock3.png</file>
         <file alias="transaction_4">res/icons/clock4.png</file>
         <file alias="transaction_5">res/icons/clock5.png</file>
+        <file alias="eye">res/icons/eye.png</file>
+        <file alias="eye_minus">res/icons/eye_minus.png</file>
+        <file alias="eye_plus">res/icons/eye_plus.png</file>
         <file alias="options">res/icons/configure.png</file>
         <file alias="receiving_addresses">res/icons/receive.png</file>
         <file alias="editpaste">res/icons/editpaste.png</file>
@@ -51,6 +54,8 @@
         <file alias="bwi2pconnect_2">res/icons/i2plogo_wbw_2_16.png</file>
         <file alias="bwi2pconnect_3">res/icons/i2plogo_wbw_3_16.png</file>
         <file alias="bwi2pconnect_4">res/icons/i2plogo_wbw_4_16.png</file>
+        <file alias="browse">res/icons/browse.png</file>
+        <file alias="trade">res/icons/trade.png</file>
     </qresource>
     <qresource prefix="/icons/black">
         <file alias="connect_0">res/icons/black/connect0_16.png</file>

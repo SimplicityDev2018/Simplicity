@@ -7,6 +7,7 @@
 #include "rpcserver.h"
 #include "rpcclient.h"
 
+#include <QClipboard>
 #include <QTime>
 #include <QThread>
 #include <QKeyEvent>
@@ -204,8 +205,6 @@ RPCConsole::RPCConsole(QWidget *parent) :
     ui->lineEdit->installEventFilter(this);
     ui->messagesWidget->installEventFilter(this);
 
-    connect(ui->clearButton, SIGNAL(clicked()), this, SLOT(clear()));
-
     // set OpenSSL version label
     ui->openSSLVersion->setText(SSLeay_version(SSLEAY_VERSION));
 
@@ -325,7 +324,7 @@ void RPCConsole::clear()
                 "b { color: #00C0C0; } "
                 );
 
-    message(CMD_REPLY, (tr("Welcome to the Simplicity RPC console.") + "<br>" +
+    message(CMD_REPLY, (tr("Welcome to the Crave RPC console.") + "<br>" +
                         tr("Use up and down arrows to navigate history, and <b>Ctrl-L</b> to clear screen.") + "<br>" +
                         tr("Type <b>help</b> for an overview of available commands.")), true);
 }
@@ -484,6 +483,16 @@ void RPCConsole::setTrafficGraphRange(int mins)
     }
 }
 
+void RPCConsole::on_copyButton_clicked()
+{
+    GUIUtil::setClipboard(ui->lineEdit->text());
+}
+
+void RPCConsole::on_pasteButton_clicked()
+{
+	ui->lineEdit->setText(QApplication::clipboard()->text());
+}
+
 void RPCConsole::updateTrafficStats(quint64 totalBytesIn, quint64 totalBytesOut)
 {
     ui->lblBytesIn->setText(FormatBytes(totalBytesIn));
@@ -493,4 +502,9 @@ void RPCConsole::updateTrafficStats(quint64 totalBytesIn, quint64 totalBytesOut)
 void RPCConsole::on_btnClearTrafficGraph_clicked()
 {
     ui->trafficGraph->clear();
+}
+
+void RPCConsole::showBackups()
+{
+    GUIUtil::showBackups();
 }

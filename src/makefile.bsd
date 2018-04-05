@@ -94,15 +94,18 @@ xCXXFLAGS=-O0 -msse2 -pthread -Wall -Wextra -Wno-ignored-qualifiers -Wformat -Wf
 xLDFLAGS=$(LDHARDENING) $(LDFLAGS)
 
 OBJS= \
-    obj/irc.o \
     obj/alert.o \
+    obj/allocators.o \
+    obj/support/cleanse.o \
+    obj/base58.o \
     obj/version.o \
     obj/checkpoints.o \
     obj/netbase.o \
     obj/addrman.o \
     obj/crypter.o \
     obj/key.o \
-    obj/eckey.o \
+    obj/pubkey.o \
+    obj/ecwrapper.o \
     obj/init.o \
     obj/bitcoind.o \
     obj/keystore.o \
@@ -133,16 +136,15 @@ OBJS= \
     obj/activemasternode.o \
     obj/darksend.o \
     obj/darksend-relay.o \
-    obj/eccryptoverify.o \
     obj/instantx.o \
     obj/masternodeconfig.o \
     obj/masternodeman.o \
     obj/masternode.o \
+    obj/masternode-payments.o \
     obj/rpcdarksend.o \
     obj/spork.o \
     obj/crypto/hmac_sha256.o \
     obj/crypto/hmac_sha512.o \
-    obj/crypto/rfc6979_hmac_sha256.o \
     obj/crypto/ripemd160.o \
     obj/crypto/sha1.o \
     obj/crypto/sha256.o \
@@ -150,7 +152,6 @@ OBJS= \
     obj/smessage.o \
     obj/cubehash.o \
     obj/luffa.o \
-    obj/aes_helper.o \
     obj/echo.o \
     obj/shavite.o \
     obj/simd.o \
@@ -190,15 +191,6 @@ obj/build.h: FORCE
 	/bin/sh ../share/genbuild.sh obj/build.h
 version.cpp: obj/build.h
 DEFS += -DHAVE_BUILD_INFO
-
-obj/scrypt-x86.o: scrypt-x86.S
-	$(CXX) -c $(xCXXFLAGS) -MMD -o $@ $<
-
-obj/scrypt-x86_64.o: scrypt-x86_64.S
-	$(CXX) -c $(xCXXFLAGS) -MMD -o $@ $<
-
-obj/scrypt-arm.o: scrypt-arm.S
-	$(CXX) -c $(xCXXFLAGS) -MMD -o $@ $<
 
 obj/%.o: %.cpp
 	$(CXX) -c $(xCXXFLAGS) -MMD -MF $(@:%.o=%.d) -o $@ $<
