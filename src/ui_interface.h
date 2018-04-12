@@ -16,7 +16,6 @@
 class CBasicKeyStore;
 class CWallet;
 class uint256;
-class CAdrenalineNodeConfig;
 
 /** General change type (added, updated, removed). */
 enum ChangeType
@@ -89,12 +88,6 @@ public:
     /** Progress message during initialization. */
     boost::signals2::signal<void (const std::string &message)> InitMessage;
 
-    /** Initiate client shutdown. */
-    boost::signals2::signal<void ()> QueueShutdown;
-
-    /** Block chain changed. */
-    boost::signals2::signal<void ()> NotifyBlocksChanged;
-
     /** Translate a message to the native language of the user. */
     boost::signals2::signal<std::string (const char* psz)> Translate;
 
@@ -107,7 +100,8 @@ public:
      */
     boost::signals2::signal<void (const uint256 &hash, ChangeType status)> NotifyAlertChanged;
 
-    boost::signals2::signal<void (CAdrenalineNodeConfig nodeConfig)> NotifyAdrenalineNodeChanged;
+    /** Show progress e.g. for verifychain */
+    boost::signals2::signal<void (const std::string &title, int nProgress)> ShowProgress;
 };
 
 extern CClientUIInterface uiInterface;
