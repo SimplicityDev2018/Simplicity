@@ -236,12 +236,14 @@ HEADERS += src/qt/bitcoingui.h \
     src/kernel.h \
     src/pbkdf2.h \
     src/serialize.h \
+    src/support/cleanse.h \
     src/core.h \
     src/main.h \
     src/miner.h \
     src/net.h \
+    src/ecwrapper.h \
     src/key.h \
-    src/eckey.h \
+    src/pubkey.h \
     src/db.h \
     src/txdb.h \
     src/txmempool.h \
@@ -275,6 +277,7 @@ HEADERS += src/qt/bitcoingui.h \
     src/qt/transactionfilterproxy.h \
     src/qt/transactionview.h \
     src/qt/walletmodel.h \
+    src/qt/walletmodeltransaction.h \
     src/rpcclient.h \
     src/rpcprotocol.h \
     src/rpcserver.h \
@@ -307,16 +310,15 @@ HEADERS += src/qt/bitcoingui.h \
     src/activemasternode.h \
     src/masternodeconfig.h \
     src/masternodeman.h \
+    src/masternode-payments.h \
     src/spork.h \
     src/crypto/common.h \
     src/crypto/hmac_sha256.h \
     src/crypto/hmac_sha512.h \
-    src/crypto/rfc6979_hmac_sha256.h \
     src/crypto/ripemd160.h \
     src/crypto/sha1.h \
     src/crypto/sha256.h \
     src/crypto/sha512.h \
-    src/eccryptoverify.h \
     src/qt/masternodemanager.h \
     src/qt/addeditadrenalinenode.h \
     src/qt/adrenalinenodeconfigdialog.h \
@@ -358,6 +360,8 @@ SOURCES += src/qt/bitcoin.cpp src/qt/bitcoingui.cpp \
     src/qt/editaddressdialog.cpp \
     src/qt/bitcoinaddressvalidator.cpp \
     src/alert.cpp \
+    src/allocators.cpp \
+    src/base58.cpp \
     src/chainparams.cpp \
     src/version.cpp \
     src/sync.cpp \
@@ -365,8 +369,9 @@ SOURCES += src/qt/bitcoin.cpp src/qt/bitcoingui.cpp \
     src/util.cpp \
     src/hash.cpp \
     src/netbase.cpp \
+    src/ecwrapper.cpp \
     src/key.cpp \
-    src/eckey.cpp \
+    src/pubkey.cpp \
     src/script.cpp \
     src/scrypt.cpp \
     src/core.cpp \
@@ -394,6 +399,7 @@ SOURCES += src/qt/bitcoin.cpp src/qt/bitcoingui.cpp \
     src/qt/transactionfilterproxy.cpp \
     src/qt/transactionview.cpp \
     src/qt/walletmodel.cpp \
+    src/qt/walletmodeltransaction.cpp \
     src/rpcclient.cpp \
     src/rpcprotocol.cpp \
     src/rpcserver.cpp \
@@ -423,6 +429,7 @@ SOURCES += src/qt/bitcoin.cpp src/qt/bitcoingui.cpp \
     src/scrypt-x86.S \
     src/scrypt-x86_64.S \
     src/pbkdf2.cpp \
+    src/support/cleanse.cpp \
     src/stealth.cpp \
     src/qt/flowlayout.cpp \
     src/qt/darksendconfig.cpp \
@@ -433,16 +440,15 @@ SOURCES += src/qt/bitcoin.cpp src/qt/bitcoingui.cpp \
     src/instantx.cpp \
     src/activemasternode.cpp \
     src/masternodeman.cpp \
+    src/masternode-payments.cpp \
     src/spork.cpp \
     src/masternodeconfig.cpp \
     src/crypto/hmac_sha256.cpp \
     src/crypto/hmac_sha512.cpp \
-    src/crypto/rfc6979_hmac_sha256.cpp \
     src/crypto/ripemd160.cpp \
     src/crypto/sha1.cpp \
     src/crypto/sha256.cpp \
     src/crypto/sha512.cpp \
-    src/eccryptoverify.cpp \
     src/qt/masternodemanager.cpp \
     src/qt/addeditadrenalinenode.cpp \
     src/qt/adrenalinenodeconfigdialog.cpp \
