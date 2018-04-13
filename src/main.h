@@ -12,6 +12,7 @@
 #include "net.h"
 #include "script.h"
 #include "scrypt.h"
+#include "hashblock.h"
 
 #include <list>
 
@@ -24,7 +25,6 @@ static const int64_t DARKSEND_COLLATERAL = (0.01*COIN);
 //static const int64_t DARKSEND_FEE = (0.01*COIN);
 static const int64_t DARKSEND_POOL_MAX = (999999999.99*COIN);
 
-static const int64_t TARGET_SPACING = 80;
 static const int64_t STAKE_TIMESPAN_SWITCH_TIME = 1428537599;
 
 #define INSTANTX_SIGNATURES_REQUIRED           10
