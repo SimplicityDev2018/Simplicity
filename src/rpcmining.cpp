@@ -95,7 +95,7 @@ Value getmininginfo(const Array& params, bool fHelp)
     diff.push_back(Pair("proof-of-work",        GetDifficulty()));
     diff.push_back(Pair("proof-of-stake",       GetDifficulty(GetLastBlockIndex(pindexBest, true))));
     diff.push_back(Pair("search-interval",      (int)nLastCoinStakeSearchInterval));
-    obj.push_back(Pair("difficulty",    diff)));
+    obj.push_back(Pair("difficulty",    diff));
 
     obj.push_back(Pair("blockvalue",    (uint64_t)GetProofOfWorkReward(pindexBest->nHeight, 0)));
     obj.push_back(Pair("netmhashps",     GetPoWMHashPS()));
