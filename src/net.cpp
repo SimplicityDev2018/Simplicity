@@ -1915,6 +1915,13 @@ public:
                 if (closesocket(hListenSocket) == SOCKET_ERROR)
                     LogPrintf("closesocket(hListenSocket) failed with error %d\n", WSAGetLastError());
 
+#ifdef USE_NATIVE_I2P
+        BOOST_FOREACH(SOCKET& hI2PListenSocket, vhI2PListenSocket)
+            if (hI2PListenSocket != INVALID_SOCKET)
+                if (closesocket(hI2PListenSocket) == SOCKET_ERROR)
+                    printf("closesocket(hI2PListenSocket) failed with error %d\n", WSAGetLastError());
+#endif
+
 #ifdef WIN32
         // Shutdown Windows Sockets
         WSACleanup();
