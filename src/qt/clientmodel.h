@@ -5,6 +5,8 @@
 
 class OptionsModel;
 class AddressTableModel;
+class BanTableModel;
+class PeerTableModel;
 class TransactionTableModel;
 class CWallet;
 
@@ -23,6 +25,8 @@ public:
     ~ClientModel();
 
     OptionsModel *getOptionsModel();
+    PeerTableModel *getPeerTableModel();
+    BanTableModel *getBanTableModel();
 
     int getNumConnections() const;
     QString getMasternodeCountString() const;
@@ -62,6 +66,8 @@ public:
 
 private:
     OptionsModel *optionsModel;
+    PeerTableModel *peerTableModel;
+    BanTableModel *banTableModel;
 
     int cachedNumBlocks;
     QString cachedMasternodeCountString;
@@ -98,6 +104,7 @@ public slots:
 #ifdef USE_NATIVE_I2P
     void updateNumI2PConnections(int numI2PConnections);
 #endif
+    void updateBanlist();
 };
 
 #endif // CLIENTMODEL_H
