@@ -70,7 +70,6 @@ private:
     BanTableModel *banTableModel;
 
     int cachedNumBlocks;
-    QString cachedMasternodeCountString;
     int numBlocksAtStartup;
     QString cachedMasternodeCountString;
 
