@@ -96,8 +96,8 @@ public:
 
         convertSeeds(vFixedSeeds, pnSeed, ARRAYLEN(pnSeed), nDefaultPort);
 
-        //nPoolMaxTransactions = 3;
-        //strDarksendPoolDummyAddress = "8K2ndetmQxawKdRrMmJ827aAMNPXPbaC1j";
+        nPoolMaxTransactions = 3;
+        strDarksendPoolDummyAddress = "8K2ndetmQxawKdRrMmJ827aAMNPXPbaC1j";
         nPOSStartBlock = 1;
     }
 
@@ -128,7 +128,7 @@ public:
         pchMessageStart[1] = 0xe3;
         pchMessageStart[2] = 0xdc;
         pchMessageStart[3] = 0xc6;
-        bnProofOfWorkLimit = CBigNum(~uint256(0) >> 16);
+        bnProofOfWorkLimit = CBigNum(~uint256(0) >> 8);
         vAlertPubKey = ParseHex("04eb9fd13c016ed9a2f222989769417ed3a16e6fbf3bd55023679be17f0bab053cd9f161528241bc9a2894ad5ebbbd551be1a4bd2d10cdb679228c91e26e26900e");
         nDefaultPort = 21957;
         nRPCPort = 21958;

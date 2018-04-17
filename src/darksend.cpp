@@ -712,10 +712,10 @@ void CDarksendPool::ChargeFees(){
     int target = 0;
 
     //mostly offending?
-    if(offences >= POOL_MAX_TRANSACTIONS-1 && r > 33) return;
+    if(offences >= Params().PoolMaxTransactions()-1 && r > 33) return;
 
     //everyone is an offender? That's not right
-    if(offences >= POOL_MAX_TRANSACTIONS) return;
+    if(offences >= Params().PoolMaxTransactions()) return;
 
     //charge one of the offenders randomly
     if(offences > 1) target = 50;
