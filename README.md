@@ -53,19 +53,17 @@ chmod +x autogen.sh
 
 ./autogen.sh
 
-./configure
+./configure --enable-module-recovery
 
-sudo make && sudo make install
+make && sudo make install
 
-cd ..
+cd ../leveldb/
 
-cd leveldb/
-
-sudo sh build_detect_platform build_config.mk .
+chmod +x build_detect_platform
 
 cd ..
 
-sudo make -f makefile.unix
+make -f makefile.unix -jnumofcoreshere
 
 strip simplicityd
 
@@ -96,18 +94,16 @@ chmod +x autogen.sh
 
 ./autogen.sh
 
-./configure
+./configure --enable-module-recovery
 
 sudo make && sudo make install
 
-cd ..
+cd ../leveldb/
 
-cd leveldb/
-
-sudo sh build_detect_platform build_config.mk .
+chmod +x build_detect_platform
 
 cd ../..
 
-sudo qmake SPL-Qt.pro
+qmake SPL-Qt.pro
 
-sudo make -jnumofcoreshere
+make -jnumofcoreshere

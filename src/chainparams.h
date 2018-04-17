@@ -67,7 +67,6 @@ public:
     const std::vector<unsigned char> &Base58Prefix(Base58Type type) const { return base58Prefixes[type]; }
     virtual const vector<CAddress>& FixedSeeds() const = 0;
     int RPCPort() const { return nRPCPort; }
-    int LastPOWBlock() const { return nLastPOWBlock; }
     int POSStartBlock() const { return nPOSStartBlock; }
     //int PoolMaxTransactions() const { return nPoolMaxTransactions; }
     //std::string DarksendPoolDummyAddress() const { return strDarksendPoolDummyAddress; }
@@ -85,7 +84,6 @@ protected:
     string strDataDir;
     vector<CDNSSeedData> vSeeds;
     std::vector<unsigned char> base58Prefixes[MAX_BASE58_TYPES];
-    int nLastPOWBlock;
     int nPOSStartBlock;
     //int nPoolMaxTransactions;
     //std::string strDarksendPoolDummyAddress;
