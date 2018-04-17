@@ -46,7 +46,7 @@ Value getsubsidy(const Array& params, bool fHelp)
             "getsubsidy [nTarget]\n"
             "Returns proof-of-work subsidy value for the specified value of target.");
 
-    return (uint64_t)GetProofOfWorkReward(pindexBest->nHeight, 0);
+    return (int64_t)GetProofOfStakeReward(pindexBest->pprev, 0, 0);
 }
 
 Value getstakesubsidy(const Array& params, bool fHelp)
@@ -73,7 +73,7 @@ Value getstakesubsidy(const Array& params, bool fHelp)
     if (!tx.GetCoinAge(txdb, pindexBest, nCoinAge))
         throw JSONRPCError(RPC_MISC_ERROR, "GetCoinAge failed");
 
-    return (uint64_t)GetProofOfStakeReward(pindexBest, nCoinAge, 0);
+    return (uint64_t)GetProofOfStakeReward(pindexBest->pprev, nCoinAge, 0);
 }
 
 Value getmininginfo(const Array& params, bool fHelp)
@@ -127,11 +127,7 @@ Value getstakinginfo(const Array& params, bool fHelp)
 
     uint64_t nNetworkWeight = GetPoSKernelPS();
     bool staking = nLastCoinStakeSearchInterval && nWeight;
-//    if(pindexBest->nHeight <= HARD_FORK_BLOCK){
-//        nExpectedTime = staking ? (TARGET_SPACING_FORK * nNetworkWeight / nWeight) : 0;
-//    } else {
-        nExpectedTime = staking ? (TARGET_SPACING * nNetworkWeight / nWeight) : 0;
-//    }
+    nExpectedTime = staking ? (TARGET_SPACING * nNetworkWeight / nWeight) : 0;
 
     Object obj;
 

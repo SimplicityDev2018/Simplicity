@@ -85,6 +85,8 @@ extern double GetPoWMHashPS();
 extern double GetPoSKernelPS();
 
 extern std::string HelpRequiringPassphrase();
+extern std::string HelpExampleCli(std::string methodname, std::string args);
+extern std::string HelpExampleRpc(std::string methodname, std::string args);
 extern void EnsureWalletIsUnlocked();
 
 //
@@ -99,12 +101,16 @@ extern std::vector<unsigned char> ParseHexO(const json_spirit::Object& o, std::s
 extern json_spirit::Value getconnectioncount(const json_spirit::Array& params, bool fHelp); // in rpcnet.cpp
 extern json_spirit::Value getpeerinfo(const json_spirit::Array& params, bool fHelp);
 extern json_spirit::Value ping(const json_spirit::Array& params, bool fHelp);
+extern json_spirit::Value setban(const json_spirit::Array& params, bool fHelp);
+extern json_spirit::Value listbanned(const json_spirit::Array& params, bool fHelp);
+extern json_spirit::Value clearbanned(const json_spirit::Array& params, bool fHelp);
 extern json_spirit::Value addnode(const json_spirit::Array& params, bool fHelp);
 extern json_spirit::Value getaddednodeinfo(const json_spirit::Array& params, bool fHelp);
 extern json_spirit::Value getnettotals(const json_spirit::Array& params, bool fHelp);
 
 extern json_spirit::Value dumpwallet(const json_spirit::Array& params, bool fHelp);
 extern json_spirit::Value importwallet(const json_spirit::Array& params, bool fHelp);
+extern json_spirit::Value importaddress(const json_spirit::Array& params, bool fHelp);
 extern json_spirit::Value dumpprivkey(const json_spirit::Array& params, bool fHelp); // in rpcdump.cpp
 extern json_spirit::Value importprivkey(const json_spirit::Array& params, bool fHelp);
 
@@ -152,6 +158,8 @@ extern json_spirit::Value encryptwallet(const json_spirit::Array& params, bool f
 extern json_spirit::Value validateaddress(const json_spirit::Array& params, bool fHelp);
 extern json_spirit::Value getinfo(const json_spirit::Array& params, bool fHelp);
 extern json_spirit::Value reservebalance(const json_spirit::Array& params, bool fHelp);
+extern json_spirit::Value addmultisigaddress(const json_spirit::Array& params, bool fHelp);
+extern json_spirit::Value createmultisig(const json_spirit::Array& params, bool fHelp);
 extern json_spirit::Value checkwallet(const json_spirit::Array& params, bool fHelp);
 extern json_spirit::Value repairwallet(const json_spirit::Array& params, bool fHelp);
 extern json_spirit::Value resendtx(const json_spirit::Array& params, bool fHelp);
@@ -183,6 +191,8 @@ extern json_spirit::Value getnewstealthaddress(const json_spirit::Array& params,
 extern json_spirit::Value liststealthaddresses(const json_spirit::Array& params, bool fHelp);
 extern json_spirit::Value importstealthaddress(const json_spirit::Array& params, bool fHelp);
 extern json_spirit::Value sendtostealthaddress(const json_spirit::Array& params, bool fHelp);
+extern json_spirit::Value scanforalltxns(const json_spirit::Array& params, bool fHelp);
+extern json_spirit::Value scanforstealthtxns(const json_spirit::Array& params, bool fHelp);
 
 extern json_spirit::Value darksend(const json_spirit::Array& params, bool fHelp);
 extern json_spirit::Value spork(const json_spirit::Array& params, bool fHelp);

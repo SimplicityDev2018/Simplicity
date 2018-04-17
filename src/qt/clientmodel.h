@@ -5,6 +5,8 @@
 
 class OptionsModel;
 class AddressTableModel;
+class BanTableModel;
+class PeerTableModel;
 class TransactionTableModel;
 class CWallet;
 
@@ -23,6 +25,8 @@ public:
     ~ClientModel();
 
     OptionsModel *getOptionsModel();
+    PeerTableModel *getPeerTableModel();
+    BanTableModel *getBanTableModel();
 
     int getNumConnections() const;
     QString getMasternodeCountString() const;
@@ -62,10 +66,12 @@ public:
 
 private:
     OptionsModel *optionsModel;
+    PeerTableModel *peerTableModel;
+    BanTableModel *banTableModel;
 
     int cachedNumBlocks;
-    QString cachedMasternodeCountString;
     int numBlocksAtStartup;
+    QString cachedMasternodeCountString;
 
     QTimer *pollTimer;
     QTimer *pollMnTimer;
@@ -86,6 +92,9 @@ signals:
     //! Asynchronous message notification
     void message(const QString &title, const QString &message, bool modal, unsigned int style);
 
+    // Show progress dialog e.g. for verifychain
+    void showProgress(const QString &title, int nProgress);
+
 public slots:
     void updateTimer();
     void updateMnTimer();
@@ -94,6 +103,7 @@ public slots:
 #ifdef USE_NATIVE_I2P
     void updateNumI2PConnections(int numI2PConnections);
 #endif
+    void updateBanlist();
 };
 
 #endif // CLIENTMODEL_H

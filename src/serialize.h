@@ -46,7 +46,7 @@ inline T* NCONST_PTR(const T* val)
     return const_cast<T*>(val);
 }
 
-/** 
+/**
  * Get begin pointer of vector (non-const version).
  * @note These functions avoid the undefined case of indexing into an empty
  * vector, as well as that of indexing after the end of the vector.
@@ -137,14 +137,14 @@ enum
     }
 
 #define READWRITE(obj)      (nSerSize += ::SerReadWrite(s, (obj), nType, nVersion, ser_action))
-#define READWRITES(obj)     (::SerReadWrite(s, (obj), nType, nVersion, ser_action))
+#define READWRITES(obj)	    (::SerReadWrite(s, (obj), nType, nVersion, ser_action))
 
 
-/** 
+/**
  * Implement three methods for serializable objects. These are actually wrappers over
  * "SerializationOp" template, which implements the body of each class' serialization
  * code. Adding "ADD_SERIALIZE_METHODS" in the body of the class causes these wrappers to be
- * added as members. 
+ * added as members.
  */
 #define ADD_SERIALIZE_METHODS                                                          \
     size_t GetSerializeSize(int nType, int nVersion) const {                         \
@@ -822,8 +822,14 @@ void Unserialize(Stream& is, std::set<K, Pred, A>& m, int nType, int nVersion)
 // Support for IMPLEMENT_SERIALIZE and READWRITE macro
 //
 class CSerActionGetSerializeSize { };
-class CSerActionSerialize { };
-class CSerActionUnserialize { };
+struct CSerActionSerialize
+{
+    bool ForRead() const { return false; }
+};
+struct CSerActionUnserialize
+{
+    bool ForRead() const { return true; }
+};
 
 template<typename Stream, typename T>
 inline unsigned int SerReadWrite(Stream& s, const T& obj, int nType, int nVersion, CSerActionGetSerializeSize ser_action)
@@ -1232,14 +1238,21 @@ public:
         file = NULL;
     }
 
+    /** Get wrapped FILE* with transfer of ownership.
+     * @note This will invalidate the CAutoFile object, and makes it the responsibility of the caller
+     * of this function to clean up the returned FILE*.
+     */
     FILE* release()             { FILE* ret = file; file = NULL; return ret; }
-    operator FILE*()            { return file; }
-    FILE* operator->()          { return file; }
-    FILE& operator*()           { return *file; }
-    FILE** operator&()          { return &file; }
-    FILE* operator=(FILE* pnew) { return file = pnew; }
-    bool operator!()            { return (file == NULL); }
 
+    /** Get wrapped FILE* without transfer of ownership.
+     * @note Ownership of the FILE* will remain with this class. Use this only if the scope of the
+     * CAutoFile outlives use of the passed pointer.
+     */
+    FILE* Get() const           { return file; }
+
+    /** Return true if the wrapped FILE* is NULL, false otherwise.
+     */
+    bool IsNull() const         { return (file == NULL); }
 
     //
     // Stream subset
@@ -1309,7 +1322,5 @@ public:
         return (*this);
     }
 };
-
-
 
 #endif

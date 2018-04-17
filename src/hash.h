@@ -16,7 +16,7 @@
 
 #include <vector>
 
-/** A hasher class for BixCoin's 256-bit hash (double SHA-256). */
+/** A hasher class for Simplicity's 256-bit hash (double SHA-256). */
 class CHash256 {
 private:
     CSHA256 sha;
@@ -40,7 +40,7 @@ public:
     }
 };
 
-/** A hasher class for BixCoin's 160-bit hash (SHA-256 + RIPEMD-160). */
+/** A hasher class for Simplicity's 160-bit hash (SHA-256 + RIPEMD-160). */
 class CHash160 {
 private:
     CSHA256 sha;
@@ -183,5 +183,5 @@ typedef struct
 int HMAC_SHA512_Init(HMAC_SHA512_CTX *pctx, const void *pkey, size_t len);
 int HMAC_SHA512_Update(HMAC_SHA512_CTX *pctx, const void *pdata, size_t len);
 int HMAC_SHA512_Final(unsigned char *pmd, HMAC_SHA512_CTX *pctx);
-
+void BIP32Hash(const unsigned char chainCode[32], unsigned int nChild, unsigned char header, const unsigned char data[32], unsigned char output[64]);
 #endif

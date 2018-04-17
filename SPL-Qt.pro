@@ -1,6 +1,6 @@
 TEMPLATE = app
 TARGET = Simplicity-Qt
-VERSION = 1.1.0.0
+VERSION = 1.2.0.0
 INCLUDEPATH += src src/json src/qt src/qt/plugins/mrichtexteditor
 QT += core gui network printsupport
 DEFINES += ENABLE_WALLET
@@ -210,6 +210,7 @@ DEPENDPATH += src src/json src/qt
 HEADERS += src/qt/bitcoingui.h \
     src/qt/transactiontablemodel.h \
     src/qt/addresstablemodel.h \
+    src/qt/bantablemodel.h \
     src/qt/optionsdialog.h \
     src/qt/coincontroldialog.h \
     src/qt/coincontroltreewidget.h \
@@ -236,12 +237,14 @@ HEADERS += src/qt/bitcoingui.h \
     src/kernel.h \
     src/pbkdf2.h \
     src/serialize.h \
+    src/support/cleanse.h \
     src/core.h \
     src/main.h \
     src/miner.h \
     src/net.h \
+    src/ecwrapper.h \
     src/key.h \
-    src/eckey.h \
+    src/pubkey.h \
     src/db.h \
     src/txdb.h \
     src/txmempool.h \
@@ -266,6 +269,7 @@ HEADERS += src/qt/bitcoingui.h \
     src/qt/guiconstants.h \
     src/qt/optionsmodel.h \
     src/qt/monitoreddatamapper.h \
+    src/qt/peertablemodel.h \
     src/qt/trafficgraphwidget.h \
     src/qt/transactiondesc.h \
     src/qt/transactiondescdialog.h \
@@ -275,6 +279,7 @@ HEADERS += src/qt/bitcoingui.h \
     src/qt/transactionfilterproxy.h \
     src/qt/transactionview.h \
     src/qt/walletmodel.h \
+    src/qt/walletmodeltransaction.h \
     src/rpcclient.h \
     src/rpcprotocol.h \
     src/rpcserver.h \
@@ -307,16 +312,15 @@ HEADERS += src/qt/bitcoingui.h \
     src/activemasternode.h \
     src/masternodeconfig.h \
     src/masternodeman.h \
+    src/masternode-payments.h \
     src/spork.h \
     src/crypto/common.h \
     src/crypto/hmac_sha256.h \
     src/crypto/hmac_sha512.h \
-    src/crypto/rfc6979_hmac_sha256.h \
     src/crypto/ripemd160.h \
     src/crypto/sha1.h \
     src/crypto/sha256.h \
     src/crypto/sha512.h \
-    src/eccryptoverify.h \
     src/qt/masternodemanager.h \
     src/qt/addeditadrenalinenode.h \
     src/qt/adrenalinenodeconfigdialog.h \
@@ -348,6 +352,7 @@ HEADERS += src/qt/bitcoingui.h \
 SOURCES += src/qt/bitcoin.cpp src/qt/bitcoingui.cpp \
     src/qt/transactiontablemodel.cpp \
     src/qt/addresstablemodel.cpp \
+    src/qt/bantablemodel.cpp \
     src/qt/optionsdialog.cpp \
     src/qt/sendcoinsdialog.cpp \
     src/qt/coincontroldialog.cpp \
@@ -358,6 +363,8 @@ SOURCES += src/qt/bitcoin.cpp src/qt/bitcoingui.cpp \
     src/qt/editaddressdialog.cpp \
     src/qt/bitcoinaddressvalidator.cpp \
     src/alert.cpp \
+    src/allocators.cpp \
+    src/base58.cpp \
     src/chainparams.cpp \
     src/version.cpp \
     src/sync.cpp \
@@ -365,8 +372,9 @@ SOURCES += src/qt/bitcoin.cpp src/qt/bitcoingui.cpp \
     src/util.cpp \
     src/hash.cpp \
     src/netbase.cpp \
+    src/ecwrapper.cpp \
     src/key.cpp \
-    src/eckey.cpp \
+    src/pubkey.cpp \
     src/script.cpp \
     src/scrypt.cpp \
     src/core.cpp \
@@ -384,6 +392,7 @@ SOURCES += src/qt/bitcoin.cpp src/qt/bitcoingui.cpp \
     src/qt/transactionrecord.cpp \
     src/qt/optionsmodel.cpp \
     src/qt/monitoreddatamapper.cpp \
+    src/qt/peertablemodel.cpp \
     src/qt/trafficgraphwidget.cpp \
     src/qt/transactiondesc.cpp \
     src/qt/transactiondescdialog.cpp \
@@ -394,6 +403,7 @@ SOURCES += src/qt/bitcoin.cpp src/qt/bitcoingui.cpp \
     src/qt/transactionfilterproxy.cpp \
     src/qt/transactionview.cpp \
     src/qt/walletmodel.cpp \
+    src/qt/walletmodeltransaction.cpp \
     src/rpcclient.cpp \
     src/rpcprotocol.cpp \
     src/rpcserver.cpp \
@@ -423,6 +433,7 @@ SOURCES += src/qt/bitcoin.cpp src/qt/bitcoingui.cpp \
     src/scrypt-x86.S \
     src/scrypt-x86_64.S \
     src/pbkdf2.cpp \
+    src/support/cleanse.cpp \
     src/stealth.cpp \
     src/qt/flowlayout.cpp \
     src/qt/darksendconfig.cpp \
@@ -433,16 +444,15 @@ SOURCES += src/qt/bitcoin.cpp src/qt/bitcoingui.cpp \
     src/instantx.cpp \
     src/activemasternode.cpp \
     src/masternodeman.cpp \
+    src/masternode-payments.cpp \
     src/spork.cpp \
     src/masternodeconfig.cpp \
     src/crypto/hmac_sha256.cpp \
     src/crypto/hmac_sha512.cpp \
-    src/crypto/rfc6979_hmac_sha256.cpp \
     src/crypto/ripemd160.cpp \
     src/crypto/sha1.cpp \
     src/crypto/sha256.cpp \
     src/crypto/sha512.cpp \
-    src/eccryptoverify.cpp \
     src/qt/masternodemanager.cpp \
     src/qt/addeditadrenalinenode.cpp \
     src/qt/adrenalinenodeconfigdialog.cpp \
@@ -669,7 +679,7 @@ windows:LIBS += -lws2_32 -lshlwapi -lmswsock -lole32 -loleaut32 -luuid -lgdi32 -
     LIBS += -lgmp
 } else {
     INCLUDEPATH += $$SECP256K1_INCLUDE_PATH
-    LIBS += $$join(SECP256K1_LIB_PATH,,-L,) -lsecp256k1
+    LIBS += $$join(SECP256K1_LIB_PATH,,-L,) -lsecp256k1 -lgmp
 }
 LIBS += -lboost_system$$BOOST_LIB_SUFFIX -lboost_filesystem$$BOOST_LIB_SUFFIX -lboost_program_options$$BOOST_LIB_SUFFIX -lboost_thread$$BOOST_THREAD_LIB_SUFFIX
 windows:LIBS += -lboost_chrono$$BOOST_LIB_SUFFIX

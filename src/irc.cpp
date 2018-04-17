@@ -3,15 +3,13 @@
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
+#define PRIu64 "llu"
 #include "chainparams.h"
 #include "irc.h"
 #include "net.h"
 #include "init.h"
 #include "strlcpy.h"
 #include "base58.h"
-#include <inttypes.h>
-
-#define PRIu64 "llu"
 
 using namespace std;
 using namespace boost;
