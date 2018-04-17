@@ -36,7 +36,7 @@ manual install :
 
 sudo apt install build-essential libtool autotools-dev automake pkg-config libssl-dev libevent-dev bsdmainutils
 
-sudo apt install qt5-default qt5-qmake qtbase5-dev-tools qttools5-dev-tools libqt5webkit5 build-essential libboost-dev libboost-system-dev libboost-filesystem-dev libboost-program-options-dev libboost-thread-dev libssl-dev libminiupnpc-dev
+sudo apt install qt5-default qt5-qmake qtbase5-dev-tools qttools5-dev-tools libqt5webkit5 build-essential libboost-dev libboost-system-dev libboost-filesystem-dev libboost-program-options-dev libboost-thread-dev libssl-dev libgmp-dev libminiupnpc-dev
 
 sudo apt install software-properties-common
 sudo add-apt-repository ppa:bitcoin/bitcoin
@@ -53,19 +53,17 @@ chmod +x autogen.sh
 
 ./autogen.sh
 
-./configure
+./configure --enable-module-recovery
 
-sudo make && sudo make install
+make && sudo make install
 
-cd ..
+cd ../leveldb/
 
-cd leveldb/
-
-sudo sh build_detect_platform build_config.mk .
+chmod +x build_detect_platform
 
 cd ..
 
-sudo make -f makefile.unix
+make -f makefile.unix -jnumofcoreshere
 
 strip simplicityd
 
@@ -96,18 +94,16 @@ chmod +x autogen.sh
 
 ./autogen.sh
 
-./configure
+./configure --enable-module-recovery
 
 sudo make && sudo make install
 
-cd ..
+cd ../leveldb/
 
-cd leveldb/
-
-sudo sh build_detect_platform build_config.mk .
+chmod +x build_detect_platform
 
 cd ../..
 
-sudo qmake SPL-Qt.pro
+qmake SPL-Qt.pro
 
-sudo make -jnumofcoreshere
+make -jnumofcoreshere

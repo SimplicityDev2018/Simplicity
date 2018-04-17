@@ -356,7 +356,9 @@ public:
     void ProcessMessageDarksend(CNode* pfrom, std::string& strCommand, CDataStream& vRecv);
 
     void InitCollateralAddress(){
-        SetCollateralAddress(Params().DarksendPoolDummyAddress());
+        std::string strAddress = "";
+            strAddress = "8K2ndetmQxawKdRrMmJ827aAMNPXPbaC1j";
+        SetCollateralAddress(strAddress);
     }
 
     void SetMinBlockSpacing(int minBlockSpacingIn){
