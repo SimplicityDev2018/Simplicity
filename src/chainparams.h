@@ -47,7 +47,7 @@ public:
         PUBKEY_ADDRESS,
         SCRIPT_ADDRESS,
         SECRET_KEY,
-        STEALTH_ADDRESS,
+        //STEALTH_ADDRESS,
         EXT_PUBLIC_KEY,
         EXT_SECRET_KEY,
 

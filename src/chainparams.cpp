@@ -91,7 +91,7 @@ public:
         base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,18);
         base58Prefixes[SCRIPT_ADDRESS] = std::vector<unsigned char>(1,59);
         base58Prefixes[SECRET_KEY] =     std::vector<unsigned char>(1,93);
-        base58Prefixes[STEALTH_ADDRESS] = std::vector<unsigned char>(1,21);
+        //base58Prefixes[STEALTH_ADDRESS] = std::vector<unsigned char>(1,21);
         base58Prefixes[EXT_PUBLIC_KEY] = list_of(0x04)(0x44)(0xD5)(0xBC).convert_to_container<std::vector<unsigned char> >();
         base58Prefixes[EXT_SECRET_KEY] = list_of(0x04)(0x44)(0xF0)(0xA3).convert_to_container<std::vector<unsigned char> >();
 
@@ -147,7 +147,7 @@ public:
         base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,27);
         base58Prefixes[SCRIPT_ADDRESS] = std::vector<unsigned char>(1,95);
         base58Prefixes[SECRET_KEY]     = std::vector<unsigned char>(1,98);
-        base58Prefixes[STEALTH_ADDRESS] = std::vector<unsigned char>(1,21);
+        //base58Prefixes[STEALTH_ADDRESS] = std::vector<unsigned char>(1,21);
         base58Prefixes[EXT_PUBLIC_KEY] = list_of(0x05)(0x55)(0xCF)(0xB1).convert_to_container<std::vector<unsigned char> >();
         base58Prefixes[EXT_SECRET_KEY] = list_of(0x05)(0x55)(0xD4)(0x7A).convert_to_container<std::vector<unsigned char> >();
 
