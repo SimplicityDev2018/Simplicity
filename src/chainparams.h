@@ -47,7 +47,6 @@ public:
         PUBKEY_ADDRESS,
         SCRIPT_ADDRESS,
         SECRET_KEY,
-        //STEALTH_ADDRESS,
         EXT_PUBLIC_KEY,
         EXT_SECRET_KEY,
 
@@ -70,8 +69,8 @@ public:
     int RPCPort() const { return nRPCPort; }
     int LastPOWBlock() const { return nLastPOWBlock; }
     int POSStartBlock() const { return nPOSStartBlock; }
-    int PoolMaxTransactions() const { return nPoolMaxTransactions; }
-    std::string DarksendPoolDummyAddress() const { return strDarksendPoolDummyAddress; }
+    //int PoolMaxTransactions() const { return nPoolMaxTransactions; }
+    //std::string DarksendPoolDummyAddress() const { return strDarksendPoolDummyAddress; }
 protected:
     CChainParams() {};
 
@@ -88,8 +87,8 @@ protected:
     std::vector<unsigned char> base58Prefixes[MAX_BASE58_TYPES];
     int nLastPOWBlock;
     int nPOSStartBlock;
-    int nPoolMaxTransactions;
-    std::string strDarksendPoolDummyAddress;
+    //int nPoolMaxTransactions;
+    //std::string strDarksendPoolDummyAddress;
 };
 
 /**
