@@ -23,8 +23,6 @@ class CDarksendBroadcastTx;
 class CActiveMasternode;
 
 // pool states for mixing
-#define POOL_MAX_TRANSACTIONS                  2 // wait for X transactions to merge and publish
-#define POOL_MAX_TRANSACTIONS_TESTNET          2 // wait for X transactions to merge and publish
 #define POOL_STATUS_UNKNOWN                    0 // waiting for update
 #define POOL_STATUS_IDLE                       1 // waiting for update
 #define POOL_STATUS_QUEUE                      2 // waiting in a queue
@@ -358,9 +356,7 @@ public:
     void ProcessMessageDarksend(CNode* pfrom, std::string& strCommand, CDataStream& vRecv);
 
     void InitCollateralAddress(){
-        std::string strAddress = "";
-            strAddress = "8K2ndetmQxawKdRrMmJ827aAMNPXPbaC1j";
-        SetCollateralAddress(strAddress);
+        SetCollateralAddress(Params().DarksendPoolDummyAddress());
     }
 
     void SetMinBlockSpacing(int minBlockSpacingIn){
@@ -423,11 +419,7 @@ public:
     /// Get the maximum number of transactions for the pool
     int GetMaxPoolTransactions()
     {
-        if(Params().NetworkID() == CChainParams::TESTNET || Params().NetworkID() == CChainParams::REGTEST) return POOL_MAX_TRANSACTIONS_TESTNET;
-        
-        //use the production amount
-        return POOL_MAX_TRANSACTIONS;
-        //return Params().PoolMaxTransactions();
+        return Params().PoolMaxTransactions();
     }
 
     /// Do we have enough users to take entries?
