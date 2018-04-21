@@ -16,8 +16,6 @@ cd ~/Simplicity/src/leveldb
 chmod +x build_detect_platform
 cd ~/Simplicity/src/
 sudo make -f makefile.unix -j4
-mkdir -p obj/support
-sudo make -f makefile.unix -j4
 strip simplicityd
 sudo cp -s /root/Simplicity/src/simplicityd /usr/bin/simplicityd
 echo 'LD_LIBRARY_PATH=/usr/local/lib && export LD_LIBRARY_PATH' > ~/.bash_aliases
