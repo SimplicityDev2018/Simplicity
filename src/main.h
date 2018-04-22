@@ -720,7 +720,7 @@ public:
 
     uint256 GetPoWHash() const
     {
-		if (nVersion > 7)
+		if (nVersion > 7 && nVersion < 10)
 		{
 			uint256 thash;
 			scryptHash(BEGIN(nVersion), BEGIN(thash));
