@@ -782,7 +782,7 @@ bool CTransaction::CheckTransaction() const
     return true;
 }
 
-int64_t GetMinFee(const CTransaction& tx, unsigned int nBytes, bool fAllowFree, enum GetMinFee_mode mode)
+int64_t GetMinFee(const CTransaction& tx, unsigned int nBytes, /*bool fAllowFree,*/ enum GetMinFee_mode mode)
 {
     // Base fee is either MIN_TX_FEE or MIN_RELAY_TX_FEE
     int64_t nBaseFee = (mode == GMF_RELAY) ? MIN_RELAY_TX_FEE : MIN_TX_FEE;
