@@ -1517,8 +1517,8 @@ unsigned int GetNextTargetRequired(const CBlockIndex* pindexLast, bool fProofOfS
     int64_t nInterval = nTargetTimespan / TARGET_SPACING;
     bnNew *= ((nInterval - 1) * TARGET_SPACING + nActualSpacing + nActualSpacing);
     bnNew /= ((nInterval + 1) * TARGET_SPACING);
-	if (pindexBest->nHeight < (HARD_FORK_BLOCK+10))
-		bnNew /= (int)pow(4.0, (double)(pindexBest->nHeight));
+	if (pindexBest->nHeight >= HARD_FORK_BLOCK && pindexBest->nHeight < (HARD_FORK_BLOCK+10))
+		bnNew /= (int)pow(4.0, (double)(HARD_FORK_BLOCK+10-pindexBest->nHeight));
 
     if (bnNew <= 0 || bnNew > bnTargetLimit)
         bnNew = bnTargetLimit;
