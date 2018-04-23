@@ -43,6 +43,12 @@ ifneq (${USE_UPNP}, -)
 	LIBS += -l miniupnpc
 	DEFS += -DUSE_UPNP=$(USE_UPNP)
 endif
+ifeq (${USE_AVX}, 1)
+	DEFS += -DUSE_AVX
+endif
+ifeq (${USE_AVX2}, 1)
+	DEFS += -DUSE_AVX2
+endif
 
 LIBS+= \
  -Wl,-B$(LMODE2) \
@@ -134,6 +140,7 @@ OBJS= \
     obj/timedata.o \
     obj/script.o \
     obj/scrypt.o \
+    obj/scrypt2.o \
     obj/sync.o \
     obj/txmempool.o \
     obj/util.o \
@@ -212,7 +219,27 @@ obj/txdb-leveldb.o: leveldb/libleveldb.a
 obj/build.h: FORCE
 	/bin/sh ../share/genbuild.sh obj/build.h
 version.cpp: obj/build.h
-DEFS += -DHAVE_BUILD_INFO
+DEFS += -DHAVE_BUILD_INFO -DUSE_ASM
+
+OBJS += obj/scrypt-arm.o obj/scrypt-x86.o obj/scrypt-x86_64.o obj/sha2-arm.o obj/sha2-x86.o obj/sha2-x86_64.o
+
+obj/scrypt-x86.o: scrypt-x86.S
+	$(CXX) -c $(xCXXFLAGS) -MMD -o $@ $<
+
+obj/scrypt-x86_64.o: scrypt-x86_64.S
+	$(CXX) -c $(xCXXFLAGS) -MMD -o $@ $<
+
+obj/scrypt-arm.o: scrypt-arm.S
+	$(CXX) -c $(xCXXFLAGS) -MMD -o $@ $<
+
+obj/sha2-x86.o: sha2-x86.S
+	$(CXX) -c $(xCXXFLAGS) -MMD -o $@ $<
+
+obj/sha2-x86_64.o: sha2-x86_64.S
+	$(CXX) -c $(xCXXFLAGS) -MMD -o $@ $<
+
+obj/sha2-arm.o: sha2-arm.S
+	$(CXX) -c $(xCXXFLAGS) -MMD -o $@ $<
 
 obj/%.o: %.cpp
 	$(CXX) -c $(xCXXFLAGS) -MMD -MF $(@:%.o=%.d) -o $@ $<
