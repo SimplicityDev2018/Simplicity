@@ -1847,7 +1847,8 @@ bool CTransaction::ConnectInputs(CTxDB& txdb, MapPrevTx inputs, map<uint256, CTx
                 return DoS(100, error("ConnectInputs() : %s nTxFee < 0", GetHash().ToString()));
 
             // enforce transaction fees for every block
-            int64_t nRequiredFee = GetMinFee(*this);
+            unsigned int txSize = ::GetSerializeSize(*this, SER_NETWORK, PROTOCOL_VERSION);
+            int64_t nRequiredFee = GetMinFee(*this, txSize, GMF_RELAY);
             if (nTxFee < nRequiredFee)
                 return fBlock? DoS(100, error("ConnectInputs() : %s not paying required fee=%s, paid=%s", GetHash().ToString(), FormatMoney(nRequiredFee), FormatMoney(nTxFee))) : false;
 
