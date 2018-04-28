@@ -3,7 +3,7 @@
 DO NOT BUILD WITH autogen.sh IT IS NOT FULLY IMPLEMENTED YET
 ==============================================================
 
-Build Daemon and GUI Wallets with Below Information until this area states otherwise.
+Build Daemon and GUI Wallets with the information provided below.
 
 
 UNIX BUILD NOTES
@@ -21,44 +21,49 @@ software written by Thomas Bernard.
 
 To Build Headless
 -----------------
+with script:
+------------
 
-sudo apt-get install build-essential libtool autotools-dev automake pkg-config libssl-dev libevent-dev bsdmainutils
+ cd ~/
+ 
+ wget https://raw.githubusercontent.com/ComputerCraftr/Simplicity/master/install_linux_wallet
+ 
+ bash install_linux_wallet
+ 
+ 
+manual install :
+----------------
 
-sudo apt-get install qt5-default qt5-qmake qtbase5-dev-tools qttools5-dev-tools build-essential libboost-dev libboost-system-dev libboost-filesystem-dev libboost-program-options-dev libboost-thread-dev libssl-dev libdb++-dev libminiupnpc-dev 
+sudo apt install build-essential libtool autotools-dev automake pkg-config libssl-dev libevent-dev bsdmainutils
 
-sudo apt-get install software-properties-common
+sudo apt install qt5-default qt5-qmake qtbase5-dev-tools qttools5-dev-tools libqt5webkit5 build-essential libboost-dev libboost-system-dev libboost-filesystem-dev libboost-program-options-dev libboost-thread-dev libssl-dev libgmp-dev libminiupnpc-dev
 
+sudo apt install software-properties-common
 sudo add-apt-repository ppa:bitcoin/bitcoin
+sudo apt update
+sudo apt install libdb4.8-dev libdb4.8++-dev
 
-sudo apt-get update
+sudo apt install libqrencode-dev
 
-sudo apt-get install libdb4.8-dev libdb4.8++-dev
-
-sudo apt-get install libqrencode-dev
-
-git clone https://github.com/SimplicityDev2018/Simplicity.git
+git clone https://github.com/ComputerCraftr/Simplicity.git
 
 cd Simplicity/src/secp256k1
 
 chmod +x autogen.sh
 
-sudo ./autogen.sh
+./autogen.sh
 
-sudo ./configure
+./configure --enable-module-recovery
 
-sudo make && make install
+make && sudo make install
 
-cd
+cd ../leveldb/
 
-cd Simplicity/src/leveldb
+chmod +x build_detect_platform
 
-sudo sh build_detect_platform build_config.mk .
+cd ..
 
-cd
-
-cd Simplicity/src
-
-sudo make -f makefile.unix
+make -f makefile.unix -jnumofcoreshere
 
 strip simplicityd
 
@@ -70,39 +75,35 @@ export LD_LIBRARY_PATH
 To Build Qt Wallet
 ------------------
 
-sudo apt-get install build-essential libtool autotools-dev automake pkg-config libssl-dev libevent-dev bsdmainutils
+sudo apt install build-essential libtool autotools-dev automake pkg-config libssl-dev libevent-dev bsdmainutils
 
-sudo apt-get install qt5-default qt5-qmake qtbase5-dev-tools qttools5-dev-tools build-essential libboost-dev libboost-system-dev libboost-filesystem-dev libboost-program-options-dev libboost-thread-dev libssl-dev libdb++-dev libminiupnpc-dev 
+sudo apt install qt5-default qt5-qmake qtbase5-dev-tools qttools5-dev-tools libqt5webkit5 build-essential libboost-dev libboost-system-dev libboost-filesystem-dev libboost-program-options-dev libboost-thread-dev libssl-dev libminiupnpc-dev 
 
-sudo apt-get install software-properties-common
+sudo apt install software-properties-common
 sudo add-apt-repository ppa:bitcoin/bitcoin
-sudo apt-get update
-sudo apt-get install libdb4.8-dev libdb4.8++-dev
+sudo apt update
+sudo apt install libdb4.8-dev libdb4.8++-dev
 
 sudo apt-get install libqrencode-dev
 
-git clone https://github.com/SimplicityDev2018/Simplicity.git
+git clone https://github.com/ComputerCraftr/Simplicity.git
 
 cd Simplicity/src/secp256k1
 
 chmod +x autogen.sh
 
-sudo ./autogen.sh
+./autogen.sh
 
-sudo ./configure
+./configure --enable-module-recovery
 
-sudo make && make install
+sudo make && sudo make install
 
-cd
+cd ../leveldb/
 
-cd Simplicity/src/leveldb
+chmod +x build_detect_platform
 
-sudo sh build_detect_platform build_config.mk .
+cd ../..
 
-cd
+qmake SPL-Qt.pro
 
-cd Simplicity
-
-sudo qmake SPL-Qt.pro
-
-sudo make -jnumofcoreshere
+make -jnumofcoreshere

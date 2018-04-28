@@ -6,8 +6,7 @@
 
 #include <stdint.h>
 
-//    Uncomment to build SPL Adv
-//
+// Uncomment to build SPL Adv
 //#include "radio.h"
 //#include "bitcointalk.h"
 //#include "twitter.h"
@@ -29,11 +28,13 @@ class MasternodeManager;
 class MessagePage;
 class MessageModel;
 class BlockBrowser;
+class tradingDialog;
 
 QT_BEGIN_NAMESPACE
 class QLabel;
 class QModelIndex;
 class QProgressBar;
+class QProgressDialog;
 class QStackedWidget;
 class QScrollArea;
 class QLineEdit;
@@ -90,16 +91,17 @@ private:
     SignVerifyMessageDialog *signVerifyMessageDialog;
     MasternodeManager *masternodeManagerPage;
     MessagePage *messagePage;
-//    Uncomment to build SPL Adv
-//
-//    Radio *radioPage;
-//    Bitcointalk *bitcointalkPage;
-//    Twitter *twitterPage;
-//    Bittrex *bittrexPage;
-//    Coinexchange *coinexchangePage;
-//    Yobit *yobitPage;
+    // Uncomment to build SPL Adv
+    //Radio *radioPage;
+    //Bitcointalk *bitcointalkPage;
+    //Twitter *twitterPage;
+    //Bittrex *bittrexPage;
+    //Coinexchange *coinexchangePage;
+    //Yobit *yobitPage;
+
     QLabel* netLabel;
     BlockBrowser *blockBrowser;
+    tradingDialog   *tradingDialogPage;
     QLabel *labelEncryptionIcon;
     QLabel *labelStakingIcon;
     QLabel *labelConnectionsIcon;
@@ -111,6 +113,7 @@ private:
     QLabel* labelI2POnly;
     QLabel* labelI2PGenerated;
 #endif
+    QProgressDialog *progressDialog;
 
     QMenuBar *appMenuBar;
     QAction *overviewAction;
@@ -135,14 +138,16 @@ private:
     QAction *masternodeManagerAction;
     QAction *messageAction;
     QAction *blockAction;
-//    Uncomment to build SPL Adv
-//
-//    QAction *radioAction;
-//    QAction *bitcointalkAction;
-//    QAction *twitterAction;
-//    QAction *bittrexAction;
-//    QAction *coinexchangeAction;
-//    QAction *yobitAction;
+    // Uncomment to build SPL Adv
+    //QAction *radioAction;
+    //QAction *bitcointalkAction;
+    //QAction *twitterAction;
+    //QAction *bittrexAction;
+    //QAction *coinexchangeAction;
+    //QAction *yobitAction;
+
+    QAction *TradingAction;
+    QAction *showBackupsAction;
 
     QSystemTrayIcon *trayIcon;
     Notificator *notificator;
@@ -180,6 +185,8 @@ public slots:
     */
     void setEncryptionStatus(int status);
 
+    /** Notify the user of an error in the network or transaction handling code. */
+    void error(const QString &title, const QString &message, bool modal);
     /** Notify the user of an event from the core network or transaction handling code.
        @param[in] title     the message box / notification title
        @param[in] message   the displayed text
@@ -199,7 +206,6 @@ public slots:
     void askFee(qint64 nFeeRequired, bool *payFee);
     void handleURI(QString strURI);
 
-
 #ifdef USE_NATIVE_I2P
     void showGeneratedI2PAddr(const QString& caption, const QString& pub, const QString& priv, const QString& b32, const QString& configFileName);
 #endif
@@ -215,6 +221,8 @@ private slots:
     void gotoReceiveCoinsPage();
     /** Switch to send coins page */
     void gotoSendCoinsPage();
+   /** Switch to trading page */
+    void gotoTradingPage();
     /** Switch to block explorer*/
     void gotoBlockBrowser();
     /** Switch to masternode manager page*/
@@ -225,20 +233,20 @@ private slots:
     void gotoVerifyMessageTab(QString addr = "");
     /** Switch to message page*/
     void gotoMessagePage();
-//    Uncomment to build SPL Adv
-//
-//    /** Switch to radio page */
-//    void gotoRadioPage();
-//    /** Switch to bitcointalk page */
-//    void gotoBitcointalkPage();
-//    /** Switch to twitter page */
-//    void gotoTwitterPage();
-//    /** Switch to bittrex page */
-//    void gotoBittrexPage();
-//    /** Switch to coinexchange page */
-//    void gotoCoinexchangePage();
-//    /** Switch to yobit page */
-//   void gotoYobitPage();
+    // Uncomment to build SPL Adv
+    /** Switch to radio page */
+    //void gotoRadioPage();
+    /** Switch to bitcointalk page */
+    //void gotoBitcointalkPage();
+    /** Switch to twitter page */
+    //void gotoTwitterPage();
+    /** Switch to bittrex page */
+    //void gotoBittrexPage();
+    /** Switch to coinexchange page */
+    //void gotoCoinexchangePage();
+    /** Switch to yobit page */
+    //void gotoYobitPage();
+
     /** Show configuration dialog */
     void optionsClicked();
     /** Show about dialog */
@@ -275,6 +283,8 @@ private slots:
     /** called by a timer to check if fRequestShutdown has been set **/
     void detectShutdown();
 
+    /** Show progress dialog e.g. for verifychain */
+    void showProgress(const QString &title, int nProgress);
 };
 
 #endif // BITCOINGUI_H

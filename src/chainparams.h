@@ -3,8 +3,8 @@
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef BITCOIN_CHAIN_PARTX_H
-#define BITCOIN_CHAIN_PARTX_H
+#ifndef BITCOIN_CHAIN_PARAMS_H
+#define BITCOIN_CHAIN_PARAMS_H
 
 #include "bignum.h"
 #include "uint256.h"
@@ -59,7 +59,6 @@ public:
     int GetDefaultPort() const { return nDefaultPort; }
     const CBigNum& ProofOfWorkLimit() const { return bnProofOfWorkLimit; }
     int SubsidyHalvingInterval() const { return nSubsidyHalvingInterval; }
-    int POSStartBlock() const { return nPOSStartBlock; }
     virtual const CBlock& GenesisBlock() const = 0;
     virtual bool RequireRPCPassword() const { return true; }
     const string& DataDir() const { return strDataDir; }
@@ -68,6 +67,9 @@ public:
     const std::vector<unsigned char> &Base58Prefix(Base58Type type) const { return base58Prefixes[type]; }
     virtual const vector<CAddress>& FixedSeeds() const = 0;
     int RPCPort() const { return nRPCPort; }
+    int POSStartBlock() const { return nPOSStartBlock; }
+    int PoolMaxTransactions() const { return nPoolMaxTransactions; }
+    std::string DarksendPoolDummyAddress() const { return strDarksendPoolDummyAddress; }
 protected:
     CChainParams() {};
 
@@ -77,12 +79,14 @@ protected:
     vector<unsigned char> vAlertPubKey;
     int nDefaultPort;
     int nRPCPort;
-    int nPOSStartBlock;
     CBigNum bnProofOfWorkLimit;
     int nSubsidyHalvingInterval;
     string strDataDir;
     vector<CDNSSeedData> vSeeds;
     std::vector<unsigned char> base58Prefixes[MAX_BASE58_TYPES];
+    int nPOSStartBlock;
+    int nPoolMaxTransactions;
+    std::string strDarksendPoolDummyAddress;
 };
 
 /**

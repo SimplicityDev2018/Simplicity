@@ -163,8 +163,11 @@ void OptionsDialog::setMapper()
     mapper->addMapping(ui->lang, OptionsModel::Language);
     mapper->addMapping(ui->unit, OptionsModel::DisplayUnit);
     mapper->addMapping(ui->coinControlFeatures, OptionsModel::CoinControlFeatures);
-    mapper->addMapping(ui->minimizeCoinAge, OptionsModel::MinimizeCoinAge);
     mapper->addMapping(ui->useBlackTheme, OptionsModel::UseBlackTheme);
+
+    /* Darksend Rounds */
+    mapper->addMapping(ui->darksendRounds, OptionsModel::DarksendRounds);
+    mapper->addMapping(ui->anonymizeSimplicity, OptionsModel::AnonymizeSimplicityAmount);
 
 #ifdef USE_NATIVE_I2P
     tabI2P->setMapper(*mapper);

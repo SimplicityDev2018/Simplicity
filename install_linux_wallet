@@ -1,0 +1,25 @@
+#!/bin/bash
+sudo apt install -y software-properties-common
+sudo add-apt-repository ppa:bitcoin/bitcoin
+sudo apt update
+sudo apt install -y libdb4.8-dev libdb4.8++-dev
+sudo apt install -y build-essential libtool autotools-dev automake pkg-config libssl-dev libevent-dev bsdmainutils qt5-default qt5-qmake qtbase5-dev-tools qttools5-dev-tools libqt5webkit5 build-essential libboost-dev libboost-system-dev libboost-filesystem-dev libboost-program-options-dev libboost-thread-dev libssl-dev libgmp-dev libminiupnpc-dev libqrencode-dev
+sudo apt upgrade -y
+cd ~/
+git clone https://github.com/ComputerCraftr/Simplicity.git
+cd ~/Simplicity/src/secp256k1
+chmod +x autogen.sh
+./autogen.sh
+./configure --enable-module-recovery
+make && sudo make install
+cd ~/Simplicity/src/leveldb
+chmod +x build_detect_platform
+cd ~/Simplicity/src/
+sudo make -f makefile.unix -j4
+strip simplicityd
+sudo cp -s /root/Simplicity/src/simplicityd /usr/bin/simplicityd
+echo 'LD_LIBRARY_PATH=/usr/local/lib && export LD_LIBRARY_PATH' > ~/.bash_aliases
+source ~/.bashrc
+#wget https://raw.githubusercontent.com/ComputerCraftr/Simplicity/master/config_wallet.sh
+#chmod +x config_wallet.sh
+#bash config_wallet.sh

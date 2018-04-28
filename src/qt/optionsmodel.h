@@ -31,10 +31,9 @@ public:
         DisplayUnit,       // BitcoinUnits::Unit
         Language,          // QString
         CoinControlFeatures, // bool
-        MinimizeCoinAge,   // bool
         UseBlackTheme,     // bool
         DarksendRounds,    // int
-        anonymizeSimplicityAmount, //int
+        AnonymizeSimplicityAmount, //int
 #ifdef USE_NATIVE_I2P
         I2PUseI2POnly,              // bool
         I2PSAMHost,                 // QString
@@ -103,7 +102,7 @@ signals:
     void reserveBalanceChanged(qint64);
     void coinControlFeaturesChanged(bool);
     void darksendRoundsChanged(int);
-    void anonymizeSimplicityAmountChanged(int);
+    void AnonymizeSimplicityAmountChanged(int);
 };
 
 #endif // OPTIONSMODEL_H

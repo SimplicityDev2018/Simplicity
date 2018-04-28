@@ -134,15 +134,13 @@ void OptionsModel::Init()
         SoftSetBoolArg("-upnp", settings.value("fUseUPnP").toBool());
     if (settings.contains("addrProxy") && settings.value("fUseProxy").toBool())
         SoftSetArg("-proxy", settings.value("addrProxy").toString().toStdString());
-    if (settings.contains("fMinimizeCoinAge"))
-        SoftSetBoolArg("-minimizecoinage", settings.value("fMinimizeCoinAge").toBool());
     if (!language.isEmpty())
         SoftSetArg("-lang", language.toStdString());
 
     if (settings.contains("nDarksendRounds"))
         SoftSetArg("-darksendrounds", settings.value("nDarksendRounds").toString().toStdString());
     if (settings.contains("nAnonymizeSimplicityAmount"))
-        SoftSetArg("-anonymizeSimplicityamount", settings.value("nAnonymizeSimplicityAmount").toString().toStdString());
+        SoftSetArg("-anonymizesimplicityamount", settings.value("nAnonymizeSimplicityAmount").toString().toStdString());
 
 #ifdef USE_NATIVE_I2P
     ScopeGroupHelper s(settings, I2P_OPTIONS_SECTION_NAME);
@@ -246,8 +244,10 @@ QVariant OptionsModel::data(const QModelIndex & index, int role) const
             return settings.value("language", "");
         case CoinControlFeatures:
             return QVariant(fCoinControlFeatures);
-        case MinimizeCoinAge:
-            return settings.value("fMinimizeCoinAge", GetBoolArg("-minimizecoinage", false));
+        case DarksendRounds:
+            return QVariant(nDarksendRounds);
+        case AnonymizeSimplicityAmount:
+            return QVariant(nAnonymizeSimplicityAmount);
         case UseBlackTheme:
             return QVariant(fUseBlackTheme);
 #ifdef USE_NATIVE_I2P
@@ -384,10 +384,6 @@ bool OptionsModel::setData(const QModelIndex & index, const QVariant & value, in
             emit coinControlFeaturesChanged(fCoinControlFeatures);
             }
             break;
-        case MinimizeCoinAge:
-           fMinimizeCoinAge = value.toBool();
-           settings.setValue("fMinimizeCoinAge", fMinimizeCoinAge);
-           break;
         case UseBlackTheme:
             fUseBlackTheme = value.toBool();
             settings.setValue("fUseBlackTheme", fUseBlackTheme);
@@ -397,10 +393,10 @@ bool OptionsModel::setData(const QModelIndex & index, const QVariant & value, in
             settings.setValue("nDarksendRounds", nDarksendRounds);
             emit darksendRoundsChanged(nDarksendRounds);
             break;
-        case anonymizeSimplicityAmount:
+        case AnonymizeSimplicityAmount:
             nAnonymizeSimplicityAmount = value.toInt();
             settings.setValue("nAnonymizeSimplicityAmount", nAnonymizeSimplicityAmount);
-            emit anonymizeSimplicityAmountChanged(nAnonymizeSimplicityAmount);
+            emit AnonymizeSimplicityAmountChanged(nAnonymizeSimplicityAmount);
             break;
 #ifdef USE_NATIVE_I2P
         case I2PUseI2POnly:

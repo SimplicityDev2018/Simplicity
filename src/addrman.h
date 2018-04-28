@@ -13,9 +13,6 @@
 #include <map>
 #include <vector>
 
-#include <openssl/rand.h>
-
-
 /** Extended statistics about a CAddress */
 class CAddrInfo : public CAddress
 {
@@ -120,7 +117,7 @@ public:
 //      consistency checks for the entire data structure.
 
 // total number of buckets for tried addresses
-#define ADDRMAN_TRIED_BUCKET_COUNT 64
+#define ADDRMAN_TRIED_BUCKET_COUNT 256
 
 // maximum allowed number of entries in buckets for tried addresses
 #define ADDRMAN_TRIED_BUCKET_SIZE 64
@@ -132,13 +129,13 @@ public:
 #define ADDRMAN_NEW_BUCKET_SIZE 64
 
 // over how many buckets entries with tried addresses from a single group (/16 for IPv4) are spread
-#define ADDRMAN_TRIED_BUCKETS_PER_GROUP 4
+#define ADDRMAN_TRIED_BUCKETS_PER_GROUP 8
 
 // over how many buckets entries with new addresses originating from a single group are spread
-#define ADDRMAN_NEW_BUCKETS_PER_SOURCE_GROUP 32
+#define ADDRMAN_NEW_BUCKETS_PER_SOURCE_GROUP 64
 
 // in how many buckets for entries with new addresses a single address may occur
-#define ADDRMAN_NEW_BUCKETS_PER_ADDRESS 4
+#define ADDRMAN_NEW_BUCKETS_PER_ADDRESS 8
 
 // how many entries in a bucket with tried addresses are inspected, when selecting one to replace
 #define ADDRMAN_TRIED_ENTRIES_INSPECT_ON_EVICT 4
@@ -384,7 +381,7 @@ public:
     CAddrMan() : vRandom(0), vvTried(ADDRMAN_TRIED_BUCKET_COUNT, std::vector<int>(0)), vvNew(ADDRMAN_NEW_BUCKET_COUNT, std::set<int>())
     {
          nKey.resize(32);
-         RAND_bytes(&nKey[0], 32);
+         GetRandBytes(&nKey[0], 32);
 
          nIdCount = 0;
          nTried = 0;
