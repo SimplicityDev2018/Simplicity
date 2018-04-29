@@ -1,6 +1,6 @@
 TEMPLATE = app
 TARGET = Simplicity-Qt
-VERSION = 9.9.9.9
+VERSION = 1.2.0.2
 INCLUDEPATH += src src/json src/qt src/qt/plugins/mrichtexteditor
 QT += core gui network printsupport
 DEFINES += ENABLE_WALLET
