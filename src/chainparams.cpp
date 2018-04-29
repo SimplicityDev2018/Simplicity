@@ -64,7 +64,7 @@ public:
         vAlertPubKey = ParseHex("04eb9fd13c016ed9a2f222989769417ed3a16e6fbf3bd55023679be17f0bab053cd9f161528241bc9a2894ad5ebbbd551be1a4bd2d10cdb679228c91e26e26900e");
         nDefaultPort = 11957;
         nRPCPort = 11958;
-        bnProofOfWorkLimit = CBigNum(~uint256(0) >> 16);
+        bnProofOfWorkLimit = CBigNum(~uint256(0) >> 8);
 
         const char* pszTimestamp = "http://www.bbc.co.uk/news/world-us-canada-42926976";  // Trump Russia: Democrats say firing special counsel could cause crisis
         std::vector<CTxIn> vin;

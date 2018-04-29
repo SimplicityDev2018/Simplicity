@@ -1454,22 +1454,14 @@ static CBigNum GetProofOfStakeLimit(int nHeight)
 // miner's coin base reward
 int64_t GetProofOfWorkReward(int nHeight, int64_t nFees)
 {
-    int64_t nSubsidy = 100 * COIN;
-    if (pindexBest->nHeight < 200)
+    int64_t nSubsidy = 10 * COIN;
+    if (pindexBest->nHeight < HARD_FORK_BLOCK)
     {
-        nSubsidy = 15000000 * COIN; // For Proccess Infrastucture Grounding Fund
+        nSubsidy = 15000000 * COIN; // For cheap MNs
     }
-    else if (pindexBest->nHeight < 400)
+    else if (pindexBest->nHeight >= HARD_FORK_BLOCK)
     {
-        nSubsidy = 0 * COIN; // For Chain Movement
-    }
-    else if (pindexBest->nHeight < 2000)
-    {
-        nSubsidy = 500 * COIN; // For 1'st Miners
-    }
-    else if (pindexBest->nHeight > 2000)
-    {
-        nSubsidy = 100 * COIN; // For continued mining throughout
+        nSubsidy = 10 * COIN; // Let's take a bite out of inflation
     }
 
     return nSubsidy + nFees;
@@ -1480,7 +1472,7 @@ int64_t GetProofOfWorkReward(int nHeight, int64_t nFees)
 int64_t GetProofOfStakeReward(const CBlockIndex* pindexPrev, int64_t nCoinAge, int64_t nFees)
 {
     int64_t nSubsidy = nCoinAge * COIN_YEAR_REWARD * 33 / (365 * 33 + 8);  // 22.38% yearly interest 
-    if (pindexBest->nHeight < 600)
+    if (pindexBest->nHeight < HARD_FORK_BLOCK)
     {
         nSubsidy = 0 * COIN; // For no Stake of 1st coins
     }
@@ -1525,6 +1517,8 @@ unsigned int GetNextTargetRequired(const CBlockIndex* pindexLast, bool fProofOfS
     int64_t nInterval = nTargetTimespan / TARGET_SPACING;
     bnNew *= ((nInterval - 1) * TARGET_SPACING + nActualSpacing + nActualSpacing);
     bnNew /= ((nInterval + 1) * TARGET_SPACING);
+	if (pindexBest->nHeight >= HARD_FORK_BLOCK && pindexBest->nHeight < (HARD_FORK_BLOCK+10))
+		bnNew /= (int)pow(4.0, (double)(HARD_FORK_BLOCK+10-pindexBest->nHeight));
 
     if (bnNew <= 0 || bnNew > bnTargetLimit)
         bnNew = bnTargetLimit;
