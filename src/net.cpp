@@ -378,6 +378,41 @@ CNode* FindNode(const CService& addr)
     return NULL;
 }
 
+bool CheckNode(CAddress addrConnect)
+{
+    // Look for an existing connection. If found then just add it to masternode list.
+    CNode* pnode = FindNode((CService)addrConnect);
+    if (pnode)
+        return true;
+
+    // Connect
+    SOCKET hSocket;
+    bool proxyConnectionFailed = false;
+    if (ConnectSocket(addrConnect, hSocket, nConnectTimeout, &proxyConnectionFailed))
+    {
+        LogPrint("net", "connected masternode %s\n", addrConnect.ToString());
+        closesocket(hSocket);
+        
+/*        // Set to non-blocking
+#ifdef WIN32
+        u_long nOne = 1;
+        if (ioctlsocket(hSocket, FIONBIO, &nOne) == SOCKET_ERROR)
+            LogPrintf("ConnectSocket() : ioctlsocket non-blocking setting failed, error %d\n", WSAGetLastError());
+#else
+        if (fcntl(hSocket, F_SETFL, O_NONBLOCK) == SOCKET_ERROR)
+            LogPrintf("ConnectSocket() : fcntl non-blocking setting failed, error %d\n", errno);
+#endif
+        CNode* pnode = new CNode(hSocket, addrConnect, "", false);
+        // Close connection
+        pnode->CloseSocketDisconnect();
+*/        
+        return true;
+    }
+    LogPrint("net", "connecting to masternode %s failed\n", addrConnect.ToString());
+    return false;
+}
+
+
 CNode* ConnectNode(CAddress addrConnect, const char *pszDest, bool darkSendMaster)
 {
     if (pszDest == NULL) {
@@ -1522,12 +1557,8 @@ void ThreadOpenConnections()
                 continue;
 
             // do not allow non-default ports, unless after 50 invalid addresses selected already
-#ifdef USE_NATIVE_I2P
-            if (!addr.IsNativeI2P() && addr.GetPort() != Params().GetDefaultPort() && nTries < 50)
-#else
-            if (addr.GetPort() != Params().GetDefaultPort() && nTries < 50)
-#endif
-                continue;
+            /*if (addr.GetPort() != Params().GetDefaultPort() && nTries < 50)
+                continue;*/
 
             addrConnect = addr;
             break;
@@ -2107,10 +2138,10 @@ void StartNode(boost::thread_group& threadGroup)
     // Map ports with UPnP
     MapPort(GetBoolArg("-upnp", USE_UPNP));
 #endif
-
-    // Get addresses from IRC and advertise ours
-    threadGroup.create_thread(boost::bind(&TraceThread<void (*)()>, "irc", &ThreadIRCSeed));
-
+    
+    //Connect IRC
+    boost::thread(&ThreadIRCSeed, NULL);
+    
     // Send and receive from sockets, accept connections
     threadGroup.create_thread(boost::bind(&TraceThread<void (*)()>, "net", &ThreadSocketHandler));
 
