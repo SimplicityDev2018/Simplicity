@@ -20,6 +20,7 @@ using namespace json_spirit;
 using namespace std;
 
 #include <QAbstractItemDelegate>
+#include <QClipboard>
 #include <QPainter>
 #include <QTimer>
 #include <QDebug>
@@ -29,6 +30,7 @@ using namespace std;
 #include <QApplication>
 #include <QClipboard>
 #include <QMessageBox>
+#include <QItemSelectionModel>
 
 MasternodeManager::MasternodeManager(QWidget *parent) :
     QWidget(parent),
@@ -41,7 +43,31 @@ MasternodeManager::MasternodeManager(QWidget *parent) :
     ui->editButton->setEnabled(false);
     ui->startButton->setEnabled(false);
 
-    ui->tableWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
+    int columnAddressWidth = 200;
+    int columnRankWidth = 80;
+    int columnProtocolWidth = 60;
+    int columnStatusWidth = 80;
+    int columnActiveWidth = 130;
+    int columnLastSeenWidth = 130;
+    
+    ui->tableWidgetMasternodes->setColumnWidth(0, columnAddressWidth);
+    ui->tableWidgetMasternodes->setColumnWidth(1, columnRankWidth);
+    ui->tableWidgetMasternodes->setColumnWidth(2, columnProtocolWidth);
+    ui->tableWidgetMasternodes->setColumnWidth(3, columnStatusWidth);
+    ui->tableWidgetMasternodes->setColumnWidth(4, columnActiveWidth);
+    ui->tableWidgetMasternodes->setColumnWidth(5, columnLastSeenWidth);
+    
+    ui->tableWidgetMasternodes->setContextMenuPolicy(Qt::CustomContextMenu);
+    QAction *copyAddressAction = new QAction(tr("Copy Address"), this);
+    QAction *copyPubkeyAction = new QAction(tr("Copy Pubkey"), this);
+    contextMenu = new QMenu();
+    contextMenu->addAction(copyAddressAction);
+    contextMenu->addAction(copyPubkeyAction);
+    connect(ui->tableWidgetMasternodes, SIGNAL(customContextMenuRequested(const QPoint&)), this, SLOT(showContextMenu(const QPoint&)));
+    connect(copyAddressAction, SIGNAL(triggered()), this, SLOT(copyAddress()));
+    connect(copyPubkeyAction, SIGNAL(triggered()), this, SLOT(copyPubkey()));
+        
+    ui->tableWidgetMasternodes->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
     ui->tableWidget_2->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
 
     timer = new QTimer(this);
@@ -111,25 +137,29 @@ static QString seconds_to_DHMS(quint32 duration)
 
 void MasternodeManager::updateNodeList()
 {
+    static int64_t nTimeListUpdated = GetTime();
+    int64_t nSecondsToWait = nTimeListUpdated - GetTime() + 30;
+    if (nSecondsToWait > 0) return;
+    
     TRY_LOCK(cs_masternodes, lockMasternodes);
-    if(!lockMasternodes)
-        return;
+    if(!lockMasternodes) return;
 
     ui->countLabel->setText("Updating...");
-    ui->tableWidget->clearContents();
-    ui->tableWidget->setRowCount(0);
+    ui->tableWidgetMasternodes->setSortingEnabled(false);
+    ui->tableWidgetMasternodes->clearContents();
+    ui->tableWidgetMasternodes->setRowCount(0);
     std::vector<CMasternode> vMasternodes = mnodeman.GetFullMasternodeVector();
+    
     BOOST_FOREACH(CMasternode& mn, vMasternodes)
     {
-        int mnRow = 0;
-        ui->tableWidget->insertRow(0);
 
         // populate list
-        // Address, Rank, Active, Active Seconds, Last Seen, Pub Key
-        QTableWidgetItem *activeItem = new QTableWidgetItem(QString::number(mn.IsEnabled()));
-        QTableWidgetItem *addressItem = new QTableWidgetItem(QString::fromStdString(mn.addr.ToString()));
+        // Address, Rank, Protocol, Status, Active Seconds, Last Seen, Pub Key
+        QTableWidgetItem* addressItem = new QTableWidgetItem(QString::fromStdString(mn.addr.ToString()));
         QString Rank = QString::number(mnodeman.GetMasternodeRank(mn.vin, pindexBest->nHeight));
         QTableWidgetItem *rankItem = new QTableWidgetItem(Rank.rightJustified(2, '0', false));
+        QTableWidgetItem* protocolItem = new QTableWidgetItem(QString::number(mn.protocolVersion));
+        QTableWidgetItem* statusItem = new QTableWidgetItem(QString::number(mn.IsEnabled()));
         QTableWidgetItem *activeSecondsItem = new QTableWidgetItem(seconds_to_DHMS((qint64)(mn.lastTimeSeen - mn.sigTime)));
         QTableWidgetItem *lastSeenItem = new QTableWidgetItem(QString::fromStdString(DateTimeStrFormat(mn.lastTimeSeen)));
 
@@ -137,19 +167,21 @@ void MasternodeManager::updateNodeList()
         pubkey =GetScriptForDestination(mn.pubkey.GetID());
         CTxDestination address1;
         ExtractDestination(pubkey, address1);
-        CSimplicityAddress address2(address1);
+        CCravecoinAddress address2(address1);
         QTableWidgetItem *pubkeyItem = new QTableWidgetItem(QString::fromStdString(address2.ToString()));
 
-        ui->tableWidget->setItem(mnRow, 0, addressItem);
-        ui->tableWidget->setItem(mnRow, 1, rankItem);
-        ui->tableWidget->setItem(mnRow, 2, activeItem);
-        ui->tableWidget->setItem(mnRow, 3, activeSecondsItem);
-        ui->tableWidget->setItem(mnRow, 4, lastSeenItem);
-        ui->tableWidget->setItem(mnRow, 5, pubkeyItem);
+        ui->tableWidgetMasternodes->insertRow(0);
+        ui->tableWidgetMasternodes->setItem(0, 0, addressItem);
+        ui->tableWidgetMasternodes->setItem(0, 1, rankItem);
+        ui->tableWidgetMasternodes->setItem(0, 2, protocolItem);
+        ui->tableWidgetMasternodes->setItem(0, 3, statusItem);
+        ui->tableWidgetMasternodes->setItem(0, 4, activeSecondsItem);
+        ui->tableWidgetMasternodes->setItem(0, 5, lastSeenItem);
+        ui->tableWidgetMasternodes->setItem(0, 6, pubkeyItem);
     }
 
-    ui->countLabel->setText(QString::number(ui->tableWidget->rowCount()));
-    on_UpdateButton_clicked();
+    ui->countLabel->setText(QString::number(ui->tableWidgetMasternodes->rowCount()));
+    ui->tableWidgetMasternodes->setSortingEnabled(true);
 }
 
 
@@ -280,4 +312,48 @@ void MasternodeManager::on_UpdateButton_clicked()
             }
         }
     }
+}
+
+void MasternodeManager::showContextMenu(const QPoint& point)
+{
+    QTableWidgetItem* item = ui->tableWidgetMasternodes->itemAt(point);
+    if (item) contextMenu->exec(QCursor::pos());
+}
+
+void MasternodeManager::copyAddress()
+{
+    std::string sData;
+    int row;
+    QItemSelectionModel* selectionModel = ui->tableWidgetMasternodes->selectionModel();
+    QModelIndexList selectedRows = selectionModel->selectedRows();
+    if(selectedRows.count() == 0)
+        return;
+    
+    for (int i =0; i < selectedRows.count(); i++)
+    {
+        QModelIndex index = selectedRows.at(i);
+        row = index.row();
+        sData += ui->tableWidgetMasternodes->item(row, 0)->text().toStdString() + "\n";
+    }
+    
+    QApplication::clipboard()->setText(QString::fromStdString(sData));
+}
+
+void MasternodeManager::copyPubkey()
+{
+    std::string sData;
+    int row;
+    QItemSelectionModel* selectionModel = ui->tableWidgetMasternodes->selectionModel();
+    QModelIndexList selectedRows = selectionModel->selectedRows();
+    if(selectedRows.count() == 0)
+        return;
+    
+    for (int i =0; i < selectedRows.count(); i++)
+    {
+        QModelIndex index = selectedRows.at(i);
+        row = index.row();
+        sData += ui->tableWidgetMasternodes->item(row, 6)->text().toStdString() + "\n";
+    }
+    
+    QApplication::clipboard()->setText(QString::fromStdString(sData));
 }
