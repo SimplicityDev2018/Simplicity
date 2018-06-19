@@ -89,21 +89,12 @@ CNodeSignals& GetNodeSignals();
 
 typedef int NodeId;
 
-#ifdef USE_NATIVE_I2P
-bool BindListenNativeI2P();
-bool BindListenNativeI2P(SOCKET& hSocket);
-bool IsI2POnly();
-
-extern int nI2PNodeCount;
-#endif
-
 enum
 {
     LOCAL_NONE,   // unknown
     LOCAL_IF,     // address a local interface listens on
     LOCAL_BIND,   // address explicit bound to
     LOCAL_UPNP,   // address reported by UPnP
-    LOCAL_IRC,    // address reported by IRC (deprecated)
     LOCAL_MANUAL, // address explicitly specified (-externalip=)
 
     LOCAL_MAX
@@ -409,14 +400,7 @@ public:
     bool fPingQueued;
 
     CNode(SOCKET hSocketIn, CAddress addrIn, std::string addrNameIn = "", bool fInboundIn=false) : ssSend(SER_NETWORK, INIT_PROTO_VERSION), setAddrKnown(5000)
-#ifdef USE_NATIVE_I2P
-      , nSendStreamType(SER_NETWORK | (((addrIn.nServices & NODE_I2P) || addrIn.IsNativeI2P()) ? 0 : SER_IPADDRONLY))
-      , nRecvStreamType(SER_NETWORK | (((addrIn.nServices & NODE_I2P) || addrIn.IsNativeI2P()) ? 0 : SER_IPADDRONLY))
-#endif
     {
-#ifdef USE_NATIVE_I2P
-        ssSend.SetType(nSendStreamType);
-#endif
         nServices = 0;
         hSocket = hSocketIn;
         nRecvVersion = INIT_PROTO_VERSION;
@@ -485,37 +469,6 @@ private:
 
     CNode(const CNode&);
     void operator=(const CNode&);
-#ifdef USE_NATIVE_I2P
-private:
-    int nSendStreamType;
-    int nRecvStreamType;
-public:
-    void SetSendStreamType(int nType)
-    {
-        nSendStreamType = nType;
-        ssSend.SetType(nSendStreamType);
-    }
-
-    void SetRecvStreamType(int nType)
-    {
-        nRecvStreamType = nType;
-        for (std::deque<CNetMessage>::iterator it = vRecvMsg.begin(), end = vRecvMsg.end(); it != end; ++it)
-        {
-            it->hdrbuf.SetType(nRecvStreamType);
-            it->vRecv.SetType(nRecvStreamType);
-        }
-    }
-
-    int GetSendStreamType() const
-    {
-        return nSendStreamType;
-    }
-
-    int GetRecvStreamType() const
-    {
-        return nRecvStreamType;
-    }
-#endif
 
 public:
     NodeId GetId() const {
@@ -618,7 +571,7 @@ public:
         LogPrint("net", "askfor %s   %d (%s)\n", inv.ToString().c_str(), nRequestTime, DateTimeStrFormat("%H:%M:%S", nRequestTime/1000000).c_str());
 
         // Make sure not to reuse time indexes to keep things in the same order
-        int64_t nNow = GetTimeMicros() - 1000000;
+        int64_t nNow = (GetTime() - 1) * 1000000;
         static int64_t nLastTime;
         ++nLastTime;
         nNow = std::max(nNow, nLastTime);

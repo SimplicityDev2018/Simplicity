@@ -44,9 +44,6 @@
 #include <signal.h>
 #endif
 
-#ifdef USE_NATIVE_I2P
-#include "i2p.h"
-#endif
 
 using namespace std;
 using namespace boost;
@@ -174,15 +171,6 @@ bool static InitWarning(const std::string &str)
     return true;
 }
 
-#ifdef USE_NATIVE_I2P
-bool static BindNativeI2P(/*bool fError = true*/)
-{
-    if (IsLimited(NET_NATIVE_I2P))
-        return false;
-    return BindListenNativeI2P();
-}
-#endif
-
 bool static Bind(const CService &addr, bool fError = true) {
     if (IsLimited(addr))
         return false;
@@ -219,7 +207,6 @@ std::string HelpMessage()
     strUsage += "  -externalip=<ip>       " + _("Specify your own public address") + "\n";
     strUsage += "  -onlynet=<net>         " + _("Only connect to nodes in network <net> (IPv4, IPv6 or Tor)") + "\n";
     strUsage += "  -discover              " + _("Discover own IP address (default: 1 when listening and no -externalip)") + "\n";
-    strUsage += "  -irc                   " + _("Find peers using internet relay chat (default: 0)") + "\n";
     strUsage += "  -listen                " + _("Accept connections from outside (default: 1 if no -proxy or -connect)") + "\n";
     strUsage += "  -bind=<addr>           " + _("Bind to given address. Use [host]:port notation for IPv6") + "\n";
     strUsage += "  -dnsseed               " + _("Query for peer addresses via DNS lookup, if low on addresses (default: 1 unless -connect)") + "\n";
@@ -314,8 +301,8 @@ strUsage += "\n" + _("Masternode options:") + "\n";
     strUsage += _("Secure messaging options:") + "\n" +
         "  -nosmsg                                  " + _("Disable secure messaging.") + "\n" +
         "  -debugsmsg                               " + _("Log extra debug messages.") + "\n" +
-        "  -smsgscanchain                           " + _("Scan the block chain for public key addresses on startup.") + "\n";
-
+        "  -smsgscanchain                           " + _("Scan the block chain for public key addresses on startup.") + "\n" +
+    strUsage += "  -stakethreshold=<n> " + _("This will set the output size of your stakes to never be below this number (default: 100)") + "\n";
 
     return strUsage;
 }
@@ -386,20 +373,6 @@ bool AppInit2(boost::thread_group& threadGroup)
 
     // ********************************************************* Step 2: parameter interactions
 
-#ifdef USE_NATIVE_I2P
-    if (GetBoolArg(I2P_SAM_GENERATE_DESTINATION_PARAM, false))
-    {
-        const SAM::FullDestination generatedDest = I2PSession::Instance().destGenerate();
-        uiInterface.ThreadSafeShowGeneratedI2PAddress(
-                    "Generated I2P address",
-                    generatedDest.pub,
-                    generatedDest.priv,
-                    I2PSession::GenerateB32AddressFromDestination(generatedDest.pub),
-                    GetConfigFile().string());
-        return false;
-    }
-#endif
-
     nNodeLifespan = GetArg("-addrlifespan", 7);
     fUseFastIndex = GetBoolArg("-fastindex", true);
     nMinerSleep = GetArg("-minersleep", 500);
@@ -408,11 +381,6 @@ bool AppInit2(boost::thread_group& threadGroup)
 
     if (!SelectParamsFromCommandLine()) {
         return InitError("Invalid combination of -testnet and -regtest.");
-    }
-
-    if (TestNet())
-    {
-        SoftSetBoolArg("-irc", true);
     }
 
     if (mapArgs.count("-bind")) {
@@ -788,10 +756,6 @@ bool AppInit2(boost::thread_group& threadGroup)
             if (!IsLimited(NET_IPV4))
                 fBound |= Bind(CService(inaddr_any, GetListenPort()), !fBound);
         }
-#ifdef USE_NATIVE_I2P
-            if (!IsLimited(NET_NATIVE_I2P))
-                fBound |= BindNativeI2P();
-#endif
         if (!fBound)
             return InitError(_("Failed to listen on any port. Use -listen=0 if you want this."));
     }

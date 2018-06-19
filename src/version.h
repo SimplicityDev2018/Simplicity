@@ -21,11 +21,6 @@ extern const std::string CLIENT_NAME;
 extern const std::string CLIENT_BUILD;
 extern const std::string CLIENT_DATE;
 
-#ifdef USE_NATIVE_I2P
-extern const std::string I2P_NATIVE_BUILD;
-extern const std::string I2P_NATIVE_DATE;
-#endif
-
 //
 // database format versioning
 //
@@ -35,7 +30,7 @@ static const int DATABASE_VERSION = 70509;
 // network protocol versioning
 //
 
-static const int PROTOCOL_VERSION = 70021;
+static const int PROTOCOL_VERSION = 70022;
 
 // intial proto version, to be increased after version/verack negotiation
 static const int INIT_PROTO_VERSION = 209;
@@ -51,7 +46,7 @@ static const int MIN_INSTANTX_PROTO_VERSION = 70021;
 // V1 - Last protocol version before update
 // V2 - Newest protocol version
 static const int MIN_MASTERNODE_PAYMENT_PROTO_VERSION_1 = 70019;
-static const int MIN_MASTERNODE_PAYMENT_PROTO_VERSION_2 = 70021;
+static const int MIN_MASTERNODE_PAYMENT_PROTO_VERSION_2 = 70022;
 
 // nTime field added to CAddress, starting with this version;
 // if possible, avoid requesting addresses nodes older than this

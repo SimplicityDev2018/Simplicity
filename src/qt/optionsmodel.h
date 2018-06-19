@@ -43,27 +43,6 @@ public:
         UseBlackTheme,     // bool
         DarksendRounds,    // int
         AnonymizeSimplicityAmount, //int
-#ifdef USE_NATIVE_I2P
-        I2PUseI2POnly,              // bool
-        I2PSAMHost,                 // QString
-        I2PSAMPort,                 // int
-        I2PSessionName,             // QString
-
-        I2PInboundQuantity,         // int
-        I2PInboundLength,           // int
-        I2PInboundLengthVariance,   // int
-        I2PInboundBackupQuantity,   // int
-        I2PInboundAllowZeroHop,     // bool
-        I2PInboundIPRestriction,    // int
-
-        I2POutboundQuantity,        // int
-        I2POutboundLength,          // int
-        I2POutboundLengthVariance,  // int
-        I2POutboundBackupQuantity,  // int
-        I2POutboundAllowZeroHop,    // bool
-        I2POutboundIPRestriction,   // int
-        I2POutboundPriority,        // int
-#endif
         OptionIDRowCount,
     };
 
@@ -91,23 +70,6 @@ private:
     bool fMinimizeToTray;
     bool fMinimizeOnClose;
     QString language;
-#ifdef USE_NATIVE_I2P
-    int i2pInboundQuantity;
-    int i2pInboundLength;
-    int i2pInboundLengthVariance;
-    int i2pInboundBackupQuantity;
-    bool i2pInboundAllowZeroHop;
-    int i2pInboundIPRestriction;
-    int i2pOutboundQuantity;
-    int i2pOutboundLength;
-    int i2pOutboundLengthVariance;
-    int i2pOutboundBackupQuantity;
-    bool i2pOutboundAllowZeroHop;
-    int i2pOutboundIPRestriction;
-    int i2pOutboundPriority;
-    QString i2pOptions;
-#endif
-
     int nDisplayUnit;
     bool fCoinControlFeatures;
     /* settings that were overriden by command-line */

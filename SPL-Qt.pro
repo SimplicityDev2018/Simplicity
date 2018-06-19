@@ -1,8 +1,8 @@
 TEMPLATE = app
 TARGET = Simplicity-Qt
-VERSION = 1.2.1.1
+VERSION = 1.3.0.0
 INCLUDEPATH += src src/json src/qt src/qt/plugins/mrichtexteditor
-QT += core gui network printsupport
+QT += network printsupport
 DEFINES += ENABLE_WALLET
 DEFINES += BOOST_THREAD_USE_LIB BOOST_SPIRIT_THREADSAFE
 CONFIG += no_include_pwd
@@ -11,17 +11,9 @@ CONFIG += static
 #CONFIG += openssl-linked
 CONFIG += openssl
 
-# Uncomment to build SPL Adv
-#QT += webkit webkitwidgets
-
 greaterThan(QT_MAJOR_VERSION, 4) {
     QT += widgets
     DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0
-}
-
-linux {
-    SECP256K1_LIB_PATH=/usr/local/lib
-    SECP256K1_INCLUDE_PATH=/usr/local/include
 }
 
 # for boost 1.37, add -mt to the boost libraries
@@ -167,14 +159,6 @@ LIBS += $$PWD/src/secp256k1/src/libsecp256k1_la-secp256k1.o
     DEFINES += HAVE_BUILD_INFO
 }
 
-contains(DEFINES, USE_NATIVE_I2P) {
-    geni2pbuild.depends = FORCE
-    geni2pbuild.commands = cd $$PWD; /bin/sh share/inc_build_number.sh src/i2pbuild.h bitcoin-qt-build-number
-    geni2pbuild.target = src/i2pbuild.h
-    PRE_TARGETDEPS += src/i2pbuild.h
-    QMAKE_EXTRA_TARGETS += geni2pbuild
-}
-
 contains(USE_O3, 1) {
     message(Building O3 optimization flag)
     QMAKE_CXXFLAGS_RELEASE -= -O2
@@ -253,7 +237,6 @@ HEADERS += src/qt/bitcoingui.h \
     src/scrypt.h \
     src/init.h \
     src/mruset.h \
-    src/irc.h \
     src/json/json_spirit_writer_template.h \
     src/json/json_spirit_writer.h \
     src/json/json_spirit_value.h \
@@ -326,13 +309,6 @@ HEADERS += src/qt/bitcoingui.h \
     src/qt/adrenalinenodeconfigdialog.h \
     src/qt/qcustomplot.h \
     src/smessage.h \
-#    Uncomment to build SPL Adv
-#    src/qt/radio.h \
-#    src/qt/bitcointalk.h \
-#    src/qt/twitter.h \
-#    src/qt/bittrex.h \
-#    src/qt/coinexchange.h \
-#    src/qt/yobit.h \
     src/qt/messagepage.h \
     src/qt/messagemodel.h \
     src/qt/sendmessagesdialog.h \
@@ -385,7 +361,6 @@ SOURCES += src/qt/bitcoin.cpp src/qt/bitcoingui.cpp \
     src/checkpoints.cpp \
     src/addrman.cpp \
     src/db.cpp \
-    src/irc.cpp \
     src/walletdb.cpp \
     src/qt/clientmodel.cpp \
     src/qt/guiutil.cpp \
@@ -428,9 +403,6 @@ SOURCES += src/qt/bitcoin.cpp src/qt/bitcoingui.cpp \
     src/qt/rpcconsole.cpp \
     src/noui.cpp \
     src/kernel.cpp \
-    src/scrypt-arm.S \
-    src/scrypt-x86.S \
-    src/scrypt-x86_64.S \
     src/pbkdf2.cpp \
     src/support/cleanse.cpp \
     src/stealth.cpp \
@@ -457,13 +429,6 @@ SOURCES += src/qt/bitcoin.cpp src/qt/bitcoingui.cpp \
     src/qt/adrenalinenodeconfigdialog.cpp \
     src/qt/qcustomplot.cpp \
     src/smessage.cpp \
-#    Uncomment to build SPL Adv
-#    src/qt/radio.cpp \
-#    src/qt/bitcointalk.cpp \
-#    src/qt/twitter.cpp \
-#    src/qt/bittrex.cpp \
-#    src/qt/coinexchange.cpp \
-#    src/qt/yobit.cpp \
     src/qt/messagepage.cpp \
     src/qt/messagemodel.cpp \
     src/qt/sendmessagesdialog.cpp \
@@ -500,34 +465,12 @@ FORMS += \
     src/qt/forms/masternodemanager.ui \
     src/qt/forms/addeditadrenalinenode.ui \
     src/qt/forms/adrenalinenodeconfigdialog.ui \
-#    Uncomment to build SPL Adv
-#    src/qt/forms/radio.ui \
-#    src/qt/forms/bitcointalk.ui \
-#    src/qt/forms/twitter.ui \
-#    src/qt/forms/bittrex.ui \
-#    src/qt/forms/coinexchange.ui \
-#    src/qt/forms/yobit.ui \
     src/qt/forms/messagepage.ui \
     src/qt/forms/sendmessagesentry.ui \
     src/qt/forms/sendmessagesdialog.ui \
     src/qt/forms/blockbrowser.ui \
     src/qt/forms/tradingdialog.ui \
     src/qt/plugins/mrichtexteditor/mrichtextedit.ui
-
-contains(DEFINES, USE_NATIVE_I2P) {
-HEADERS += src/i2p.h \
-    src/i2psam.h \
-    src/qt/showi2paddresses.h \
-    src/qt/i2poptionswidget.h
-
-SOURCES += src/i2p.cpp \
-    src/i2psam.cpp \
-    src/qt/showi2paddresses.cpp \
-    src/qt/i2poptionswidget.cpp
-
-FORMS += src/qt/forms/showi2paddresses.ui \
-    src/qt/forms/i2poptionswidget.ui
-}
 
 contains(USE_QRCODE, 1) {
 HEADERS += src/qt/qrcodedialog.h
@@ -566,7 +509,7 @@ isEmpty(BOOST_LIB_SUFFIX) {
 
 isEmpty(BOOST_THREAD_LIB_SUFFIX) {
     BOOST_THREAD_LIB_SUFFIX = $$BOOST_LIB_SUFFIX
-    #win32:BOOST_THREAD_LIB_SUFFIX = $$BOOST_LIB_SUFFIX
+    #win32:BOOST_THREAD_LIB_SUFFIX = _win32$$BOOST_LIB_SUFFIX
     #else:BOOST_THREAD_LIB_SUFFIX = $$BOOST_LIB_SUFFIX
 }
 

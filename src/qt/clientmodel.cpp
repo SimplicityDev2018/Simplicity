@@ -17,10 +17,6 @@
 #include <QTimer>
 #include <QDebug>
 
-#ifdef USE_NATIVE_I2P
-#include "i2p.h"
-#endif
-
 static const int64_t nClientStartupTime = GetTime();
 
 ClientModel::ClientModel(OptionsModel *optionsModel, QObject *parent) :
@@ -192,55 +188,6 @@ BanTableModel *ClientModel::getBanTableModel()
     return banTableModel;
 }
 
-#ifdef USE_NATIVE_I2P
-QString ClientModel::formatI2PNativeFullVersion() const
-{
-    return QString::fromStdString(FormatI2PNativeFullVersion());
-}
-
-void ClientModel::updateNumI2PConnections(int numI2PConnections)
-{
-    emit numI2PConnectionsChanged(numI2PConnections);
-}
-
-int ClientModel::getNumI2PConnections() const
-{
-    return nI2PNodeCount;
-}
-
-QString ClientModel::getPublicI2PKey() const
-{
-    return QString::fromStdString(I2PSession::Instance().getMyDestination().pub);
-}
-
-QString ClientModel::getPrivateI2PKey() const
-{
-    return QString::fromStdString(I2PSession::Instance().getMyDestination().priv);
-}
-
-bool ClientModel::isI2PAddressGenerated() const
-{
-    return I2PSession::Instance().getMyDestination().isGenerated;
-}
-
-bool ClientModel::isI2POnly() const
-{
-    return IsI2POnly();
-}
-
-QString ClientModel::getB32Address(const QString& destination) const
-{
-    return QString::fromStdString(I2PSession::GenerateB32AddressFromDestination(destination.toStdString()));
-}
-
-void ClientModel::generateI2PDestination(QString& pub, QString& priv) const
-{
-    const SAM::FullDestination generatedDest = I2PSession::Instance().destGenerate();
-    pub = QString::fromStdString(generatedDest.pub);
-    priv = QString::fromStdString(generatedDest.priv);
-}
-#endif
-
 QString ClientModel::formatFullVersion() const
 {
     return QString::fromStdString(FormatFullVersion());
@@ -287,14 +234,6 @@ static void NotifyNumConnectionsChanged(ClientModel *clientmodel, int newNumConn
                               Q_ARG(int, newNumConnections));
 }
 
-#ifdef USE_NATIVE_I2P
-static void NotifyNumI2PConnectionsChanged(ClientModel *clientmodel, int newNumI2PConnections)
-{
-    QMetaObject::invokeMethod(clientmodel, "updateNumI2PConnections", Qt::QueuedConnection,
-                              Q_ARG(int, newNumI2PConnections));
-}
-#endif
-
 static void NotifyAlertChanged(ClientModel *clientmodel, const uint256 &hash, ChangeType status)
 {
     qDebug() << "NotifyAlertChanged : " + QString::fromStdString(hash.GetHex()) + " status=" + QString::number(status);
@@ -315,9 +254,6 @@ void ClientModel::subscribeToCoreSignals()
     uiInterface.ShowProgress.connect(boost::bind(ShowProgress, this, _1, _2));
     uiInterface.NotifyNumConnectionsChanged.connect(boost::bind(NotifyNumConnectionsChanged, this, _1));
     uiInterface.NotifyAlertChanged.connect(boost::bind(NotifyAlertChanged, this, _1, _2));
-#ifdef USE_NATIVE_I2P
-    uiInterface.NotifyNumI2PConnectionsChanged.connect(boost::bind(NotifyNumI2PConnectionsChanged, this, _1));
-#endif
 }
 
 void ClientModel::unsubscribeFromCoreSignals()
@@ -325,8 +261,6 @@ void ClientModel::unsubscribeFromCoreSignals()
     // Disconnect signals from client
     uiInterface.ShowProgress.disconnect(boost::bind(ShowProgress, this, _1, _2));
     uiInterface.NotifyNumConnectionsChanged.disconnect(boost::bind(NotifyNumConnectionsChanged, this, _1));
+    uiInterface.NotifyAlertChanged.disconnect(boost::bind(NotifyAlertChanged, this, _1, _2));
     uiInterface.BannedListChanged.disconnect(boost::bind(BannedListChanged, this));
-#ifdef USE_NATIVE_I2P
-    uiInterface.NotifyNumI2PConnectionsChanged.disconnect(boost::bind(NotifyNumI2PConnectionsChanged, this, _1));
-#endif
 }
