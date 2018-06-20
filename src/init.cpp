@@ -31,6 +31,13 @@
 #include "walletdb.h"
 #endif
 
+#include <stdint.h>
+#include <stdio.h>
+
+#ifndef WIN32
+#include <signal.h>
+#endif
+
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/algorithm/string/replace.hpp>
 #include <boost/bind.hpp>
@@ -40,13 +47,8 @@
 #include <boost/thread.hpp>
 #include <openssl/crypto.h>
 
-#ifndef WIN32
-#include <signal.h>
-#endif
-
-
-using namespace std;
 using namespace boost;
+using namespace std;
 
 #ifdef ENABLE_WALLET
 CWallet* pwalletMain = NULL;
@@ -135,7 +137,9 @@ void Shutdown()
     if (pwalletMain)
         bitdb.Flush(true);
 #endif
+#ifndef WIN32
     boost::filesystem::remove(GetPidFile());
+#endif
     UnregisterAllWallets();
 #ifdef ENABLE_WALLET
     delete pwalletMain;
@@ -531,6 +535,9 @@ bool AppInit2(boost::thread_group& threadGroup)
     LogPrintf("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
     LogPrintf("Simplicity version %s (%s)\n", FormatFullVersion(), CLIENT_DATE);
     LogPrintf("Using OpenSSL version %s\n", SSLeay_version(SSLEAY_VERSION));
+#ifdef ENABLE_WALLET
+    LogPrintf("Using BerkeleyDB version %s\n", DbEnv::version(0, 0, 0));
+#endif
     if (!fLogTimestamps)
         LogPrintf("Startup time: %s\n", DateTimeStrFormat("%x %H:%M:%S", GetTime()));
     LogPrintf("Default data directory %s\n", GetDefaultDataDir().string());
@@ -801,8 +808,8 @@ bool AppInit2(boost::thread_group& threadGroup)
         return InitError(_("Error loading block database"));
 
 
-    // as LoadBlockIndex can take several minutes, it's possible the user
-    // requested to kill bitcoin-qt during the last operation. If so, exit.
+    // As LoadBlockIndex can take several minutes, it's possible the user
+    // requested to kill the GUI during the last operation. If so, exit.
     // As the program has not fully started yet, Shutdown() is possibly overkill.
     if (fRequestShutdown)
     {
