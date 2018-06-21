@@ -1,9 +1,11 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
-// Copyright (c) 2009-2012 The Bitcoin developers
+// Copyright (c) 2009-2014 The Bitcoin developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include "init.h"
+
+#include "addrman.h"
 #include "main.h"
 #include "chainparams.h"
 #include "txdb.h"
@@ -24,8 +26,16 @@
 #include "smessage.h"
 
 #ifdef ENABLE_WALLET
+#include "db.h"
 #include "wallet.h"
 #include "walletdb.h"
+#endif
+
+#include <stdint.h>
+#include <stdio.h>
+
+#ifndef WIN32
+#include <signal.h>
 #endif
 
 #include <boost/algorithm/string/predicate.hpp>
@@ -37,16 +47,8 @@
 #include <boost/thread.hpp>
 #include <openssl/crypto.h>
 
-#ifndef WIN32
-#include <signal.h>
-#endif
-
-#ifdef USE_NATIVE_I2P
-#include "i2p.h"
-#endif
-
-using namespace std;
 using namespace boost;
+using namespace std;
 
 #ifdef ENABLE_WALLET
 CWallet* pwalletMain = NULL;
@@ -135,7 +137,9 @@ void Shutdown()
     if (pwalletMain)
         bitdb.Flush(true);
 #endif
+#ifndef WIN32
     boost::filesystem::remove(GetPidFile());
+#endif
     UnregisterAllWallets();
 #ifdef ENABLE_WALLET
     delete pwalletMain;
@@ -170,15 +174,6 @@ bool static InitWarning(const std::string &str)
     uiInterface.ThreadSafeMessageBox(str, "", CClientUIInterface::MSG_WARNING);
     return true;
 }
-
-#ifdef USE_NATIVE_I2P
-bool static BindNativeI2P(/*bool fError = true*/)
-{
-    if (IsLimited(NET_NATIVE_I2P))
-        return false;
-    return BindListenNativeI2P();
-}
-#endif
 
 bool static Bind(const CService &addr, bool fError = true) {
     if (IsLimited(addr))
@@ -216,7 +211,6 @@ std::string HelpMessage()
     strUsage += "  -externalip=<ip>       " + _("Specify your own public address") + "\n";
     strUsage += "  -onlynet=<net>         " + _("Only connect to nodes in network <net> (IPv4, IPv6 or Tor)") + "\n";
     strUsage += "  -discover              " + _("Discover own IP address (default: 1 when listening and no -externalip)") + "\n";
-    strUsage += "  -irc                   " + _("Find peers using internet relay chat (default: 0)") + "\n";
     strUsage += "  -listen                " + _("Accept connections from outside (default: 1 if no -proxy or -connect)") + "\n";
     strUsage += "  -bind=<addr>           " + _("Bind to given address. Use [host]:port notation for IPv6") + "\n";
     strUsage += "  -dnsseed               " + _("Query for peer addresses via DNS lookup, if low on addresses (default: 1 unless -connect)") + "\n";
@@ -272,7 +266,7 @@ std::string HelpMessage()
     strUsage += "  -alertnotify=<cmd>     " + _("Execute command when a relevant alert is received (%s in cmd is replaced by message)") + "\n";
     strUsage += "  -upgradewallet         " + _("Upgrade wallet to latest format") + "\n";
     strUsage += "  -createwalletbackups=<n> " + _("Number of automatic wallet backups (default: 10)") + "\n";
-    strUsage += "  -keypool=<n>           " + _("Set key pool size to <n> (default: 1000) (litemode: 100)") + "\n";
+    strUsage += "  -keypool=<n>           " + _("Set key pool size to <n> (default: 100) (litemode: 10)") + "\n";
     strUsage += "  -rescan                " + _("Rescan the block chain for missing wallet transactions") + "\n";
     strUsage += "  -salvagewallet         " + _("Attempt to recover private keys from a corrupt wallet.dat") + "\n";
     strUsage += "  -checkblocks=<n>       " + _("How many blocks to check at startup (default: 500, 0 = all)") + "\n";
@@ -311,8 +305,8 @@ strUsage += "\n" + _("Masternode options:") + "\n";
     strUsage += _("Secure messaging options:") + "\n" +
         "  -nosmsg                                  " + _("Disable secure messaging.") + "\n" +
         "  -debugsmsg                               " + _("Log extra debug messages.") + "\n" +
-        "  -smsgscanchain                           " + _("Scan the block chain for public key addresses on startup.") + "\n";
-
+        "  -smsgscanchain                           " + _("Scan the block chain for public key addresses on startup.") + "\n" +
+    strUsage += "  -stakethreshold=<n> " + _("This will set the output size of your stakes to never be below this number (default: 100)") + "\n";
 
     return strUsage;
 }
@@ -383,20 +377,6 @@ bool AppInit2(boost::thread_group& threadGroup)
 
     // ********************************************************* Step 2: parameter interactions
 
-#ifdef USE_NATIVE_I2P
-    if (GetBoolArg(I2P_SAM_GENERATE_DESTINATION_PARAM, false))
-    {
-        const SAM::FullDestination generatedDest = I2PSession::Instance().destGenerate();
-        uiInterface.ThreadSafeShowGeneratedI2PAddress(
-                    "Generated I2P address",
-                    generatedDest.pub,
-                    generatedDest.priv,
-                    I2PSession::GenerateB32AddressFromDestination(generatedDest.pub),
-                    GetConfigFile().string());
-        return false;
-    }
-#endif
-
     nNodeLifespan = GetArg("-addrlifespan", 7);
     fUseFastIndex = GetBoolArg("-fastindex", true);
     nMinerSleep = GetArg("-minersleep", 500);
@@ -405,11 +385,6 @@ bool AppInit2(boost::thread_group& threadGroup)
 
     if (!SelectParamsFromCommandLine()) {
         return InitError("Invalid combination of -testnet and -regtest.");
-    }
-
-    if (TestNet())
-    {
-        SoftSetBoolArg("-irc", true);
     }
 
     if (mapArgs.count("-bind")) {
@@ -560,6 +535,9 @@ bool AppInit2(boost::thread_group& threadGroup)
     LogPrintf("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
     LogPrintf("Simplicity version %s (%s)\n", FormatFullVersion(), CLIENT_DATE);
     LogPrintf("Using OpenSSL version %s\n", SSLeay_version(SSLEAY_VERSION));
+#ifdef ENABLE_WALLET
+    LogPrintf("Using BerkeleyDB version %s\n", DbEnv::version(0, 0, 0));
+#endif
     if (!fLogTimestamps)
         LogPrintf("Startup time: %s\n", DateTimeStrFormat("%x %H:%M:%S", GetTime()));
     LogPrintf("Default data directory %s\n", GetDefaultDataDir().string());
@@ -785,10 +763,6 @@ bool AppInit2(boost::thread_group& threadGroup)
             if (!IsLimited(NET_IPV4))
                 fBound |= Bind(CService(inaddr_any, GetListenPort()), !fBound);
         }
-#ifdef USE_NATIVE_I2P
-            if (!IsLimited(NET_NATIVE_I2P))
-                fBound |= BindNativeI2P();
-#endif
         if (!fBound)
             return InitError(_("Failed to listen on any port. Use -listen=0 if you want this."));
     }
@@ -834,8 +808,8 @@ bool AppInit2(boost::thread_group& threadGroup)
         return InitError(_("Error loading block database"));
 
 
-    // as LoadBlockIndex can take several minutes, it's possible the user
-    // requested to kill bitcoin-qt during the last operation. If so, exit.
+    // As LoadBlockIndex can take several minutes, it's possible the user
+    // requested to kill the GUI during the last operation. If so, exit.
     // As the program has not fully started yet, Shutdown() is possibly overkill.
     if (fRequestShutdown)
     {

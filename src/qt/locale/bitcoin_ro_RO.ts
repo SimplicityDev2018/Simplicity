@@ -226,7 +226,7 @@ This product includes software developed by the OpenSSL Project for use in the O
     </message>
     <message>
         <location line="+1"/>
-        <source>Warning: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;LOSE ALL OF YOUR Simplicity's&lt;/b&gt;!</source>
+        <source>Warning: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;LOSE ALL OF YOUR COINS&lt;/b&gt;!</source>
         <translation>Atentie: Daca encriptezi portofelul si iti uiti parola, &lt;b&gt;VEI PIERDE TOATA MONEDELE&lt;/b&gt;!</translation>
     </message>
     <message>
@@ -258,7 +258,7 @@ This product includes software developed by the OpenSSL Project for use in the O
     </message>
     <message>
         <location line="+82"/>
-        <source>Simplicity will close now to finish the encryption process. Remember that encrypting your wallet cannot fully protect your Simplicity's from being stolen by malware infecting your computer.</source>
+        <source>Simplicity will close now to finish the encryption process. Remember that encrypting your wallet cannot fully protect your coins from being stolen by malware infecting your computer.</source>
         <translation>Simplicity se va inchide pentru a termina procesul de encriptie. Amintiți-vă, criptarea portofelul dumneavoastră nu poate proteja pe deplin monedele dvs. de a fi furate de  infectarea cu malware a computerului.</translation>
     </message>
     <message>
@@ -392,7 +392,7 @@ This product includes software developed by the OpenSSL Project for use in the O
     </message>
     <message>
         <location line="-55"/>
-        <source>Send Simplicity's to a Simplicity address</source>
+        <source>Send coins to a Simplicity address</source>
         <translation>Trimite monede către o adresă Simplicity</translation>
     </message>
     <message>
@@ -530,7 +530,7 @@ This product includes software developed by the OpenSSL Project for use in the O
     </message>
     <message>
         <location line="+2"/>
-        <source>Not staking because you don&apos;t have mature Simplicity's</source>
+        <source>Not staking because you don&apos;t have mature coins</source>
         <translation>Nu este in modul stake deoarece nu sunt destule monede maturate</translation>
     </message>
     <message>
@@ -1259,7 +1259,7 @@ Acest lucru înseamnă că o taxă de cel puțin %2 este necesară</translation>
     </message>
     <message>
         <location line="+13"/>
-        <source>Choose the default subdivision unit to show in the interface and when sending Simplicity's.</source>
+        <source>Choose the default subdivision unit to show in the interface and when sending coins.</source>
         <translation>Alege subdiviziunea folosită la afişarea interfeţei şi la trimiterea de bitcoin.</translation>
     </message>
     <message>
@@ -1395,7 +1395,7 @@ Acest lucru înseamnă că o taxă de cel puțin %2 este necesară</translation>
     </message>
     <message>
         <location line="-32"/>
-        <source>Total of Simplicity's that was staked, and do not yet count toward the current balance</source>
+        <source>Total of coins that was staked, and do not yet count toward the current balance</source>
         <translation>Totalul de monede care au fost in stake si nu sunt numarate in balanta curenta</translation>
     </message>
     <message>
@@ -1672,17 +1672,17 @@ Acest lucru înseamnă că o taxă de cel puțin %2 este necesară</translation>
     </message>
 </context>
 <context>
-    <name>SendSimplicity'sDialog</name>
+    <name>SendCoinsDialog</name>
     <message>
-        <location filename="../forms/sendSimplicity'sdialog.ui" line="+14"/>
-        <location filename="../sendSimplicity'sdialog.cpp" line="+181"/>
+        <location filename="../forms/sendCoinsdialog.ui" line="+14"/>
+        <location filename="../sendCoinsdialog.cpp" line="+181"/>
         <location line="+5"/>
         <location line="+5"/>
         <location line="+5"/>
         <location line="+6"/>
         <location line="+5"/>
         <location line="+5"/>
-        <source>Send Simplicity's</source>
+        <source>Send coins</source>
         <translation>Trimite monede</translation>
     </message>
     <message>
@@ -1815,7 +1815,7 @@ Acest lucru înseamnă că o taxă de cel puțin %2 este necesară</translation>
         <translation>&amp;S Trimite</translation>
     </message>
     <message>
-        <location filename="../sendSimplicity'sdialog.cpp" line="-173"/>
+        <location filename="../sendCoinsdialog.cpp" line="-173"/>
         <source>Enter a Simplicity address (e.g. 6834Nm8iKGE18CT1jtM85zqS19ycjzMJ2D)</source>
         <translation>Introduceți o adresă Simplicity(ex:6834Nm8iKGE18CT1jtM85zqS19ycjzMJ2D)</translation>
     </message>
@@ -1866,7 +1866,7 @@ Acest lucru înseamnă că o taxă de cel puțin %2 este necesară</translation>
     </message>
     <message>
         <location line="+5"/>
-        <source>Confirm send Simplicity's</source>
+        <source>Confirm send coins</source>
         <translation>Confirmă trimiterea de monede</translation>
     </message>
     <message>
@@ -1911,7 +1911,7 @@ Acest lucru înseamnă că o taxă de cel puțin %2 este necesară</translation>
     </message>
     <message>
         <location line="+5"/>
-        <source>Error: The transaction was rejected. This might happen if some of the Simplicity's in your wallet were already spent, such as if you used a copy of wallet.dat and Simplicity's were spent in the copy but not marked as spent here.</source>
+        <source>Error: The transaction was rejected. This might happen if some of the coins in your wallet were already spent, such as if you used a copy of wallet.dat and coins were spent in the copy but not marked as spent here.</source>
         <translation>Eroare: tranzacția a fost respinsă. Acest lucru s-ar putea întâmpla în cazul în care unele dintre monedele din portofel au fost deja cheltuite, cum si cum ați utilizat o copie a wallet.dat și monedele au fost cheltuite în copie dar nu au fost marcate ca și cheltuite aici.</translation>
     </message>
     <message>
@@ -1931,9 +1931,9 @@ Acest lucru înseamnă că o taxă de cel puțin %2 este necesară</translation>
     </message>
 </context>
 <context>
-    <name>SendSimplicity'sEntry</name>
+    <name>SendCoinsEntry</name>
     <message>
-        <location filename="../forms/sendSimplicity'sentry.ui" line="+14"/>
+        <location filename="../forms/sendCoinsentry.ui" line="+14"/>
         <source>Form</source>
         <translation>Formular</translation>
     </message>
@@ -1954,7 +1954,7 @@ Acest lucru înseamnă că o taxă de cel puțin %2 este necesară</translation>
     </message>
     <message>
         <location line="+60"/>
-        <location filename="../sendSimplicity'sentry.cpp" line="+26"/>
+        <location filename="../sendCoinsentry.cpp" line="+26"/>
         <source>Enter a label for this address to add it to your address book</source>
         <translation>Introdu o etichetă pentru această adresă pentru a fi adăugată în lista ta de adrese</translation>
     </message>
@@ -1989,7 +1989,7 @@ Acest lucru înseamnă că o taxă de cel puțin %2 este necesară</translation>
         <translation>Scoateti acest destinatar</translation>
     </message>
     <message>
-        <location filename="../sendSimplicity'sentry.cpp" line="+1"/>
+        <location filename="../sendCoinsentry.cpp" line="+1"/>
         <source>Enter a Simplicity address (e.g. 6834Nm8iKGE18CT1jtM85zqS19ycjzMJ2D)</source>
         <translation>Introduceți o adresă Simplicity(ex:6834Nm8iKGE18CT1jtM85zqS19ycjzMJ2D)</translation>
     </message>
@@ -2312,7 +2312,7 @@ Acest lucru înseamnă că o taxă de cel puțin %2 este necesară</translation>
     </message>
     <message>
         <location line="+3"/>
-        <source>Generated Simplicity's must mature 510 blocks before they can be spent. When you generated this block, it was broadcast to the network to be added to the block chain. If it fails to get into the chain, its state will change to &quot;not accepted&quot; and it won&apos;t be spendable. This may occasionally happen if another node generates a block within a few seconds of yours.</source>
+        <source>Generated coins must mature 510 blocks before they can be spent. When you generated this block, it was broadcast to the network to be added to the block chain. If it fails to get into the chain, its state will change to &quot;not accepted&quot; and it won&apos;t be spendable. This may occasionally happen if another node generates a block within a few seconds of yours.</source>
         <translation>Monedele generate trebuie să se maturizeze 510 blocuri înainte de a fi cheltuite. Când ați generat acest bloc,  a fost trimis la rețea pentru a fi adăugat la lanțul de blocuri. În cazul în care nu reușește să intre în lanț, starea sa se ​​va schimba in &quot;nu a fost acceptat&quot;, și nu va putea fi cheltuit. Acest lucru se poate întâmpla din când în când, dacă un alt nod generează un bloc cu câteva secunde inaintea blocului tau.</translation>
     </message>
     <message>
@@ -2682,7 +2682,7 @@ Acest lucru înseamnă că o taxă de cel puțin %2 este necesară</translation>
 <context>
     <name>bitcoin-core</name>
     <message>
-        <location filename="../bitSimplicity'strings.cpp" line="+173"/>
+        <location filename="../bitcoinstrings.cpp" line="+173"/>
         <source>Simplicity version</source>
         <translation>Versiune Simplicity</translation>
     </message>
@@ -3010,7 +3010,7 @@ for example: alertnotify=echo %%s | mail -s &quot;Simplicity Alert&quot; admin@f
     </message>
     <message>
         <location line="+2"/>
-        <source>Error: The transaction was rejected! This might happen if some of the Simplicity's in your wallet were already spent, such as if you used a copy of wallet.dat and Simplicity's were spent in the copy but not marked as spent here.</source>
+        <source>Error: The transaction was rejected! This might happen if some of the coins in your wallet were already spent, such as if you used a copy of wallet.dat and coins were spent in the copy but not marked as spent here.</source>
         <translation type="unfinished"/>
     </message>
     <message>

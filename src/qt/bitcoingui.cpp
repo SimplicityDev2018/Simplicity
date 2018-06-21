@@ -1,6 +1,6 @@
 /*
- * Qt5 bitoin/simplicity GUI.
- * The Simplicity Developer 2018
+ * Qt4 bitcoin GUI.
+ *
  * W.J. van der Laan 2011-2012
  * The Bitcoin Developers 2011-2012
  */
@@ -35,25 +35,14 @@
 #include "ui_interface.h"
 #include "masternodemanager.h"
 #include "messagemodel.h"
-// Uncomment to build SPL Adv
-//#include "radio.h"
-//#include "bitcointalk.h"
-//#include "twitter.h"
-//#include "bittrex.h"
-//#include "coinexchange.h"
-//#include "yobit.h"
 #include "messagepage.h"
 #include "blockbrowser.h"
-#ifdef USE_NATIVE_I2P
-#include "showi2paddresses.h"
-#endif
 #include "tradingdialog.h"
 
 #ifdef Q_OS_MAC
 #include "macdockiconhandler.h"
 #endif
 
-#include <QMainWindow>
 #include <QMenuBar>
 #include <QMenu>
 #include <QIcon>
@@ -79,15 +68,6 @@
 #include <QScrollArea>
 #include <QScroller>
 #include <QTextDocument>
-#include <QFontDatabase>
-#include <QTabWidget>
-#include <QVBoxLayout>
-#include <QLineEdit>
-#include <QPushButton>
-#include <QLocale>
-#include <QMessageBox>
-#include <QProgressBar>
-#include <QFont>
 
 #include <iostream>
 
@@ -115,15 +95,13 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     prevBlocks(0),
     nWeight(0)
 {
-    resize(1100, 600);
-    QFontDatabase::addApplicationFont(":/fonts/Bebas");
+    resize(900, 520);
     setWindowTitle(tr("Simplicity") + " - " + tr("Wallet"));
-    qApp->setStyleSheet("QMainWindow { background-image:url(:images/bkg);border:none; } #frame { } QToolBar QLabel { padding-top: 0px;padding-bottom: 0px;spacing: 10px;} QToolBar QLabel:item { padding-top: 0px;padding-bottom: 0px;spacing: 10px;} #toolbar2 { border:none;width:0px;hight:0px;padding-top:40px;padding-bottom:0px; background-color: transparent; } #labelMiningIcon { padding-left:5px;font-family:Century Gothic;width:100%;font-size:10px;text-align:center;color:black; } QMenu { background-color: qlineargradient(spread:pad, x1:0.511, y1:1, x2:0.482909, y2:0, stop:0 rgba(232,232,232), stop:1 rgba(232,232,232)); color: black; padding-bottom:10px; } QMenu::item { color: black; background: transparent; } QMenu::item:selected { background-color:qlineargradient(x1: 0, y1: 0, x2: 0.5, y2: 0.5,stop: 0 rgba(99,99,99,45), stop: 1 rgba(99,99,99,45)); } QMenuBar { background-color: transparent; color: black; } QMenuBar::item { font-size:12px;padding-bottom:3px;padding-top:3px;padding-left:15px;padding-right:15px;color: black; background-color: transparent; } QMenuBar::item:selected { background-color:qlineargradient(x1: 0, y1: 0, x2: 0.5, y2: 0.5,stop: 0 rgba(99,99,99,45), stop: 1 rgba(99,99,99,45)); }");
 #ifndef Q_OS_MAC
-    qApp->setWindowIcon(QIcon(":icons/simplicity"));
-    setWindowIcon(QIcon(":icons/simplicity"));
+    qApp->setWindowIcon(QIcon(":icons/bitcoin"));
+    setWindowIcon(QIcon(":icons/bitcoin"));
 #else
-    setUnifiedTitleAndToolBarOnMac(true);
+    //setUnifiedTitleAndToolBarOnMac(true);
     QApplication::setAttribute(Qt::AA_DontShowIconsInMenus);
 #endif
     setObjectName("simplicity");
@@ -167,15 +145,7 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
 
     masternodeManagerPage = new MasternodeManager(this);
     messagePage = new MessagePage(this);
-	
-    // Uncomment to build SPL Adv
-    //radioPage = new Radio(this);
-    //bitcointalkPage = new Bitcointalk(this);
-    //twitterPage = new Twitter(this);
-    //bittrexPage = new Bittrex(this);
-    //coinexchangePage = new Coinexchange(this);
-    //yobitPage = new Yobit(this);
-    
+
     centralStackedWidget = new QStackedWidget(this);
     centralStackedWidget->setContentsMargins(0, 0, 0, 0);
     centralStackedWidget->addWidget(overviewPage);
@@ -186,15 +156,8 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     centralStackedWidget->addWidget(masternodeManagerPage);
     centralStackedWidget->addWidget(messagePage);
     centralStackedWidget->addWidget(blockBrowser);
-    // Uncomment to build SPL Adv
-    //centralStackedWidget->addWidget(radioPage);
-    //centralStackedWidget->addWidget(bitcointalkPage);
-    //centralStackedWidget->addWidget(twitterPage);
-    //centralStackedWidget->addWidget(bittrexPage);
-    //centralStackedWidget->addWidget(coinexchangePage);
-    //centralStackedWidget->addWidget(yobitPage);
-    //centralStackedWidget->addWidget(tradingDialogPage);
-    
+    centralStackedWidget->addWidget(tradingDialogPage);
+
     QWidget *centralWidget = new QWidget();
     QVBoxLayout *centralLayout = new QVBoxLayout(centralWidget);
     centralLayout->setContentsMargins(0,0,0,0);
@@ -222,16 +185,6 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     labelStakingIcon = new QLabel();
     labelConnectionsIcon = new QLabel();
     labelBlocksIcon = new QLabel();
-
-#ifdef USE_NATIVE_I2P
-    labelI2PConnections = new QLabel();
-    labelI2POnly = new QLabel();
-    labelI2PGenerated = new QLabel();
-    frameBlocksLayout->addWidget(labelI2PGenerated);
-    frameBlocksLayout->addWidget(labelI2POnly);
-    frameBlocksLayout->addWidget(labelI2PConnections);
-#endif
-
     frameBlocksLayout->addWidget(netLabel);
     //frameBlocksLayout->addStretch();
     frameBlocksLayout->addWidget(labelEncryptionIcon);
@@ -269,7 +222,7 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
         QString curStyle = qApp->style()->metaObject()->className();
         if(curStyle == "QWindowsStyle" || curStyle == "QWindowsXPStyle")
         {
-            progressBar->setStyleSheet("QProgressBar { color: #2DF8FB;  background: transparent; border: 1px solid black; border-radius: 7px; padding: 1px; text-align: center; } QProgressBar::chunk { background: transparent; margin: 0px; }");
+            progressBar->setStyleSheet("QProgressBar { color: #ffffff;background-color: #e8e8e8; border: 1px solid grey; border-radius: 7px; padding: 1px; text-align: center; } QProgressBar::chunk { background: QLinearGradient(x1: 0, y1: 0, x2: 1, y2: 0, stop: 0 #FF8000, stop: 1 orange); border-radius: 7px; margin: 0px; }");
         }
     }
 
@@ -277,7 +230,7 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     statusBar()->addWidget(progressBar);
     statusBar()->addPermanentWidget(frameBlocks);
     statusBar()->setObjectName("statusBar");
-    statusBar()->setStyleSheet("#statusBar { color: #2DF8FB; background: transparent; }");
+    statusBar()->setStyleSheet("#statusBar { color: #ffffff; background-color: qradialgradient(cx: -0.8, cy: 0, fx: -0.8, fy: 0, radius: 0.6, stop: 0 #101010, stop: 1 #404040);  }");
 
     syncIconMovie = new QMovie(fUseBlackTheme ? ":/movies/update_spinner_black" : ":/movies/update_spinner", "mng", this);
 
@@ -368,43 +321,6 @@ void BitcoinGUI::createActions()
     blockAction->setCheckable(true);
     tabGroup->addAction(blockAction);
 
-    // Uncomment to build SPL Adv
-    //radioAction = new QAction(QIcon(":/icons/fury"), tr("&Radio"), this);
-    //radioAction->setToolTip(tr("Hip Hop"));
-    //radioAction->setCheckable(true);
-    //radioAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_6));
-    //tabGroup->addAction(radioAction);
-    
-    //bitcointalkAction = new QAction(QIcon(":/icons/fury"), tr("&Bitcointalk"), this);
-    //bitcointalkAction->setToolTip(tr("Bitcointalk"));
-    //bitcointalkAction->setCheckable(true);
-    //bitcointalkAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_7));
-    //tabGroup->addAction(bitcointalkAction);
-
-    //twitterAction = new QAction(QIcon(":/icons/fury"), tr("&Twitter"), this);
-    //twitterAction->setToolTip(tr("Twitter"));
-    //twitterAction->setCheckable(true);
-    //twitterAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_8));
-    //tabGroup->addAction(twitterAction);
-
-    //bittrexAction = new QAction(QIcon(":/icons/fury"), tr("&Bittrex"), this);
-    //bittrexAction->setToolTip(tr("Bittrex"));
-    //bittrexAction->setCheckable(true);
-    //bittrexAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_0));
-    //tabGroup->addAction(bittrexAction);
-
-    //coinexchangeAction = new QAction(QIcon(":/icons/fury"), tr("&Coinexchange"), this);
-    //coinexchangeAction->setToolTip(tr("Coinexchange"));
-    //coinexchangeAction->setCheckable(true);
-    //coinexchangeAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_1));
-    //tabGroup->addAction(coinexchangeAction);
-
-    //yobitAction = new QAction(QIcon(":/icons/fury"), tr("&Yobit"), this);
-    //yobitAction->setToolTip(tr("Yobit"));
-    //yobitAction->setCheckable(true);
-    //yobitAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_2));
-    //tabGroup->addAction(yobitAction);
-	
     TradingAction = new QAction(QIcon(":/icons/trade"), tr("&Bittrex"), this);
     TradingAction ->setToolTip(tr("Start Trading"));
     TradingAction ->setCheckable(true);
@@ -431,19 +347,6 @@ void BitcoinGUI::createActions()
     connect(masternodeManagerAction, SIGNAL(triggered()), this, SLOT(gotoMasternodeManagerPage()));
     connect(messageAction, SIGNAL(triggered()), this, SLOT(showNormalIfMinimized()));
     connect(messageAction, SIGNAL(triggered()), this, SLOT(gotoMessagePage()));
-    // Uncomment to build SPL Adv
-    //connect(radioAction, SIGNAL(triggered()), this, SLOT(gotoRadioPage()));
-    //connect(radioAction, SIGNAL(triggered()), this, SLOT(showNormalIfMinimized()));
-    //connect(bitcointalkAction, SIGNAL(triggered()), this, SLOT(gotoBitcointalkPage()));
-    //connect(bitcointalkAction, SIGNAL(triggered()), this, SLOT(showNormalIfMinimized()));
-    //connect(twitterAction, SIGNAL(triggered()), this, SLOT(gotoTwitterPage()));
-    //connect(twitterAction, SIGNAL(triggered()), this, SLOT(showNormalIfMinimized()));
-    //connect(bittrexAction, SIGNAL(triggered()), this, SLOT(gotoBittrexPage()));
-    //connect(bittrexAction, SIGNAL(triggered()), this, SLOT(showNormalIfMinimized()));
-    //connect(coinexchangeAction, SIGNAL(triggered()), this, SLOT(gotoCoinexchangePage()));
-    //connect(coinexchangeAction, SIGNAL(triggered()), this, SLOT(showNormalIfMinimized()));
-    //connect(yobitAction, SIGNAL(triggered()), this, SLOT(gotoYobitPage()));
-    //connect(yobitAction, SIGNAL(triggered()), this, SLOT(showNormalIfMinimized()));
 
     quitAction = new QAction(tr("E&xit"), this);
     quitAction->setToolTip(tr("Quit application"));
@@ -508,22 +411,6 @@ void BitcoinGUI::createMenuBar()
     file->addSeparator();
     file->addAction(quitAction);
 
-    // Uncomment to build SPL Adv
-    //QMenu *radio = appMenuBar->addMenu(tr("&Radio"));
-    //radio->addAction(radioAction);
-
-    //QMenu *social = appMenuBar->addMenu(tr("&Social"));
-    //social->addAction(bitcointalkAction);
-    //social->addSeparator();
-    //social->addAction(twitterAction);
-
-    //QMenu *exchanges = appMenuBar->addMenu(tr("&Exchanges"));
-    //exchanges->addAction(bittrexAction);
-    //exchanges->addSeparator();
-    //exchanges->addAction(coinexchangeAction);
-    //exchanges->addSeparator();
-    //exchanges->addAction(yobitAction);
-
     QMenu *settings = appMenuBar->addMenu(tr("&Settings"));
     settings->addAction(encryptWalletAction);
     settings->addAction(changePassphraseAction);
@@ -550,18 +437,17 @@ static QWidget* makeToolBarSpacer()
 
 void BitcoinGUI::createToolBars()
 {
-    QToolBar *toolbar = addToolBar(tr("Tabs toolbar"));
-    toolbar->setObjectName("toolbar");
-    addToolBar(Qt::LeftToolBarArea,toolbar);
-    toolbar->setOrientation(Qt::Vertical);
-    toolbar->setMovable( false );
     fLiteMode = GetBoolArg("-litemode", false);
 
     toolbar = new QToolBar(tr("Tabs toolbar"));
     toolbar->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
     toolbar->setContextMenuPolicy(Qt::PreventContextMenu);
     toolbar->setObjectName("tabs");
-    toolbar->setStyleSheet("QToolButton { color: black; font-weight:bold;} QToolButton:hover { background-color: transparent } QToolButton:checked { background-color: transparent } QToolButton:pressed { background-color: transparent } #tabs { color: black; background-color: transparent;  }");
+    toolbar->setStyleSheet("QToolButton { color: #ffffff; font-size: 14px; font-family: Georgia,Times,Times New Roman,serif; font-weight: 400; font-variant: small-caps; padding: 3px; border: none;}"
+                           "QToolButton:hover { background-color: #B30006; border: none; padding-top: 3px; padding-bottom: 3px; }"
+                           "QToolButton:checked { background-color: #780002; border: none; padding-top: 3px; padding-bottom: 3px; }"
+                           "QToolButton:pressed { background-color: #780002; border: none; padding-top: 3px; padding-bottom: 3px; }"
+                           "#tabs { color: #ffffff; background-color: #000000; border: none; padding-top: 0px; padding-bottom: 0px; }");
 
     QLabel* header = new QLabel();
     header->setMinimumSize(142, 142);
@@ -612,31 +498,6 @@ void BitcoinGUI::setClientModel(ClientModel *clientModel)
     netLabel->setText("TOR");
     }
     }
-
-#ifdef USE_NATIVE_I2P
-             setNumI2PConnections(clientModel->getNumI2PConnections());
-             connect(clientModel, SIGNAL(numI2PConnectionsChanged(int)), this, SLOT(setNumI2PConnections(int)));
-    if(clientModel->isI2POnly())
-    {
-         netLabel->setText("I2P");
-             netLabel->setToolTip(tr("Wallet is using I2P-network only"));
-    }
-#endif
-
-#ifdef USE_NATIVE_I2P
-    }
-
-        if (clientModel->isI2PAddressGenerated())
-        {
-            labelI2PGenerated->setText("DYN");
-            labelI2PGenerated->setToolTip(tr("Wallet is running with a random generated I2P-address"));
-        }
-        else
-        {
-            labelI2PGenerated->setText("STA");
-            labelI2PGenerated->setToolTip(tr("Wallet is running with a static I2P-address"));
-        }
-#endif
 
     this->clientModel = clientModel;
     if(clientModel)
@@ -793,31 +654,6 @@ void BitcoinGUI::aboutClicked()
     dlg.setModel(clientModel);
     dlg.exec();
 }
-
-#ifdef USE_NATIVE_I2P
-void BitcoinGUI::showGeneratedI2PAddr(const QString& caption, const QString& pub, const QString& priv, const QString& b32, const QString& configFileName)
-{
-    ShowI2PAddresses i2pDialog(caption, pub, priv, b32, configFileName, this);
-    i2pDialog.exec();
-}
-#endif
-
-#ifdef USE_NATIVE_I2P
-void BitcoinGUI::setNumI2PConnections(int count)
-{
-    QString i2pIcon;
-    switch(count)
-    {
-    case 0: i2pIcon = ":/icons/bwi2pconnect_0"; break;
-    case 1: /*case 2: case 3:*/ i2pIcon = ":/icons/bwi2pconnect_1"; break;
-    case 2:/*case 4: case 5: case 6:*/ i2pIcon = ":/icons/bwi2pconnect_2"; break;
-    case 3:/*case 7: case 8: case 9:*/ i2pIcon = ":/icons/bwi2pconnect_3"; break;
-    default: i2pIcon = ":/icons/bwi2pconnect_4"; break;
-    }
-    labelI2PConnections->setPixmap(QPixmap(i2pIcon));
-    labelI2PConnections->setToolTip(tr("%n active connection(s) to I2P-Simplicity network", "", count));
-}
-#endif
 
 void BitcoinGUI::setNumConnections(int count)
 {
@@ -1199,61 +1035,6 @@ void BitcoinGUI::gotoMessagePage()
     connect(exportAction, SIGNAL(triggered()), messagePage, SLOT(exportClicked()));
 }
 
-// Uncomment to build SPL Adv
-// void BitcoinGUI::gotoRadioPage()
-// {
-    // radioAction->setChecked(true);
-    // centralStackedWidget->setCurrentWidget(radioPage);
-
-    // exportAction->setEnabled(false);
-    // disconnect(exportAction, SIGNAL(triggered()), 0, 0);
-// }
-
-// void BitcoinGUI::gotoBitcointalkPage()
-// {
-    // bitcointalkAction->setChecked(true);
-    // centralStackedWidget->setCurrentWidget(bitcointalkPage);
-
-    // exportAction->setEnabled(false);
-    // disconnect(exportAction, SIGNAL(triggered()), 0, 0);
-// }
-
-// void BitcoinGUI::gotoTwitterPage()
-// {
-    // twitterAction->setChecked(true);
-    // centralStackedWidget->setCurrentWidget(twitterPage);
-
-    // exportAction->setEnabled(false);
-    // disconnect(exportAction, SIGNAL(triggered()), 0, 0);
-// }
-
-// void BitcoinGUI::gotoBittrexPage()
-// {
-    // bittrexAction->setChecked(true);
-    // centralStackedWidget->setCurrentWidget(bittrexPage);
-
-    // exportAction->setEnabled(false);
-    // disconnect(exportAction, SIGNAL(triggered()), 0, 0);
-// }
-
-// void BitcoinGUI::gotoCoinexchangePage()
-// {
-    // coinexchangeAction->setChecked(true);
-    // centralStackedWidget->setCurrentWidget(coinexchangePage);
-
-    // exportAction->setEnabled(false);
-    // disconnect(exportAction, SIGNAL(triggered()), 0, 0);
-// }
-
-// void BitcoinGUI::gotoYobitPage()
-// {
-    // yobitAction->setChecked(true);
-    // centralStackedWidget->setCurrentWidget(yobitPage);
-
-    // exportAction->setEnabled(false);
-    // disconnect(exportAction, SIGNAL(triggered()), 0, 0);
-// }
-
 void BitcoinGUI::dragEnterEvent(QDragEnterEvent *event)
 {
     // Accept only URIs
@@ -1446,11 +1227,7 @@ void BitcoinGUI::updateStakingIcon()
         uint64_t nWeight = this->nWeight;
         uint64_t nNetworkWeight = GetPoSKernelPS();
         unsigned nEstimateTime = 0;
-//        if(pindexBest->nHeight <= HARD_FORK_BLOCK){
-//            nEstimateTime = TARGET_SPACING_FORK * nNetworkWeight / nWeight;
-//        } else {
-            nEstimateTime = TARGET_SPACING * nNetworkWeight / nWeight;
-//        }
+        nEstimateTime = TARGET_SPACING * nNetworkWeight / nWeight;
 
         QString text;
         if (nEstimateTime < 60)

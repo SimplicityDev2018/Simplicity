@@ -1,5 +1,5 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
-// Copyright (c) 2009-2012 The Bitcoin developers
+// Copyright (c) 2009-2014 The Bitcoin developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -49,18 +49,22 @@ namespace boost {
 #pragma warning(disable:4805)
 #pragma warning(disable:4717)
 #endif
+
 #ifdef _WIN32_WINNT
 #undef _WIN32_WINNT
 #endif
 #define _WIN32_WINNT 0x0501
+
 #ifdef _WIN32_IE
 #undef _WIN32_IE
 #endif
 #define _WIN32_IE 0x0501
+
 #define WIN32_LEAN_AND_MEAN 1
 #ifndef NOMINMAX
 #define NOMINMAX
 #endif
+
 #include <io.h> /* for _commit */
 #include "shlobj.h"
 #elif defined(__linux__)
@@ -486,6 +490,7 @@ void ParseParameters(int argc, const char* const argv[])
 {
     mapArgs.clear();
     mapMultiArgs.clear();
+
     for (int i = 1; i < argc; i++)
     {
         std::string str(argv[i]);
@@ -501,6 +506,7 @@ void ParseParameters(int argc, const char* const argv[])
         if (boost::algorithm::starts_with(str, "/"))
             str = "-" + str.substr(1);
 #endif
+
         if (str[0] != '-')
             break;
 
@@ -1184,6 +1190,7 @@ void ReadConfigFile(map<string, string>& mapSettingsRet,
     ClearDatadirCache();
 }
 
+#ifndef WIN32
 boost::filesystem::path GetPidFile()
 {
     boost::filesystem::path pathPidFile(GetArg("-pid", "simplicityd.pid"));
@@ -1191,7 +1198,6 @@ boost::filesystem::path GetPidFile()
     return pathPidFile;
 }
 
-#ifndef WIN32
 void CreatePidFile(const boost::filesystem::path &path, pid_t pid)
 {
     FILE* file = fopen(path.string().c_str(), "w");
@@ -1269,8 +1275,17 @@ void ShrinkDebugFile()
             fclose(file);
         }
     }
+    else if (file != NULL)
+        fclose(file);
 }
 
+//
+// "Never go to sea with two chronometers; take one or three."
+// Our three time sources are:
+//  - System clock
+//  - Median of other nodes clocks
+//  - The user (asking the user to fix the system clock if the first two disagree)
+//
 static int64_t nMockTime = 0;  // For unit testing
 
 int64_t GetTime()
@@ -1285,6 +1300,74 @@ void SetMockTime(int64_t nMockTimeIn)
     nMockTime = nMockTimeIn;
 }
 
+static CCriticalSection cs_nTimeOffset;
+static int64_t nTimeOffset = 0;
+
+int64_t GetTimeOffset()
+{
+    LOCK(cs_nTimeOffset);
+    return nTimeOffset;
+}
+
+int64_t GetAdjustedTime()
+{
+    return GetTime() + GetTimeOffset();
+}
+
+void AddTimeData(const CNetAddr& ip, int64_t nTime)
+{
+    int64_t nOffsetSample = nTime - GetTime();
+
+    LOCK(cs_nTimeOffset);
+    // Ignore duplicates
+    static set<CNetAddr> setKnown;
+    if (!setKnown.insert(ip).second)
+        return;
+
+    // Add data
+    static CMedianFilter<int64_t> vTimeOffsets(200,0);
+    vTimeOffsets.input(nOffsetSample);
+    LogPrintf("Added time data, samples %d, offset %+d (%+d minutes)\n", vTimeOffsets.size(), nOffsetSample, nOffsetSample/60);
+    if (vTimeOffsets.size() >= 5 && vTimeOffsets.size() % 2 == 1)
+    {
+        int64_t nMedian = vTimeOffsets.median();
+        std::vector<int64_t> vSorted = vTimeOffsets.sorted();
+        // Only let other nodes change our time by so much
+        if (abs64(nMedian) < 70 * 60)
+        {
+            nTimeOffset = nMedian;
+        }
+        else
+        {
+            nTimeOffset = 0;
+
+            static bool fDone;
+            if (!fDone)
+            {
+                // If nobody has a time different than ours but within 5 minutes of ours, give a warning
+                bool fMatch = false;
+                BOOST_FOREACH(int64_t nOffset, vSorted)
+                    if (nOffset != 0 && abs64(nOffset) < 5 * 60)
+                        fMatch = true;
+
+                if (!fMatch)
+                {
+                    fDone = true;
+                    string strMessage = _("Warning: Please check that your computer's date and time are correct! If your clock is wrong Transfercoin will not work properly.");
+                    strMiscWarning = strMessage;
+                    LogPrintf("*** %s\n", strMessage);
+                    uiInterface.ThreadSafeMessageBox(strMessage, "", CClientUIInterface::MSG_WARNING);
+                }
+            }
+        }
+        if (fDebug) {
+            BOOST_FOREACH(int64_t n, vSorted)
+                LogPrintf("%+d  ", n);
+            LogPrintf("|  ");
+        }
+        LogPrintf("nTimeOffset = %+d  (%+d minutes)\n", nTimeOffset, nTimeOffset/60);
+    }
+}
 uint32_t insecure_rand_Rz = 11;
 uint32_t insecure_rand_Rw = 11;
 void seed_insecure_rand(bool fDeterministic)

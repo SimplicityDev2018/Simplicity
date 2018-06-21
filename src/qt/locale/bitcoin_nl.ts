@@ -232,7 +232,7 @@ This product includes software developed by the OpenSSL Project for use in the O
     </message>
     <message>
         <location line="+1"/>
-        <source>Warning: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;LOSE ALL OF YOUR Simplicity's&lt;/b&gt;!</source>
+        <source>Warning: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;LOSE ALL OF YOUR COINS&lt;/b&gt;!</source>
         <translation>Waarschuwing: Als je je portemonnee versleuteld en je verliest je wachtwoord zul je &lt;b&gt;AL JE MUNTEN VERLIEZEN&lt;/b&gt;!</translation>
     </message>
     <message>
@@ -266,7 +266,7 @@ This product includes software developed by the OpenSSL Project for use in the O
     </message>
     <message>
         <location line="+82"/>
-        <source>Simplicity will close now to finish the encryption process. Remember that encrypting your wallet cannot fully protect your Simplicity's from being stolen by malware infecting your computer.</source>
+        <source>Simplicity will close now to finish the encryption process. Remember that encrypting your wallet cannot fully protect your coins from being stolen by malware infecting your computer.</source>
         <translation>Simplicity zal nu sluiten om het versleutel proces te voltooien. Onthou dat het versleutelen van je portemonnee je niet volledig beschermt tegen diefstal van munten door malware op je computer.</translation>
     </message>
     <message>
@@ -400,7 +400,7 @@ This product includes software developed by the OpenSSL Project for use in the O
     </message>
     <message>
         <location line="-55"/>
-        <source>Send Simplicity's to a Simplicity address</source>
+        <source>Send coins to a Simplicity address</source>
         <translation>Verstuur munten naar een Simplicity adres</translation>
     </message>
     <message>
@@ -538,7 +538,7 @@ This product includes software developed by the OpenSSL Project for use in the O
     </message>
     <message>
         <location line="+2"/>
-        <source>Not staking because you don&apos;t have mature Simplicity's</source>
+        <source>Not staking because you don&apos;t have mature coins</source>
         <translation>Niet staking omdat je geen mature munten hebt</translation>
     </message>
     <message>
@@ -1281,7 +1281,7 @@ Dit betekend dat een fee van %2 is vereist.</translation>
     </message>
     <message>
         <location line="+13"/>
-        <source>Choose the default subdivision unit to show in the interface and when sending Simplicity's.</source>
+        <source>Choose the default subdivision unit to show in the interface and when sending coins.</source>
         <translation>Kies de standaard onderverdelingseenheid om weer te geven in uw programma, en voor het versturen van munten</translation>
     </message>
     <message>
@@ -1423,7 +1423,7 @@ Dit betekend dat een fee van %2 is vereist.</translation>
     </message>
     <message>
         <location line="-32"/>
-        <source>Total of Simplicity's that was staked, and do not yet count toward the current balance</source>
+        <source>Total of coins that was staked, and do not yet count toward the current balance</source>
         <translation>Totaal aantal munten dat was staked, en nog niet telt voor huidige balans.</translation>
     </message>
     <message>
@@ -1712,17 +1712,17 @@ Dit betekend dat een fee van %2 is vereist.</translation>
     </message>
 </context>
 <context>
-    <name>SendSimplicity'sDialog</name>
+    <name>SendCoinsDialog</name>
     <message>
-        <location filename="../forms/sendSimplicity'sdialog.ui" line="+14"/>
-        <location filename="../sendSimplicity'sdialog.cpp" line="+181"/>
+        <location filename="../forms/sendCoinsdialog.ui" line="+14"/>
+        <location filename="../sendCoinsdialog.cpp" line="+181"/>
         <location line="+5"/>
         <location line="+5"/>
         <location line="+5"/>
         <location line="+6"/>
         <location line="+5"/>
         <location line="+5"/>
-        <source>Send Simplicity's</source>
+        <source>Send coins</source>
         <translation>Verstuur munten</translation>
     </message>
     <message>
@@ -1855,7 +1855,7 @@ Dit betekend dat een fee van %2 is vereist.</translation>
         <translation>&amp;Verstuur</translation>
     </message>
     <message>
-        <location filename="../sendSimplicity'sdialog.cpp" line="-173"/>
+        <location filename="../sendCoinsdialog.cpp" line="-173"/>
         <source>Enter a Simplicity address (e.g. 6834Nm8iKGE18CT1jtM85zqS19ycjzMJ2D)</source>
         <translation>Voeg een Simplicity adres in (bijv. 6834Nm8iKGE18CT1jtM85zqS19ycjzMJ2D)</translation>
     </message>
@@ -1906,7 +1906,7 @@ Dit betekend dat een fee van %2 is vereist.</translation>
     </message>
     <message>
         <location line="+5"/>
-        <source>Confirm send Simplicity's</source>
+        <source>Confirm send coins</source>
         <translation>Bevestig versturen munten</translation>
     </message>
     <message>
@@ -1953,7 +1953,7 @@ Dit betekend dat een fee van %2 is vereist.</translation>
     </message>
     <message>
         <location line="+5"/>
-        <source>Error: The transaction was rejected. This might happen if some of the Simplicity's in your wallet were already spent, such as if you used a copy of wallet.dat and Simplicity's were spent in the copy but not marked as spent here.</source>
+        <source>Error: The transaction was rejected. This might happen if some of the coins in your wallet were already spent, such as if you used a copy of wallet.dat and coins were spent in the copy but not marked as spent here.</source>
         <translation>Fout: De transactie was geweigerd, Dit kan gebeuren als sommige munten in je portemonnee al gebruikt zijn, door het gebruik van een kopie van wallet.dat en de munten in de kopie zijn niet gemarkeerd als gebruikt.</translation>
     </message>
     <message>
@@ -1973,9 +1973,9 @@ Dit betekend dat een fee van %2 is vereist.</translation>
     </message>
 </context>
 <context>
-    <name>SendSimplicity'sEntry</name>
+    <name>SendCoinsEntry</name>
     <message>
-        <location filename="../forms/sendSimplicity'sentry.ui" line="+14"/>
+        <location filename="../forms/sendCoinsentry.ui" line="+14"/>
         <source>Form</source>
         <translation>Vorm</translation>
     </message>
@@ -1998,7 +1998,7 @@ Dit betekend dat een fee van %2 is vereist.</translation>
     </message>
     <message>
         <location line="+60"/>
-        <location filename="../sendSimplicity'sentry.cpp" line="+26"/>
+        <location filename="../sendCoinsentry.cpp" line="+26"/>
         <source>Enter a label for this address to add it to your address book</source>
         <translation>Vul een label in voor dit adres om het toe te voegen aan uw adresboek</translation>
     </message>
@@ -2033,7 +2033,7 @@ Dit betekend dat een fee van %2 is vereist.</translation>
         <translation>Verwijder deze ontvanger</translation>
     </message>
     <message>
-        <location filename="../sendSimplicity'sentry.cpp" line="+1"/>
+        <location filename="../sendCoinsentry.cpp" line="+1"/>
         <source>Enter a Simplicity address (e.g. 6834Nm8iKGE18CT1jtM85zqS19ycjzMJ2D)</source>
         <translation>Voeg een Simplicity adres in (bijv. 6834Nm8iKGE18CT1jtM85zqS19ycjzMJ2D)</translation>
     </message>
@@ -2356,7 +2356,7 @@ Dit betekend dat een fee van %2 is vereist.</translation>
     </message>
     <message>
         <location line="+3"/>
-        <source>Generated Simplicity's must mature 510 blocks before they can be spent. When you generated this block, it was broadcast to the network to be added to the block chain. If it fails to get into the chain, its state will change to &quot;not accepted&quot; and it won&apos;t be spendable. This may occasionally happen if another node generates a block within a few seconds of yours.</source>
+        <source>Generated coins must mature 510 blocks before they can be spent. When you generated this block, it was broadcast to the network to be added to the block chain. If it fails to get into the chain, its state will change to &quot;not accepted&quot; and it won&apos;t be spendable. This may occasionally happen if another node generates a block within a few seconds of yours.</source>
         <translation>Gegenereerd munten moeten 510 blokken maturen voordat ze kunnen worden besteed. Wanneer je een blok genereerd, het naar het netwerk is verzonden en toegevoegd aan de blokketen, zal de status veranderen naar &quot;niet geaccepteerd&quot;and kan het niet uitgegeven worden.  Dit kan soms gebeuren als een ander knooppunt genereert een blok binnen een paar seconden na jou.</translation>
     </message>
     <message>
@@ -2726,7 +2726,7 @@ Dit betekend dat een fee van %2 is vereist.</translation>
 <context>
     <name>bitcoin-core</name>
     <message>
-        <location filename="../bitSimplicity'strings.cpp" line="+172"/>
+        <location filename="../bitcoinstrings.cpp" line="+172"/>
         <source>Simplicity version</source>
         <translation>Simplicity versie</translation>
     </message>
@@ -3055,7 +3055,7 @@ for example: alertnotify=echo %%s | mail -s &quot;Simplicity Alert&quot; admin@f
     </message>
     <message>
         <location line="+2"/>
-        <source>Error: The transaction was rejected! This might happen if some of the Simplicity's in your wallet were already spent, such as if you used a copy of wallet.dat and Simplicity's were spent in the copy but not marked as spent here.</source>
+        <source>Error: The transaction was rejected! This might happen if some of the coins in your wallet were already spent, such as if you used a copy of wallet.dat and coins were spent in the copy but not marked as spent here.</source>
         <translation>
 			Fout: De transactie werd geweigerd! Dit kan gebeuren als sommige munten in uw portomonee al uitgegeven zijn.
 		</translation>

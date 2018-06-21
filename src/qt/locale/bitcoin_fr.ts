@@ -226,7 +226,7 @@ This product includes software developed by the OpenSSL Project for use in the O
     </message>
     <message>
         <location line="+1"/>
-        <source>Warning: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;LOSE ALL OF YOUR Simplicity's&lt;/b&gt;!</source>
+        <source>Warning: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;LOSE ALL OF YOUR COINS&lt;/b&gt;!</source>
         <translation>Avertissement : Si vous chiffrez votre portefeuille et perdez votre passphrase, vous ne pourrez &lt;b&gt;plus accéder à vos Simplicitys&lt;/b&gt;!</translation>
     </message>
     <message>
@@ -258,7 +258,7 @@ This product includes software developed by the OpenSSL Project for use in the O
     </message>
     <message>
         <location line="+82"/>
-        <source>Simplicity will close now to finish the encryption process. Remember that encrypting your wallet cannot fully protect your Simplicity's from being stolen by malware infecting your computer.</source>
+        <source>Simplicity will close now to finish the encryption process. Remember that encrypting your wallet cannot fully protect your coins from being stolen by malware infecting your computer.</source>
         <translation>L&apos;application Simplicity va désormais se terminer afin de finaliser le processus de chiffrage. Merci de noter que le chiffrage du portefeuille ne garantit pas de se prémunir du vol via utilisation de malware, qui auraient pu infecter votre ordinateur. </translation>
     </message>
     <message>
@@ -392,7 +392,7 @@ This product includes software developed by the OpenSSL Project for use in the O
     </message>
     <message>
         <location line="-55"/>
-        <source>Send Simplicity's to a Simplicity address</source>
+        <source>Send coins to a Simplicity address</source>
         <translation>Envoyer des monnaies vers une adresse Simplicity</translation>
     </message>
     <message>
@@ -530,7 +530,7 @@ This product includes software developed by the OpenSSL Project for use in the O
     </message>
     <message>
         <location line="+2"/>
-        <source>Not staking because you don&apos;t have mature Simplicity's</source>
+        <source>Not staking because you don&apos;t have mature coins</source>
         <translation>Pas de staking car vos monnaies ne sont pas encore matures</translation>
     </message>
     <message>
@@ -1259,7 +1259,7 @@ Cela implique que des frais à hauteur d&apos;au moins %2 seront nécessaires.</
     </message>
     <message>
         <location line="+13"/>
-        <source>Choose the default subdivision unit to show in the interface and when sending Simplicity's.</source>
+        <source>Choose the default subdivision unit to show in the interface and when sending coins.</source>
         <translation>Choisissez la sous-unité par défaut pour l&apos;affichage dans l&apos;interface et lors de l&apos;envoi de pièces.</translation>
     </message>
     <message>
@@ -1395,7 +1395,7 @@ Cela implique que des frais à hauteur d&apos;au moins %2 seront nécessaires.</
     </message>
     <message>
         <location line="-32"/>
-        <source>Total of Simplicity's that was staked, and do not yet count toward the current balance</source>
+        <source>Total of coins that was staked, and do not yet count toward the current balance</source>
         <translation>Montant total des transactions en &quot;staking&quot; et ne figurant pas encore dans le solde actuel</translation>
     </message>
     <message>
@@ -1672,17 +1672,17 @@ Cela implique que des frais à hauteur d&apos;au moins %2 seront nécessaires.</
     </message>
 </context>
 <context>
-    <name>SendSimplicity'sDialog</name>
+    <name>SendCoinsDialog</name>
     <message>
-        <location filename="../forms/sendSimplicity'sdialog.ui" line="+14"/>
-        <location filename="../sendSimplicity'sdialog.cpp" line="+181"/>
+        <location filename="../forms/sendCoinsdialog.ui" line="+14"/>
+        <location filename="../sendCoinsdialog.cpp" line="+181"/>
         <location line="+5"/>
         <location line="+5"/>
         <location line="+5"/>
         <location line="+6"/>
         <location line="+5"/>
         <location line="+5"/>
-        <source>Send Simplicity's</source>
+        <source>Send coins</source>
         <translation>Envoyer des monnaies</translation>
     </message>
     <message>
@@ -1815,7 +1815,7 @@ Cela implique que des frais à hauteur d&apos;au moins %2 seront nécessaires.</
         <translation>E&amp;nvoyer</translation>
     </message>
     <message>
-        <location filename="../sendSimplicity'sdialog.cpp" line="-173"/>
+        <location filename="../sendCoinsdialog.cpp" line="-173"/>
         <source>Enter a Simplicity address (e.g. 6834Nm8iKGE18CT1jtM85zqS19ycjzMJ2D)</source>
         <translation>Entrer une adresse Simplicity (par ex: 6834Nm8iKGE18CT1jtM85zqS19ycjzMJ2D)</translation>
     </message>
@@ -1866,7 +1866,7 @@ Cela implique que des frais à hauteur d&apos;au moins %2 seront nécessaires.</
     </message>
     <message>
         <location line="+5"/>
-        <source>Confirm send Simplicity's</source>
+        <source>Confirm send coins</source>
         <translation>Confirmer l’envoi des pièces</translation>
     </message>
     <message>
@@ -1911,7 +1911,7 @@ Cela implique que des frais à hauteur d&apos;au moins %2 seront nécessaires.</
     </message>
     <message>
         <location line="+5"/>
-        <source>Error: The transaction was rejected. This might happen if some of the Simplicity's in your wallet were already spent, such as if you used a copy of wallet.dat and Simplicity's were spent in the copy but not marked as spent here.</source>
+        <source>Error: The transaction was rejected. This might happen if some of the coins in your wallet were already spent, such as if you used a copy of wallet.dat and coins were spent in the copy but not marked as spent here.</source>
         <translation>Erreur: La transaction a été rejetée. Cela peut se produire si une quantité d&apos;argent de votre portefeuille a déjà été dépensée, comme dans le cas où une copie du fichier wallet.dat aurait été utilisée afin d&apos;effectuer des dépenses, à la place du fichier courant.</translation>
     </message>
     <message>
@@ -1931,9 +1931,9 @@ Cela implique que des frais à hauteur d&apos;au moins %2 seront nécessaires.</
     </message>
 </context>
 <context>
-    <name>SendSimplicity'sEntry</name>
+    <name>SendCoinsEntry</name>
     <message>
-        <location filename="../forms/sendSimplicity'sentry.ui" line="+14"/>
+        <location filename="../forms/sendCoinsentry.ui" line="+14"/>
         <source>Form</source>
         <translation>Formulaire</translation>
     </message>
@@ -1954,7 +1954,7 @@ Cela implique que des frais à hauteur d&apos;au moins %2 seront nécessaires.</
     </message>
     <message>
         <location line="+60"/>
-        <location filename="../sendSimplicity'sentry.cpp" line="+26"/>
+        <location filename="../sendCoinsentry.cpp" line="+26"/>
         <source>Enter a label for this address to add it to your address book</source>
         <translation>Saisir une étiquette pour cette adresse afin de l’ajouter à votre carnet d’adresses</translation>
     </message>
@@ -1989,7 +1989,7 @@ Cela implique que des frais à hauteur d&apos;au moins %2 seront nécessaires.</
         <translation>Supprimer ce destinataire</translation>
     </message>
     <message>
-        <location filename="../sendSimplicity'sentry.cpp" line="+1"/>
+        <location filename="../sendCoinsentry.cpp" line="+1"/>
         <source>Enter a Simplicity address (e.g. 6834Nm8iKGE18CT1jtM85zqS19ycjzMJ2D)</source>
         <translation>Entrer une adresse Simplicity (par ex: 6834Nm8iKGE18CT1jtM85zqS19ycjzMJ2D)</translation>
     </message>
@@ -2312,7 +2312,7 @@ Cela implique que des frais à hauteur d&apos;au moins %2 seront nécessaires.</
     </message>
     <message>
         <location line="+3"/>
-        <source>Generated Simplicity's must mature 510 blocks before they can be spent. When you generated this block, it was broadcast to the network to be added to the block chain. If it fails to get into the chain, its state will change to &quot;not accepted&quot; and it won&apos;t be spendable. This may occasionally happen if another node generates a block within a few seconds of yours.</source>
+        <source>Generated coins must mature 510 blocks before they can be spent. When you generated this block, it was broadcast to the network to be added to the block chain. If it fails to get into the chain, its state will change to &quot;not accepted&quot; and it won&apos;t be spendable. This may occasionally happen if another node generates a block within a few seconds of yours.</source>
         <translation>Les pièces de monnaie générées nécessitent une maturation de 510 blocks avant de pouvoir être utilisées. Lors de la génération d&apos;un blokc, celui-ci est diffusé sur le réseau afin d&apos;être ajouté à la chaîne de blocks. En cas d&apos;échec, son état passera en &quot;non accepté&quot; et celui-ci ne pourra pas être dépensé. Cela peut occasionnellement se produire, lorsqu&apos;un noeud différent génère un block à quelques secondes d&apos;intervalle du vôtre.</translation>
     </message>
     <message>
@@ -2682,7 +2682,7 @@ Cela implique que des frais à hauteur d&apos;au moins %2 seront nécessaires.</
 <context>
     <name>bitcoin-core</name>
     <message>
-        <location filename="../bitSimplicity'strings.cpp" line="+173"/>
+        <location filename="../bitcoinstrings.cpp" line="+173"/>
         <source>Simplicity version</source>
         <translation>Version Simplicity</translation>
     </message>
@@ -3010,7 +3010,7 @@ for example: alertnotify=echo %%s | mail -s &quot;Simplicity Alert&quot; admin@f
     </message>
     <message>
         <location line="+2"/>
-        <source>Error: The transaction was rejected! This might happen if some of the Simplicity's in your wallet were already spent, such as if you used a copy of wallet.dat and Simplicity's were spent in the copy but not marked as spent here.</source>
+        <source>Error: The transaction was rejected! This might happen if some of the coins in your wallet were already spent, such as if you used a copy of wallet.dat and coins were spent in the copy but not marked as spent here.</source>
         <translation type="unfinished"/>
     </message>
     <message>

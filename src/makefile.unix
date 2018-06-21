@@ -108,7 +108,6 @@ xCXXFLAGS=-O2 $(EXT_OPTIONS) -pthread -Wall -Wextra -Wno-ignored-qualifiers -Wfo
 xLDFLAGS=$(LDHARDENING) $(LDFLAGS)
 
 OBJS= \
-    obj/irc.o \
     obj/alert.o \
     obj/allocators.o \
     obj/version.o \
@@ -136,7 +135,6 @@ OBJS= \
     obj/rpcblockchain.o \
     obj/rpcrawtransaction.o \
     obj/rpcsmessage.o \
-    obj/timedata.o \
     obj/script.o \
     obj/scrypt.o \
     obj/sync.o \
@@ -176,11 +174,6 @@ OBJS= \
     obj/jh.o \
     obj/keccak.o \
     obj/skein.o
-
-ifdef USE_NATIVE_I2P
-    OBJS += obj/i2p.o
-    OBJS += obj/i2psam.o
-endif
 
 ifeq (${USE_WALLET}, 1)
     DEFS += -DENABLE_WALLET

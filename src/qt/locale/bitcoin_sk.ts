@@ -231,7 +231,7 @@ Tento produkt obsahuje softvér vyvinutý projektom OpenSSL Project pre použiti
     </message>
     <message>
         <location line="+1"/>
-        <source>Warning: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;LOSE ALL OF YOUR Simplicity's&lt;/b&gt;!</source>
+        <source>Warning: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;LOSE ALL OF YOUR COINS&lt;/b&gt;!</source>
         <translation>Upozornenie: Ak zašifrujete vašu peňaženku a stratíte prístupové heslo, potom &lt;b&gt;prídete o všetky svoje MINCE&lt;/b&gt;!</translation>
     </message>
     <message>
@@ -263,7 +263,7 @@ Tento produkt obsahuje softvér vyvinutý projektom OpenSSL Project pre použiti
     </message>
     <message>
         <location line="+82"/>
-        <source>Simplicity will close now to finish the encryption process. Remember that encrypting your wallet cannot fully protect your Simplicity's from being stolen by malware infecting your computer.</source>
+        <source>Simplicity will close now to finish the encryption process. Remember that encrypting your wallet cannot fully protect your coins from being stolen by malware infecting your computer.</source>
         <translation>Simplicity sa teraz zavrie aby dokončil proces zašifrovania. Nezabudnite, že zašifrovanie vašej peňaženky nemôže plne chrániť vaše mince pred krádežou malwarom, ktorý napadol váš počítač.</translation>
     </message>
     <message>
@@ -397,7 +397,7 @@ Tento produkt obsahuje softvér vyvinutý projektom OpenSSL Project pre použiti
     </message>
     <message>
         <location line="-55"/>
-        <source>Send Simplicity's to a Simplicity address</source>
+        <source>Send coins to a Simplicity address</source>
         <translation>Poslať mince na Simplicity adresu</translation>
     </message>
     <message>
@@ -535,7 +535,7 @@ Tento produkt obsahuje softvér vyvinutý projektom OpenSSL Project pre použiti
     </message>
     <message>
         <location line="+2"/>
-        <source>Not staking because you don&apos;t have mature Simplicity's</source>
+        <source>Not staking because you don&apos;t have mature coins</source>
         <translation>Nestávkujem pretože nemáte odležané mince</translation>
     </message>
     <message>
@@ -1263,7 +1263,7 @@ To znamená, že je potrebný poplatok aspoň %2.</translation>
     </message>
     <message>
         <location line="+13"/>
-        <source>Choose the default subdivision unit to show in the interface and when sending Simplicity's.</source>
+        <source>Choose the default subdivision unit to show in the interface and when sending coins.</source>
         <translation>Vyberte si predvolené delenie jednotiek zobrazované v rozhraní a pri odosielaní mincí.</translation>
     </message>
     <message>
@@ -1399,7 +1399,7 @@ To znamená, že je potrebný poplatok aspoň %2.</translation>
     </message>
     <message>
         <location line="-32"/>
-        <source>Total of Simplicity's that was staked, and do not yet count toward the current balance</source>
+        <source>Total of coins that was staked, and do not yet count toward the current balance</source>
         <translation>Súčet mincí, ktoré sú v stávke a ešte neboli započítané do aktuálneho zostatku</translation>
     </message>
     <message>
@@ -1676,17 +1676,17 @@ To znamená, že je potrebný poplatok aspoň %2.</translation>
     </message>
 </context>
 <context>
-    <name>SendSimplicity'sDialog</name>
+    <name>SendCoinsDialog</name>
     <message>
-        <location filename="../forms/sendSimplicity'sdialog.ui" line="+14"/>
-        <location filename="../sendSimplicity'sdialog.cpp" line="+181"/>
+        <location filename="../forms/sendCoinsdialog.ui" line="+14"/>
+        <location filename="../sendCoinsdialog.cpp" line="+181"/>
         <location line="+5"/>
         <location line="+5"/>
         <location line="+5"/>
         <location line="+6"/>
         <location line="+5"/>
         <location line="+5"/>
-        <source>Send Simplicity's</source>
+        <source>Send coins</source>
         <translation>Poslať mince</translation>
     </message>
     <message>
@@ -1819,7 +1819,7 @@ To znamená, že je potrebný poplatok aspoň %2.</translation>
         <translation>&amp;Odoslať</translation>
     </message>
     <message>
-        <location filename="../sendSimplicity'sdialog.cpp" line="-173"/>
+        <location filename="../sendCoinsdialog.cpp" line="-173"/>
         <source>Enter a Simplicity address (e.g. 6834Nm8iKGE18CT1jtM85zqS19ycjzMJ2D)</source>
         <translation>Zadajte Simplicity adresu (napr. 6834Nm8iKGE18CT1jtM85zqS19ycjzMJ2D)</translation>
     </message>
@@ -1870,7 +1870,7 @@ To znamená, že je potrebný poplatok aspoň %2.</translation>
     </message>
     <message>
         <location line="+5"/>
-        <source>Confirm send Simplicity's</source>
+        <source>Confirm send coins</source>
         <translation>Potvrdiť odoslanie mincí</translation>
     </message>
     <message>
@@ -1915,7 +1915,7 @@ To znamená, že je potrebný poplatok aspoň %2.</translation>
     </message>
     <message>
         <location line="+5"/>
-        <source>Error: The transaction was rejected. This might happen if some of the Simplicity's in your wallet were already spent, such as if you used a copy of wallet.dat and Simplicity's were spent in the copy but not marked as spent here.</source>
+        <source>Error: The transaction was rejected. This might happen if some of the coins in your wallet were already spent, such as if you used a copy of wallet.dat and coins were spent in the copy but not marked as spent here.</source>
         <translation>Chyba: Transakcia bola zamietnutá. To môže nastať, ak niektoré z mincí vo vašej peňaženke sa už použili, ako napríklad, ak ste použili kópiu wallet.dat a mince boli použité v kópii, ale neboli označené tu ako použité.</translation>
     </message>
     <message>
@@ -1935,9 +1935,9 @@ To znamená, že je potrebný poplatok aspoň %2.</translation>
     </message>
 </context>
 <context>
-    <name>SendSimplicity'sEntry</name>
+    <name>SendCoinsEntry</name>
     <message>
-        <location filename="../forms/sendSimplicity'sentry.ui" line="+14"/>
+        <location filename="../forms/sendCoinsentry.ui" line="+14"/>
         <source>Form</source>
         <translation>Formulár</translation>
     </message>
@@ -1958,7 +1958,7 @@ To znamená, že je potrebný poplatok aspoň %2.</translation>
     </message>
     <message>
         <location line="+60"/>
-        <location filename="../sendSimplicity'sentry.cpp" line="+26"/>
+        <location filename="../sendCoinsentry.cpp" line="+26"/>
         <source>Enter a label for this address to add it to your address book</source>
         <translation>Vložte popis pre túto adresu aby sa pridala do adresára</translation>
     </message>
@@ -1993,7 +1993,7 @@ To znamená, že je potrebný poplatok aspoň %2.</translation>
         <translation>Odstrániť tohto príjemcu</translation>
     </message>
     <message>
-        <location filename="../sendSimplicity'sentry.cpp" line="+1"/>
+        <location filename="../sendCoinsentry.cpp" line="+1"/>
         <source>Enter a Simplicity address (e.g. 6834Nm8iKGE18CT1jtM85zqS19ycjzMJ2D)</source>
         <translation>Zadajte Simplicity adresu (napr. 6834Nm8iKGE18CT1jtM85zqS19ycjzMJ2D)</translation>
     </message>
@@ -2316,7 +2316,7 @@ To znamená, že je potrebný poplatok aspoň %2.</translation>
     </message>
     <message>
         <location line="+3"/>
-        <source>Generated Simplicity's must mature 510 blocks before they can be spent. When you generated this block, it was broadcast to the network to be added to the block chain. If it fails to get into the chain, its state will change to &quot;not accepted&quot; and it won&apos;t be spendable. This may occasionally happen if another node generates a block within a few seconds of yours.</source>
+        <source>Generated coins must mature 510 blocks before they can be spent. When you generated this block, it was broadcast to the network to be added to the block chain. If it fails to get into the chain, its state will change to &quot;not accepted&quot; and it won&apos;t be spendable. This may occasionally happen if another node generates a block within a few seconds of yours.</source>
         <translation>Generované mince musia zrieť 510 blokov pred tým, než môžu byť použité. Keď sa vygeneroval tento blok, bol vysielaný do siete, kde má byť pridaný do reťazca blokov. Ak sa nepodarí dostať ho do reťazca blokov, jeho stav sa zmení na &quot;Neprijatý&quot;, a nebude použiteľný. Toto sa môže občas stať, ak iný uzol generuje blok v priebehu niekoľkých sekúnd pred Vami.</translation>
     </message>
     <message>
@@ -2686,7 +2686,7 @@ To znamená, že je potrebný poplatok aspoň %2.</translation>
 <context>
     <name>bitcoin-core</name>
     <message>
-        <location filename="../bitSimplicity'strings.cpp" line="+173"/>
+        <location filename="../bitcoinstrings.cpp" line="+173"/>
         <source>Simplicity version</source>
         <translation>Simplicity verzia</translation>
     </message>
@@ -3024,7 +3024,7 @@ napríklad: alertnotify=echo %%s | mail -s &quot;Simplicity upozornenie&quot; ad
     </message>
     <message>
         <location line="+2"/>
-        <source>Error: The transaction was rejected! This might happen if some of the Simplicity's in your wallet were already spent, such as if you used a copy of wallet.dat and Simplicity's were spent in the copy but not marked as spent here.</source>
+        <source>Error: The transaction was rejected! This might happen if some of the coins in your wallet were already spent, such as if you used a copy of wallet.dat and coins were spent in the copy but not marked as spent here.</source>
         <translation>Chyba: Transakcia bola zamietnutá! Toto môže nastať, ak niektoré z mincí vo vašej peňaženke sa už použili, ako napríklad, ak ste použili kópiu wallet.dat a mince boli použité v kópii, ale neboli označené ako použité tu.</translation>
     </message>
     <message>

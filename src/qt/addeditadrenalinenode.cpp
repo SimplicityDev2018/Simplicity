@@ -21,6 +21,17 @@ AddEditAdrenalineNode::AddEditAdrenalineNode(QWidget *parent) :
 {
     ui->setupUi(this);
 
+
+
+
+    //Labels
+    ui->aliasLineEdit->setPlaceholderText("Enter your Masternode alias");
+    ui->addressLineEdit->setPlaceholderText("Enter your IP & port");
+    ui->privkeyLineEdit->setPlaceholderText("Enter your Masternode private key");
+    ui->txhashLineEdit->setPlaceholderText("Enter your 200000 SPL TXID");
+    ui->outputindexLineEdit->setPlaceholderText("Enter your transaction output index");
+    ui->rewardaddressLineEdit->setPlaceholderText("Enter a reward recive address");
+    ui->rewardpercentageLineEdit->setPlaceholderText("Input the % for the reward");
 }
 
 AddEditAdrenalineNode::~AddEditAdrenalineNode()
@@ -41,7 +52,7 @@ void AddEditAdrenalineNode::on_okButton_clicked()
     else if(ui->addressLineEdit->text() == "")
     {
         QMessageBox msg;
-        msg.setText("Please enter an ip address and port. (123.45.67.89:17170)");
+        msg.setText("Please enter an ip address and port. (123.45.67.89:11957)");
         msg.exec();
         return;
     }
@@ -55,7 +66,7 @@ void AddEditAdrenalineNode::on_okButton_clicked()
     else if(ui->txhashLineEdit->text() == "")
     {
         QMessageBox msg;
-        msg.setText("Please enter the transaction hash for the transaction that has 10 000 coins");
+        msg.setText("Please enter the transaction hash for the transaction that has 200000 coins");
         msg.exec();
         return;
     }
@@ -73,15 +84,22 @@ void AddEditAdrenalineNode::on_okButton_clicked()
         std::string sMasternodePrivKey = ui->privkeyLineEdit->text().toStdString();
         std::string sTxHash = ui->txhashLineEdit->text().toStdString();
         std::string sOutputIndex = ui->outputindexLineEdit->text().toStdString();
+        std::string sRewardAddress = ui->rewardaddressLineEdit->text().toStdString();
+        std::string sRewardPercentage = ui->rewardpercentageLineEdit->text().toStdString();
 
         boost::filesystem::path pathConfigFile = GetDataDir() / "masternode.conf";
         boost::filesystem::ofstream stream (pathConfigFile.string(), ios::out | ios::app);
         if (stream.is_open())
         {
-            stream << sAlias << " " << sAddress << " " << sMasternodePrivKey << " " << sTxHash << " " << sOutputIndex << std::endl;
+            stream << sAlias << " " << sAddress << " " << sMasternodePrivKey << " " << sTxHash << " " << sOutputIndex;
+            if (sRewardAddress != "" && sRewardPercentage != ""){
+                stream << " " << sRewardAddress << ":" << sRewardPercentage << std::endl;
+            } else {
+                stream << std::endl;
+            }
             stream.close();
         }
-        masternodeConfig.add(sAlias, sAddress, sMasternodePrivKey, sTxHash, sOutputIndex);
+        masternodeConfig.add(sAlias, sAddress, sMasternodePrivKey, sTxHash, sOutputIndex, sRewardAddress, sRewardPercentage);
         accept();
     }
 }

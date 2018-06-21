@@ -65,11 +65,6 @@
            </column>
            <column>
             <property name="text">
-             <string>Rank</string>
-            </property>
-           </column>
-           <column>
-            <property name="text">
              <string>Protocol</string>
             </property>
            </column>
@@ -196,6 +191,16 @@
              <column>
               <property name="text">
                <string>IP/Onion</string>
+              </property>
+             </column>
+             <column>
+              <property name="text">
+               <string>Reward %</string>
+              </property>
+             </column>
+             <column>
+              <property name="text">
+               <string>Reward Address</string>
               </property>
              </column>
              <column>
