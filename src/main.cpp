@@ -290,8 +290,8 @@ void ProcessBlockAvailability(NodeId nodeid) {
 
     if (state->hashLastUnknownBlock != 0) {
         BlockMap::iterator itOld = mapBlockIndex.find(state->hashLastUnknownBlock);
-        if (itOld != mapBlockIndex.end() && itOld->second->nChainWork > 0) {
-            if (state->pindexBestKnownBlock == NULL || itOld->second->nChainWork >= state->pindexBestKnownBlock->nChainWork)
+        if (itOld != mapBlockIndex.end() && itOld->second->nChainTrust > 0) {
+            if (state->pindexBestKnownBlock == NULL || itOld->second->nChainTrust >= state->pindexBestKnownBlock->nChainTrust)
                 state->pindexBestKnownBlock = itOld->second;
             state->hashLastUnknownBlock = uint256(0);
         }
@@ -306,9 +306,9 @@ void UpdateBlockAvailability(NodeId nodeid, const uint256 &hash) {
     ProcessBlockAvailability(nodeid);
 
     BlockMap::iterator it = mapBlockIndex.find(hash);
-    if (it != mapBlockIndex.end() && it->second->nChainWork > 0) {
+    if (it != mapBlockIndex.end() && it->second->nChainTrust > 0) {
         // An actually better block was announced.
-        if (state->pindexBestKnownBlock == NULL || it->second->nChainWork >= state->pindexBestKnownBlock->nChainWork)
+        if (state->pindexBestKnownBlock == NULL || it->second->nChainTrust >= state->pindexBestKnownBlock->nChainTrust)
             state->pindexBestKnownBlock = it->second;
     } else {
         // An unknown block was announced; just assume that the latest one is the best one.
@@ -348,7 +348,7 @@ void FindNextBlocksToDownload(NodeId nodeid, unsigned int count, std::vector<CBl
     // Make sure pindexBestKnownBlock is up to date, we'll need it.
     ProcessBlockAvailability(nodeid);
 
-    if (state->pindexBestKnownBlock == NULL || state->pindexBestKnownBlock->nChainWork < pindexBest->nChainWork) {
+    if (state->pindexBestKnownBlock == NULL || state->pindexBestKnownBlock->nChainTrust < pindexBest->nChainTrust) {
         // This peer has nothing interesting.
         return;
     }
@@ -666,7 +666,7 @@ bool IsStandardTx(const CTransaction& tx, string& reason)
         else if ((whichType == TX_MULTISIG) && (!fIsBareMultisigStd)) {
             reason = "bare-multisig";
             return false;
-        } else if (txout.IsDust(::minRelayTxFee)) {
+        } else if (txout.IsDust(MIN_RELAY_TX_FEE)) {
             reason = "dust";
             return false;
         }
@@ -2584,22 +2584,27 @@ bool CBlock::AddToBlockIndex(unsigned int nFile, unsigned int nBlockPos, const u
         return error("AddToBlockIndex() : %s already exists", hash.ToString());
 
     // Construct new block index object
-     }
+    CBlockIndex* pindexNew = new CBlockIndex(nFile, nBlockPos, *this);
     if (!pindexNew)
         return error("AddToBlockIndex() : new CBlockIndex failed");
+    // We assign the sequence id to blocks only when the full data is available,
+    // to avoid miners withholding blocks but broadcasting headers, to get a
+    // competitive advantage.
+    pindexNew->nSequenceId = 0;
     pindexNew->phashBlock = &hash;
     map<uint256, CBlockIndex*>::iterator miPrev = mapBlockIndex.find(hashPrevBlock);
-    // competitive advantage.
     if (miPrev != mapBlockIndex.end())
     {
         pindexNew->pprev = (*miPrev).second;
         pindexNew->nHeight = pindexNew->pprev->nHeight + 1;
     }
-    pindexNew->RaiseValidity(BLOCK_VALID_TREE);
-    if (pindexBestHeader == NULL || pindexBestHeader->nChainWork < pindexNew->nChainWork)
 
     // ppcoin: compute chain trust score
     pindexNew->nChainTrust = (pindexNew->pprev ? pindexNew->pprev->nChainTrust : 0) + pindexNew->GetBlockTrust();
+	
+    pindexNew->RaiseValidity(BLOCK_VALID_TREE);
+    if (pindexBestHeader == NULL || pindexBestHeader->nChainTrust < pindexNew->nChainTrust)
+        pindexBestHeader = pindexNew;
 
     // ppcoin: compute stake entropy bit for stake modifier
     if (!pindexNew->SetStakeEntropyBit(GetStakeEntropyBit()))
