@@ -1,11 +1,14 @@
 // Copyright (c) 2012 The Bitcoin developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
+
 #ifndef BITCOIN_VERSION_H
 #define BITCOIN_VERSION_H
 
 #include "clientversion.h"
+
 #include <string>
+#include <vector>
 
 //
 // client versioning
@@ -32,7 +35,7 @@ static const int DATABASE_VERSION = 70509;
 
 static const int PROTOCOL_VERSION = 70022;
 
-// intial proto version, to be increased after version/verack negotiation
+// initial proto version, to be increased after version/verack negotiation
 static const int INIT_PROTO_VERSION = 209;
 
 // disconnect from peers older than this proto version
@@ -40,6 +43,8 @@ static const int MIN_PEER_PROTO_VERSION = 70019;
 
 // minimum peer version accepted by DarkSendPool
 static const int MIN_POOL_PEER_PROTO_VERSION = 70021;
+// In this version, 'getheaders' was introduced.
+static const int GETHEADERS_VERSION = 31800;
 
 static const int MIN_INSTANTX_PROTO_VERSION = 70021;
 //! minimum peer version that can receive masternode payments
@@ -59,7 +64,7 @@ static const int NOBLKS_VERSION_END = 70017;
 // BIP 0031, pong message, is enabled for all versions AFTER this one
 static const int BIP0031_VERSION = 60000;
 
-// "mempool" command, enhanced "getdata" behavior starts with this version:
+// "mempool" command, enhanced "getdata" behavior starts with this version
 static const int MEMPOOL_GD_VERSION = 60002;
 
 #endif

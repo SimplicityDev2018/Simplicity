@@ -1086,11 +1086,6 @@ public:
         tx = txIn; i = iIn; nDepth = nDepthIn; fSpendable = fSpendableIn;
     }
 
-    std::string ToString() const
-    {
-        return strprintf("COutput(%s, %d, %d) [%s]", tx->GetHash().ToString(), i, nDepth, FormatMoney(tx->vout[i].nValue));
-    }
-
     //Used with Darksend. Will return fees, then denominations, everything else, then very small inputs that aren't fees
     int Priority() const
     {
@@ -1106,6 +1101,7 @@ public:
     {
         LogPrintf("%s\n", ToString().c_str());
     }
+    std::string ToString() const;
 };
 
 

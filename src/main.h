@@ -84,11 +84,13 @@ static const unsigned int MAX_HEADERS_RESULTS = 2000;
  *  harder). We'll probably want to make this a per-peer adaptive value at some point. */
 static const unsigned int BLOCK_DOWNLOAD_WINDOW = 1024;
 
+/** Future Drift time set in seconds */
+static const int64_t DRIFT = 600; // 10min drift time
+inline int64_t FutureDrift(int64_t nTime) { return nTime + DRIFT; }
+
 /** "reject" message codes **/
 static const unsigned char REJECT_MALFORMED = 0x01;
 static const unsigned char REJECT_INVALID = 0x10;
-
-inline int64_t GetMNCollateral(int nHeight) { return 200000; }
 static const unsigned char REJECT_OBSOLETE = 0x11;
 static const unsigned char REJECT_DUPLICATE = 0x12;
 static const unsigned char REJECT_NONSTANDARD = 0x40;
@@ -100,6 +102,8 @@ struct BlockHasher
 {
     size_t operator()(const uint256& hash) const { return hash.GetLow64(); }
 };
+
+inline int64_t GetMNCollateral(int nHeight) { return 200000; }
 
 extern CScript COINBASE_FLAGS;
 extern CCriticalSection cs_main;
@@ -162,10 +166,14 @@ void RegisterNodeSignals(CNodeSignals& nodeSignals);
 /** Unregister a network node */
 void UnregisterNodeSignals(CNodeSignals& nodeSignals);
 
+/** Process an incoming block */
 bool ProcessBlock(CNode* pfrom, CBlock* pblock);
+/** Check whether enough disk space is available for an incoming block */
 bool CheckDiskSpace(uint64_t nAdditionalBytes=0);
+/** Open a block file (blk?????.dat) */
 FILE* OpenBlockFile(unsigned int nFile, unsigned int nBlockPos, const char* pszMode="rb");
 FILE* AppendBlockFile(unsigned int& nFileRet);
+/** Load the block tree and coins database from disk */
 bool LoadBlockIndex(bool fAllowNew=true);
 /** Print the loaded block tree */
 void PrintBlockTree();
@@ -190,17 +198,6 @@ uint256 WantedByOrphan(const COrphanBlock* pblockOrphan);
 const CBlockIndex* GetLastBlockIndex(const CBlockIndex* pindex, bool fProofOfStake);
 void ThreadStakeMiner(CWallet *pwallet);
 
-
-/** (try to) add transaction to memory pool **/
-bool AcceptToMemoryPool(CTxMemPool& pool, CTransaction &tx, bool fLimitFree,
-                        bool* pfMissingInputs, bool fRejectInsaneFee=false, bool ignoreFees=false);
-
-bool AcceptableInputs(CTxMemPool& pool, const CTransaction &txo, bool fLimitFree,
-                        bool* pfMissingInputs, bool fRejectInsaneFee=false, bool isDSTX=false);
-
-
-bool FindTransactionsByDestination(const CTxDestination &dest, std::vector<uint256> &vtxhash);
-
 int GetInputAge(CTxIn& vin);
 int GetInputAgeIX(uint256 nTXHash, CTxIn& vin);
 int GetIXConfirmations(uint256 nTXHash);
@@ -211,6 +208,14 @@ bool GetNodeStateStats(NodeId nodeid, CNodeStateStats &stats);
 /** Increase a node's misbehavior score. */
 void Misbehaving(NodeId nodeid, int howmuch);
 
+/** (try to) add transaction to memory pool **/
+bool AcceptToMemoryPool(CTxMemPool& pool, CTransaction &tx, bool fLimitFree,
+                        bool* pfMissingInputs, bool fRejectInsaneFee=false, bool ignoreFees=false);
+
+bool AcceptableInputs(CTxMemPool& pool, const CTransaction &txo, bool fLimitFree,
+                        bool* pfMissingInputs, bool fRejectInsaneFee=false, bool isDSTX=false);
+
+bool FindTransactionsByDestination(const CTxDestination &dest, std::vector<uint256> &vtxhash);
 
 int64_t GetMasternodePayment(int nHeight, int64_t blockValue);
 

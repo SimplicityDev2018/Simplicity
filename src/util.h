@@ -1,8 +1,12 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
-// Copyright (c) 2009-2012 The Bitcoin developers
+// Copyright (c) 2009-2014 The Bitcoin developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
+/**
+ * Server/client environment: argument handling, config file parsing,
+ * logging, thread wrappers
+ */
 #ifndef BITCOIN_UTIL_H
 #define BITCOIN_UTIL_H
 
@@ -15,11 +19,14 @@
 #include "serialize.h"
 #include "tinyformat.h"
 
+#include <exception>
 #include <map>
 #include <list>
 #include <utility>
 #include <vector>
+#include <stdint.h>
 #include <string>
+#include <vector>
 
 #include <boost/thread.hpp>
 #include <boost/filesystem.hpp>
@@ -240,8 +247,8 @@ boost::filesystem::path GetDefaultDataDir();
 const boost::filesystem::path &GetDataDir(bool fNetSpecific = true);
 boost::filesystem::path GetConfigFile();
 boost::filesystem::path GetMasternodeConfigFile();
-boost::filesystem::path GetPidFile();
 #ifndef WIN32
+boost::filesystem::path GetPidFile();
 void CreatePidFile(const boost::filesystem::path &path, pid_t pid);
 #endif
 void ReadConfigFile(std::map<std::string, std::string>& mapSettingsRet, std::map<std::string, std::vector<std::string> >& mapMultiSettingsRet);
