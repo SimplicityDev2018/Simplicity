@@ -51,13 +51,13 @@ public:
 class CInPoint
 {
 public:
-    const CTransaction* ptx;
-    uint32_t n;
+    CTransaction* ptx;
+    unsigned int n;
 
     CInPoint() { SetNull(); }
-    CInPoint(const CTransaction* ptxIn, uint32_t nIn) { ptx = ptxIn; n = nIn; }
-    void SetNull() { ptx = NULL; n = (uint32_t) -1; }
-    bool IsNull() const { return (ptx == NULL && n == (uint32_t) -1); }
+    CInPoint(CTransaction* ptxIn, unsigned int nIn) { ptx = ptxIn; n = nIn; }
+    void SetNull() { ptx = NULL; n = (unsigned int) -1; }
+    bool IsNull() const { return (ptx == NULL && n == (unsigned int) -1); }
 };
 
 /** An input of a transaction.  It contains the location of the previous
@@ -70,14 +70,14 @@ public:
     COutPoint prevout;
     CScript scriptSig;
     CScript prevPubKey;
-    uint32_t nSequence;
+    unsigned int nSequence;
 
     CTxIn()
     {
         nSequence = std::numeric_limits<unsigned int>::max();
     }
 
-    explicit CTxIn(COutPoint prevoutIn, CScript scriptSigIn=CScript(), uint32_t nSequenceIn=std::numeric_limits<unsigned int>::max());
+    explicit CTxIn(COutPoint prevoutIn, CScript scriptSigIn=CScript(), unsigned int nSequenceIn=std::numeric_limits<unsigned int>::max());
 
     explicit CTxIn(uint256 hashPrevTx, unsigned int nOut, CScript scriptSigIn=CScript(), unsigned int nSequenceIn=std::numeric_limits<unsigned int>::max());
 
@@ -90,7 +90,7 @@ public:
 
     bool IsFinal() const
     {
-        return (nSequence == std::numeric_limits<uint32_t>::max());
+        return (nSequence == std::numeric_limits<unsigned int>::max());
     }
 
     friend bool operator==(const CTxIn& a, const CTxIn& b)

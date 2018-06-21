@@ -1,8 +1,7 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
-// Copyright (c) 2009-2014 The Bitcoin developers
+// Copyright (c) 2009-2012 The Bitcoin developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
-
 #ifndef BITCOIN_MAIN_H
 #define BITCOIN_MAIN_H
 
@@ -71,37 +70,13 @@ static const int64_t TARGET_SPACING = 1 * 80; // 80 second block time expected
 inline bool MoneyRange(int64_t nValue) { return (nValue >= 0 && nValue <= MAX_MONEY); }
 /** Threshold for nLockTime: below this value it is interpreted as block number, otherwise as UNIX timestamp. */
 static const unsigned int LOCKTIME_THRESHOLD = 500000000; // Tue Nov  5 00:53:20 1985 UTC
-/** Number of blocks that can be requested at any given time from a single peer. */
-static const int MAX_BLOCKS_IN_TRANSIT_PER_PEER = 16;
-/** Timeout in seconds during which a peer must stall block download progress before being disconnected. */
-static const unsigned int BLOCK_STALLING_TIMEOUT = 2;
-/** Number of headers sent in one getheaders result. We rely on the assumption that if a peer sends
- *  less than this number, we reached their tip. Changing this value is a protocol upgrade. */
-static const unsigned int MAX_HEADERS_RESULTS = 2000;
-/** Size of the "block download window": how far ahead of our current height do we fetch?
- *  Larger windows tolerate larger download speed differences between peer, but increase the potential
- *  degree of disordering of blocks on disk (which make reindexing and in the future perhaps pruning
- *  harder). We'll probably want to make this a per-peer adaptive value at some point. */
-static const unsigned int BLOCK_DOWNLOAD_WINDOW = 1024;
 
 /** Future Drift time set in seconds */
 static const int64_t DRIFT = 600; // 10min drift time
 inline int64_t FutureDrift(int64_t nTime) { return nTime + DRIFT; }
 
 /** "reject" message codes **/
-static const unsigned char REJECT_MALFORMED = 0x01;
 static const unsigned char REJECT_INVALID = 0x10;
-static const unsigned char REJECT_OBSOLETE = 0x11;
-static const unsigned char REJECT_DUPLICATE = 0x12;
-static const unsigned char REJECT_NONSTANDARD = 0x40;
-static const unsigned char REJECT_DUST = 0x41;
-static const unsigned char REJECT_INSUFFICIENTFEE = 0x42;
-static const unsigned char REJECT_CHECKPOINT = 0x43;
-
-struct BlockHasher
-{
-    size_t operator()(const uint256& hash) const { return hash.GetLow64(); }
-};
 
 inline int64_t GetMNCollateral(int nHeight) { return 200000; }
 
@@ -138,8 +113,6 @@ extern unsigned int nDerivationMethodIndex;
 
 extern bool fLargeWorkForkFound;
 extern bool fLargeWorkInvalidChainFound;
-// Best header we've seen so far (used for getheaders queries' starting points).
-extern CBlockIndex *pindexBestHeader;
 
 // Minimum disk space required - used in CheckDiskSpace()
 static const uint64_t nMinDiskSpace = 52428800;
@@ -166,21 +139,16 @@ void RegisterNodeSignals(CNodeSignals& nodeSignals);
 /** Unregister a network node */
 void UnregisterNodeSignals(CNodeSignals& nodeSignals);
 
-/** Process an incoming block */
+void PushGetBlocks(CNode* pnode, CBlockIndex* pindexBegin, uint256 hashEnd);
+
 bool ProcessBlock(CNode* pfrom, CBlock* pblock);
-/** Check whether enough disk space is available for an incoming block */
 bool CheckDiskSpace(uint64_t nAdditionalBytes=0);
-/** Open a block file (blk?????.dat) */
 FILE* OpenBlockFile(unsigned int nFile, unsigned int nBlockPos, const char* pszMode="rb");
 FILE* AppendBlockFile(unsigned int& nFileRet);
-/** Load the block tree and coins database from disk */
 bool LoadBlockIndex(bool fAllowNew=true);
-/** Print the loaded block tree */
 void PrintBlockTree();
 CBlockIndex* FindBlockByHeight(int nHeight);
-/** Process protocol messages received from a given node */
 bool ProcessMessages(CNode* pfrom);
-/** Send queued protocol messages to be sent to a give node */
 bool SendMessages(CNode* pto, bool fSendTrickle);
 void ThreadImport(std::vector<boost::filesystem::path> vImportFiles);
 
@@ -188,25 +156,14 @@ bool CheckProofOfWork(uint256 hash, unsigned int nBits);
 unsigned int GetNextTargetRequired(const CBlockIndex* pindexLast, bool fProofOfStake);
 int64_t GetProofOfWorkReward(int nHeight, int64_t nFees);
 int64_t GetProofOfStakeReward(const CBlockIndex* pindexPrev, int64_t nCoinAge, int64_t nFees);
-/** Check whether we are doing an initial block download (synchronizing from disk or network) */
 bool IsInitialBlockDownload();
 bool IsConfirmedInNPrevBlocks(const CTxIndex& txindex, const CBlockIndex* pindexFrom, int nMaxDepth, int& nActualDepth);
-/** Format a string that describes several potential problems detected by the core */
 std::string GetWarnings(std::string strFor);
 bool GetTransaction(const uint256 &hash, CTransaction &tx, uint256 &hashBlock);
 uint256 WantedByOrphan(const COrphanBlock* pblockOrphan);
 const CBlockIndex* GetLastBlockIndex(const CBlockIndex* pindex, bool fProofOfStake);
 void ThreadStakeMiner(CWallet *pwallet);
 
-int GetInputAge(CTxIn& vin);
-int GetInputAgeIX(uint256 nTXHash, CTxIn& vin);
-int GetIXConfirmations(uint256 nTXHash);
-/** Abort with a message */
-bool AbortNode(const std::string &msg, const std::string &userMessage="");
-/** Get statistics from node state */
-bool GetNodeStateStats(NodeId nodeid, CNodeStateStats &stats);
-/** Increase a node's misbehavior score. */
-void Misbehaving(NodeId nodeid, int howmuch);
 
 /** (try to) add transaction to memory pool **/
 bool AcceptToMemoryPool(CTxMemPool& pool, CTransaction &tx, bool fLimitFree,
@@ -215,15 +172,21 @@ bool AcceptToMemoryPool(CTxMemPool& pool, CTransaction &tx, bool fLimitFree,
 bool AcceptableInputs(CTxMemPool& pool, const CTransaction &txo, bool fLimitFree,
                         bool* pfMissingInputs, bool fRejectInsaneFee=false, bool isDSTX=false);
 
+
 bool FindTransactionsByDestination(const CTxDestination &dest, std::vector<uint256> &vtxhash);
+
+int GetInputAge(CTxIn& vin);
+int GetInputAgeIX(uint256 nTXHash, CTxIn& vin);
+int GetIXConfirmations(uint256 nTXHash);
+/** Abort with a message */
+bool AbortNode(const std::string &msg, const std::string &userMessage="");
+/** Get statistics from node state */
+bool GetNodeStateStats(NodeId nodeid, CNodeStateStats &stats);
 
 int64_t GetMasternodePayment(int nHeight, int64_t blockValue);
 
 struct CNodeStateStats {
     int nMisbehavior;
-    int nSyncHeight;
-    int nCommonHeight;
-    std::vector<int> vHeightInFlight;
 };
 
 
@@ -517,7 +480,7 @@ unsigned int GetLegacySigOpCount(const CTransaction& tx);
 
 /** Count ECDSA signature operations in pay-to-script-hash inputs.
 
-    @param[in] mapInputs	Map of previous transactions that have outputs we're spending
+    @param[in] mapInputs    Map of previous transactions that have outputs we're spending
     @return maximum number of sigops required to validate this transaction's inputs
     @see CTransaction::FetchInputs
  */
@@ -985,8 +948,6 @@ public:
     unsigned int nTime;
     unsigned int nBits;
     unsigned int nNonce;
-    // (memory only) Sequencial id assigned to distinguish order in which blocks are received.
-    uint32_t nSequenceId;
 
     CBlockIndex()
     {
@@ -1009,7 +970,6 @@ public:
         hashProof = 0;
         prevoutStake.SetNull();
         nStakeTime = 0;
-        nSequenceId = 0;
 
         nVersion       = 0;
         hashMerkleRoot = 0;
@@ -1037,7 +997,6 @@ public:
         bnStakeModifierV2 = 0;
 #endif
         hashProof = 0;
-        nSequenceId = 0;
         if (block.IsProofOfStake())
         {
             SetProofOfStake();
@@ -1271,7 +1230,6 @@ public:
 
 
 
-bool AcceptBlockHeader(const CBlockHeader& block, CValidationState& state, CBlockIndex **ppindex= NULL);
 
 
 
@@ -1410,9 +1368,9 @@ public:
 class CValidationState {
 private:
     enum mode_state {
-        MODE_VALID,   // everything ok
-        MODE_INVALID, // network rule violation (DoS value may be set)
-        MODE_ERROR,   // run-time error
+        MODE_VALID,   //! everything ok
+        MODE_INVALID, //! network rule violation (DoS value may be set)
+        MODE_ERROR,   //! run-time error
     } mode;
     int nDoS;
     std::string strRejectReason;

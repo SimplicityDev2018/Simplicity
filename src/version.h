@@ -43,8 +43,6 @@ static const int MIN_PEER_PROTO_VERSION = 70019;
 
 // minimum peer version accepted by DarkSendPool
 static const int MIN_POOL_PEER_PROTO_VERSION = 70021;
-// In this version, 'getheaders' was introduced.
-static const int GETHEADERS_VERSION = 31800;
 
 static const int MIN_INSTANTX_PROTO_VERSION = 70021;
 //! minimum peer version that can receive masternode payments
