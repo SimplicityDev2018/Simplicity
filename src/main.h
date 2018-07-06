@@ -70,10 +70,6 @@ static const int64_t TARGET_SPACING = 1 * 80; // 80 second block time expected
 inline bool MoneyRange(int64_t nValue) { return (nValue >= 0 && nValue <= MAX_MONEY); }
 /** Threshold for nLockTime: below this value it is interpreted as block number, otherwise as UNIX timestamp. */
 static const unsigned int LOCKTIME_THRESHOLD = 500000000; // Tue Nov  5 00:53:20 1985 UTC
-/** Number of blocks that can be requested at any given time from a single peer. */
-static const int MAX_BLOCKS_IN_TRANSIT_PER_PEER = 128;
-/** Timeout in seconds before considering a block download peer unresponsive. */
-static const unsigned int BLOCK_DOWNLOAD_TIMEOUT = 60;
 
 /** Future Drift time set in seconds */
 static const int64_t DRIFT = 600; // 10min drift time
@@ -186,9 +182,6 @@ int GetIXConfirmations(uint256 nTXHash);
 bool AbortNode(const std::string &msg, const std::string &userMessage="");
 /** Get statistics from node state */
 bool GetNodeStateStats(NodeId nodeid, CNodeStateStats &stats);
-/** Increase a node's misbehavior score. */
-void Misbehaving(NodeId nodeid, int howmuch);
-
 
 int64_t GetMasternodePayment(int nHeight, int64_t blockValue);
 
@@ -927,10 +920,10 @@ public:
     unsigned int nBlockPos;
     uint256 nChainTrust; // ppcoin: trust score of block chain
     int nHeight;
-
+#ifndef LOWMEM
     int64_t nMint;
     int64_t nMoneySupply;
-
+#endif
     unsigned int nFlags;  // ppcoin: block index flags
     enum
     {
@@ -940,8 +933,9 @@ public:
     };
 
     uint64_t nStakeModifier; // hash modifier for proof-of-stake
+#ifndef LOWMEM
     uint256 bnStakeModifierV2;
-
+#endif
     // proof-of-stake specific fields
     COutPoint prevoutStake;
     unsigned int nStakeTime;
@@ -954,8 +948,6 @@ public:
     unsigned int nTime;
     unsigned int nBits;
     unsigned int nNonce;
-    // (memory only) Sequencial id assigned to distinguish order in which blocks are received.
-    uint32_t nSequenceId;
 
     CBlockIndex()
     {
@@ -966,15 +958,18 @@ public:
         nBlockPos = 0;
         nHeight = 0;
         nChainTrust = 0;
+#ifndef LOWMEM
         nMint = 0;
         nMoneySupply = 0;
+#endif
         nFlags = 0;
         nStakeModifier = 0;
+#ifndef LOWMEM
         bnStakeModifierV2 = 0;
+#endif
         hashProof = 0;
         prevoutStake.SetNull();
         nStakeTime = 0;
-        nSequenceId = 0;
 
         nVersion       = 0;
         hashMerkleRoot = 0;
@@ -992,13 +987,16 @@ public:
         nBlockPos = nBlockPosIn;
         nHeight = 0;
         nChainTrust = 0;
+#ifndef LOWMEM
         nMint = 0;
         nMoneySupply = 0;
+#endif
         nFlags = 0;
         nStakeModifier = 0;
+#ifndef LOWMEM
         bnStakeModifierV2 = 0;
+#endif
         hashProof = 0;
-        nSequenceId = 0;
         if (block.IsProofOfStake())
         {
             SetProofOfStake();
@@ -1116,9 +1114,15 @@ public:
 
     std::string ToString() const
     {
+#ifndef LOWMEM
         return strprintf("CBlockIndex(nprev=%p, pnext=%p, nFile=%u, nBlockPos=%-6d nHeight=%d, nMint=%s, nMoneySupply=%s, nFlags=(%s)(%d)(%s), nStakeModifier=%016x, hashProof=%s, prevoutStake=(%s), nStakeTime=%d merkle=%s, hashBlock=%s)",
+#else
+        return strprintf("CBlockIndex(nprev=%p, pnext=%p, nFile=%u, nBlockPos=%-6d nHeight=%d, nFlags=(%s)(%d)(%s), nStakeModifier=%016x, hashProof=%s, prevoutStake=(%s), nStakeTime=%d merkle=%s, hashBlock=%s)",
+#endif        
             pprev, pnext, nFile, nBlockPos, nHeight,
+#ifndef LOWMEM
             FormatMoney(nMint), FormatMoney(nMoneySupply),
+#endif           
             GeneratedStakeModifier() ? "MOD" : "-", GetStakeEntropyBit(), IsProofOfStake()? "PoS" : "PoW",
             nStakeModifier,
             hashProof.ToString(),
@@ -1162,11 +1166,15 @@ public:
         READWRITE(nFile);
         READWRITE(nBlockPos);
         READWRITE(nHeight);
+#ifndef LOWMEM
         READWRITE(nMint);
         READWRITE(nMoneySupply);
+#endif
         READWRITE(nFlags);
         READWRITE(nStakeModifier);
+#ifndef LOWMEM
         READWRITE(bnStakeModifierV2);
+#endif
         if (IsProofOfStake())
         {
             READWRITE(prevoutStake);

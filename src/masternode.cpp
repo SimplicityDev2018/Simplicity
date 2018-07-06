@@ -81,12 +81,16 @@ CMasternode::CMasternode()
     allowFreeTx = true;
     protocolVersion = MIN_PEER_PROTO_VERSION;
     nLastDsq = 0;
+    rewardAddress = CScript();
+    rewardPercentage = 0;
     nVote = 0;
     lastVote = 0;
     nScanningErrorCount = 0;
     nLastScanningErrorBlockHeight = 0;
     //mark last paid as current for new entries
     nLastPaid = GetAdjustedTime();
+    isPortOpen = true;
+    isOldNode = true;
 }
 
 CMasternode::CMasternode(const CMasternode& other)
@@ -107,15 +111,19 @@ CMasternode::CMasternode(const CMasternode& other)
     allowFreeTx = other.allowFreeTx;
     protocolVersion = other.protocolVersion;
     nLastDsq = other.nLastDsq;
+    rewardAddress = other.rewardAddress;
+    rewardPercentage = other.rewardPercentage;
     nVote = other.nVote;
     lastVote = other.lastVote;
     nScanningErrorCount = other.nScanningErrorCount;
     nLastScanningErrorBlockHeight = other.nLastScanningErrorBlockHeight;
     nLastPaid = other.nLastPaid;
     nLastPaid = GetAdjustedTime();
+    isPortOpen = other.isPortOpen;
+    isOldNode = other.isOldNode;
 }
 
-CMasternode::CMasternode(CService newAddr, CTxIn newVin, CPubKey newPubkey, std::vector<unsigned char> newSig, int64_t newSigTime, CPubKey newPubkey2, int protocolVersionIn)
+CMasternode::CMasternode(CService newAddr, CTxIn newVin, CPubKey newPubkey, std::vector<unsigned char> newSig, int64_t newSigTime, CPubKey newPubkey2, int protocolVersionIn, CScript newRewardAddress, int newRewardPercentage)
 {
     LOCK(cs);
     vin = newVin;
@@ -133,10 +141,14 @@ CMasternode::CMasternode(CService newAddr, CTxIn newVin, CPubKey newPubkey, std:
     allowFreeTx = true;
     protocolVersion = protocolVersionIn;
     nLastDsq = 0;
+    rewardAddress = newRewardAddress;
+    rewardPercentage = newRewardPercentage;
     nVote = 0;
     lastVote = 0;
     nScanningErrorCount = 0;
     nLastScanningErrorBlockHeight = 0;
+    isPortOpen = true;
+    isOldNode = true;
 }
 
 //

@@ -26,6 +26,7 @@ LIBPATHS= \
 
 USE_UPNP:=1
 USE_WALLET:=1
+USE_LOWMEM:=0
 
 LIBS= -dead_strip
 
@@ -68,7 +69,6 @@ CFLAGS += -Wall -Wextra -Wformat -Wno-ignored-qualifiers -Wformat-security -Wno-
     $(DEBUGFLAGS) $(DEFS) $(INCLUDEPATHS)
 
 OBJS= \
-    obj/irc.o \
     obj/alert.o \
     obj/allocators.o \
     obj/version.o \
@@ -96,7 +96,6 @@ OBJS= \
     obj/rpcblockchain.o \
     obj/rpcrawtransaction.o \
     obj/rpcsmessage.o \
-    obj/timedata.o \
     obj/script.o \
     obj/scrypt.o \
     obj/sync.o \
@@ -163,6 +162,10 @@ endif
 endif
 
 all: simplicityd
+ifeq (${USE_LOWMEM}, 1)
+    DEFS += -DLOWMEM
+endif
+
 
 # build secp256k1
 DEFS += $(addprefix -I,$(CURDIR)/secp256k1/include)

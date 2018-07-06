@@ -6,14 +6,6 @@
 
 #include <stdint.h>
 
-// Uncomment to build SPL Adv
-//#include "radio.h"
-//#include "bitcointalk.h"
-//#include "twitter.h"
-//#include "bittrex.h"
-//#include "coinexchange.h"
-//#include "yobit.h"
-
 class TransactionTableModel;
 class ClientModel;
 class WalletModel;
@@ -37,10 +29,6 @@ class QProgressBar;
 class QProgressDialog;
 class QStackedWidget;
 class QScrollArea;
-class QLineEdit;
-class QTableView;
-class QAbstractItemModel;
-class QUrl;
 QT_END_NAMESPACE
 
 /**
@@ -91,14 +79,6 @@ private:
     SignVerifyMessageDialog *signVerifyMessageDialog;
     MasternodeManager *masternodeManagerPage;
     MessagePage *messagePage;
-    // Uncomment to build SPL Adv
-    //Radio *radioPage;
-    //Bitcointalk *bitcointalkPage;
-    //Twitter *twitterPage;
-    //Bittrex *bittrexPage;
-    //Coinexchange *coinexchangePage;
-    //Yobit *yobitPage;
-
     QLabel* netLabel;
     BlockBrowser *blockBrowser;
     tradingDialog   *tradingDialogPage;
@@ -108,11 +88,6 @@ private:
     QLabel *labelBlocksIcon;
     QLabel *progressBarLabel;
     QProgressBar *progressBar;
-#ifdef USE_NATIVE_I2P
-    QLabel* labelI2PConnections;
-    QLabel* labelI2POnly;
-    QLabel* labelI2PGenerated;
-#endif
     QProgressDialog *progressDialog;
 
     QMenuBar *appMenuBar;
@@ -138,14 +113,6 @@ private:
     QAction *masternodeManagerAction;
     QAction *messageAction;
     QAction *blockAction;
-    // Uncomment to build SPL Adv
-    //QAction *radioAction;
-    //QAction *bitcointalkAction;
-    //QAction *twitterAction;
-    //QAction *bittrexAction;
-    //QAction *coinexchangeAction;
-    //QAction *yobitAction;
-
     QAction *TradingAction;
     QAction *showBackupsAction;
 
@@ -172,9 +139,6 @@ private:
     void clearWidgets();
 
 public slots:
-#ifdef USE_NATIVE_I2P
-    void setNumI2PConnections(int count);
-#endif
     /** Set number of connections shown in the UI */
     void setNumConnections(int count);
     /** Set number of blocks shown in the UI */
@@ -206,10 +170,6 @@ public slots:
     void askFee(qint64 nFeeRequired, bool *payFee);
     void handleURI(QString strURI);
 
-#ifdef USE_NATIVE_I2P
-    void showGeneratedI2PAddr(const QString& caption, const QString& pub, const QString& priv, const QString& b32, const QString& configFileName);
-#endif
-
 private slots:
     /** Switch to overview (home) page */
     void gotoOverviewPage();
@@ -233,20 +193,6 @@ private slots:
     void gotoVerifyMessageTab(QString addr = "");
     /** Switch to message page*/
     void gotoMessagePage();
-    // Uncomment to build SPL Adv
-    /** Switch to radio page */
-    //void gotoRadioPage();
-    /** Switch to bitcointalk page */
-    //void gotoBitcointalkPage();
-    /** Switch to twitter page */
-    //void gotoTwitterPage();
-    /** Switch to bittrex page */
-    //void gotoBittrexPage();
-    /** Switch to coinexchange page */
-    //void gotoCoinexchangePage();
-    /** Switch to yobit page */
-    //void gotoYobitPage();
-
     /** Show configuration dialog */
     void optionsClicked();
     /** Show about dialog */

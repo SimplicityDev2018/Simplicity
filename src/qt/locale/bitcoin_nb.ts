@@ -226,7 +226,7 @@ This product includes software developed by the OpenSSL Project for use in the O
     </message>
     <message>
         <location line="+1"/>
-        <source>Warning: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;LOSE ALL OF YOUR Simplicity's&lt;/b&gt;!</source>
+        <source>Warning: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;LOSE ALL OF YOUR COINS&lt;/b&gt;!</source>
         <translation>Advarsel: Viss du krypterer lommeboken og mister passordet vil du &lt;b&gt;MISTE ALLE MYNTENE DINE&lt;/b&gt;!</translation>
     </message>
     <message>
@@ -258,7 +258,7 @@ This product includes software developed by the OpenSSL Project for use in the O
     </message>
     <message>
         <location line="+82"/>
-        <source>Simplicity will close now to finish the encryption process. Remember that encrypting your wallet cannot fully protect your Simplicity's from being stolen by malware infecting your computer.</source>
+        <source>Simplicity will close now to finish the encryption process. Remember that encrypting your wallet cannot fully protect your coins from being stolen by malware infecting your computer.</source>
         <translation type="unfinished"/>
     </message>
     <message>
@@ -392,8 +392,8 @@ This product includes software developed by the OpenSSL Project for use in the O
     </message>
     <message>
         <location line="-55"/>
-        <source>Send Simplicity's to a Simplicity address</source>
-        <translation>Send Simplicity's til en Simplicity adresse</translation>
+        <source>Send coins to a Simplicity address</source>
+        <translation>Send coins til en Simplicity adresse</translation>
     </message>
     <message>
         <location line="+39"/>
@@ -530,7 +530,7 @@ This product includes software developed by the OpenSSL Project for use in the O
     </message>
     <message>
         <location line="+2"/>
-        <source>Not staking because you don&apos;t have mature Simplicity's</source>
+        <source>Not staking because you don&apos;t have mature coins</source>
         <translation type="unfinished"/>
     </message>
     <message>
@@ -1247,7 +1247,7 @@ Dette betyr at det trengs en avgift på minimum %2.</translation>
     </message>
     <message>
         <location line="+13"/>
-        <source>Choose the default subdivision unit to show in the interface and when sending Simplicity's.</source>
+        <source>Choose the default subdivision unit to show in the interface and when sending coins.</source>
         <translation>Velg standard delt enhet for visning i grensesnittet og for sending av simplicitys.</translation>
     </message>
     <message>
@@ -1383,7 +1383,7 @@ Dette betyr at det trengs en avgift på minimum %2.</translation>
     </message>
     <message>
         <location line="-32"/>
-        <source>Total of Simplicity's that was staked, and do not yet count toward the current balance</source>
+        <source>Total of coins that was staked, and do not yet count toward the current balance</source>
         <translation type="unfinished"/>
     </message>
     <message>
@@ -1660,17 +1660,17 @@ Dette betyr at det trengs en avgift på minimum %2.</translation>
     </message>
 </context>
 <context>
-    <name>SendSimplicity'sDialog</name>
+    <name>SendCoinsDialog</name>
     <message>
-        <location filename="../forms/sendSimplicity'sdialog.ui" line="+14"/>
-        <location filename="../sendSimplicity'sdialog.cpp" line="+181"/>
+        <location filename="../forms/sendCoinsdialog.ui" line="+14"/>
+        <location filename="../sendCoinsdialog.cpp" line="+181"/>
         <location line="+5"/>
         <location line="+5"/>
         <location line="+5"/>
         <location line="+6"/>
         <location line="+5"/>
         <location line="+5"/>
-        <source>Send Simplicity's</source>
+        <source>Send coins</source>
         <translation>Send Simplicitys</translation>
     </message>
     <message>
@@ -1803,7 +1803,7 @@ Dette betyr at det trengs en avgift på minimum %2.</translation>
         <translation>S&amp;end</translation>
     </message>
     <message>
-        <location filename="../sendSimplicity'sdialog.cpp" line="-173"/>
+        <location filename="../sendCoinsdialog.cpp" line="-173"/>
         <source>Enter a Simplicity address (e.g. 6834Nm8iKGE18CT1jtM85zqS19ycjzMJ2D)</source>
         <translation type="unfinished"/>
     </message>
@@ -1854,8 +1854,8 @@ Dette betyr at det trengs en avgift på minimum %2.</translation>
     </message>
     <message>
         <location line="+5"/>
-        <source>Confirm send Simplicity's</source>
-        <translation>Bekreft sending av bitSimplicity's</translation>
+        <source>Confirm send coins</source>
+        <translation>Bekreft sending av bitcoins</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -1899,7 +1899,7 @@ Dette betyr at det trengs en avgift på minimum %2.</translation>
     </message>
     <message>
         <location line="+5"/>
-        <source>Error: The transaction was rejected. This might happen if some of the Simplicity's in your wallet were already spent, such as if you used a copy of wallet.dat and Simplicity's were spent in the copy but not marked as spent here.</source>
+        <source>Error: The transaction was rejected. This might happen if some of the coins in your wallet were already spent, such as if you used a copy of wallet.dat and coins were spent in the copy but not marked as spent here.</source>
         <translation type="unfinished"/>
     </message>
     <message>
@@ -1919,9 +1919,9 @@ Dette betyr at det trengs en avgift på minimum %2.</translation>
     </message>
 </context>
 <context>
-    <name>SendSimplicity'sEntry</name>
+    <name>SendCoinsEntry</name>
     <message>
-        <location filename="../forms/sendSimplicity'sentry.ui" line="+14"/>
+        <location filename="../forms/sendCoinsentry.ui" line="+14"/>
         <source>Form</source>
         <translation type="unfinished"/>
     </message>
@@ -1942,7 +1942,7 @@ Dette betyr at det trengs en avgift på minimum %2.</translation>
     </message>
     <message>
         <location line="+60"/>
-        <location filename="../sendSimplicity'sentry.cpp" line="+26"/>
+        <location filename="../sendCoinsentry.cpp" line="+26"/>
         <source>Enter a label for this address to add it to your address book</source>
         <translation>Skriv inn en merkelapp for denne adressen for å legge den til i din adressebok</translation>
     </message>
@@ -1977,7 +1977,7 @@ Dette betyr at det trengs en avgift på minimum %2.</translation>
         <translation>Fjern denne mottakeren</translation>
     </message>
     <message>
-        <location filename="../sendSimplicity'sentry.cpp" line="+1"/>
+        <location filename="../sendCoinsentry.cpp" line="+1"/>
         <source>Enter a Simplicity address (e.g. 6834Nm8iKGE18CT1jtM85zqS19ycjzMJ2D)</source>
         <translation type="unfinished"/>
     </message>
@@ -2300,7 +2300,7 @@ Dette betyr at det trengs en avgift på minimum %2.</translation>
     </message>
     <message>
         <location line="+3"/>
-        <source>Generated Simplicity's must mature 510 blocks before they can be spent. When you generated this block, it was broadcast to the network to be added to the block chain. If it fails to get into the chain, its state will change to &quot;not accepted&quot; and it won&apos;t be spendable. This may occasionally happen if another node generates a block within a few seconds of yours.</source>
+        <source>Generated coins must mature 510 blocks before they can be spent. When you generated this block, it was broadcast to the network to be added to the block chain. If it fails to get into the chain, its state will change to &quot;not accepted&quot; and it won&apos;t be spendable. This may occasionally happen if another node generates a block within a few seconds of yours.</source>
         <translation type="unfinished"/>
     </message>
     <message>
@@ -2670,7 +2670,7 @@ Dette betyr at det trengs en avgift på minimum %2.</translation>
 <context>
     <name>bitcoin-core</name>
     <message>
-        <location filename="../bitSimplicity'strings.cpp" line="+173"/>
+        <location filename="../bitcoinstrings.cpp" line="+173"/>
         <source>Simplicity version</source>
         <translation>Simplicity versjon</translation>
     </message>
@@ -2997,7 +2997,7 @@ for example: alertnotify=echo %%s | mail -s &quot;Simplicity Alert&quot; admin@f
     </message>
     <message>
         <location line="+2"/>
-        <source>Error: The transaction was rejected! This might happen if some of the Simplicity's in your wallet were already spent, such as if you used a copy of wallet.dat and Simplicity's were spent in the copy but not marked as spent here.</source>
+        <source>Error: The transaction was rejected! This might happen if some of the coins in your wallet were already spent, such as if you used a copy of wallet.dat and coins were spent in the copy but not marked as spent here.</source>
         <translation type="unfinished"/>
     </message>
     <message>

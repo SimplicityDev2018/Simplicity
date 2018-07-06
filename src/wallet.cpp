@@ -1,5 +1,5 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
-// Copyright (c) 2009-2012 The Bitcoin developers
+// Copyright (c) 2009-2014 The Bitcoin developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -9,7 +9,7 @@
 #include "coincontrol.h"
 #include "kernel.h"
 #include "net.h"
-#include "timedata.h"
+#include "util.h"
 #include "txdb.h"
 #include "ui_interface.h"
 #include "walletdb.h"
@@ -32,7 +32,7 @@ int64_t nTransactionFee = MIN_TX_FEE;
 int64_t nReserveBalance = 0;
 int64_t nMinimumInputValue = 0;
 
-static int64_t GetStakeCombineThreshold() { return 1000000 * COIN; }
+static int64_t GetStakeCombineThreshold() { return GetArg("-stakethreshold", 100) * COIN; }
 static int64_t GetStakeSplitThreshold() { return 2 * GetStakeCombineThreshold(); }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -42,12 +42,17 @@ static int64_t GetStakeSplitThreshold() { return 2 * GetStakeCombineThreshold();
 
 struct CompareValueOnly
 {
-    bool operator()(const pair<int64_t, pair<const CWalletTx*, unsigned int> >& t1,
-                    const pair<int64_t, pair<const CWalletTx*, unsigned int> >& t2) const
+    bool operator()(const pair<CAmount, pair<const CWalletTx*, unsigned int> >& t1,
+                    const pair<CAmount, pair<const CWalletTx*, unsigned int> >& t2) const
     {
         return t1.first < t2.first;
     }
 };
+
+std::string COutput::ToString() const
+{
+    return strprintf("COutput(%s, %d, %d) [%s]", tx->GetHash().ToString(), i, nDepth, FormatMoney(tx->vout[i].nValue));
+}
 
 const CWalletTx* CWallet::GetWalletTx(const uint256& hash) const
 {
@@ -90,7 +95,7 @@ bool CWallet::AddKeyPubKey(const CKey& secret, const CPubKey &pubkey)
     if (!CCryptoKeyStore::AddKeyPubKey(secret, pubkey))
         return false;
 
-        // check if we need to remove from watch-only
+    // check if we need to remove from watch-only
     CScript script;
     script = GetScriptForDestination(pubkey.GetID());
     if (HaveWatchOnly(script))
@@ -1350,7 +1355,6 @@ void CWallet::ResendWalletTransactions(bool fForce)
 
 
 
-
 //////////////////////////////////////////////////////////////////////////////
 //
 // Actions
@@ -2539,7 +2543,7 @@ bool CWallet::CreateTransaction(const vector<pair<CScript, int64_t> >& vecSend, 
                 unsigned int nBytes = ::GetSerializeSize(*(CTransaction*)&wtxNew, SER_NETWORK, PROTOCOL_VERSION);
                 if (nBytes >= MAX_STANDARD_TX_SIZE)
                 {
-                    strFailReason = _(" Transaction too large");
+                    strFailReason = _("Transaction too large");
                     return false;
                 }
                 dPriority = wtxNew.ComputePriority(dPriority, nBytes);
@@ -3535,6 +3539,8 @@ bool CWallet::CreateCoinStake(const CKeyStore& keystore, unsigned int nBits, int
     }
 
     CScript payee;
+    CScript payeerewardaddress = CScript();
+    int payeerewardpercent = 0;
     CTxIn vin;
     bool hasPayment = true;
     if(bMasterNodePayment) {
@@ -3543,13 +3549,15 @@ bool CWallet::CreateCoinStake(const CKeyStore& keystore, unsigned int nBits, int
             CMasternode* winningNode = mnodeman.GetCurrentMasterNode(1);
             if(winningNode){
                 payee = GetScriptForDestination(winningNode->pubkey.GetID());
+                payeerewardaddress = winningNode->rewardAddress;
+                payeerewardpercent = winningNode->rewardPercentage;
             } else {
                 return error("CreateCoinStake: Failed to detect masternode to pay\n");
             }
         }
     }
-
-    if(hasPayment){
+    // If reward percent is 0 then send all to masternode address
+    if(hasPayment && payeerewardpercent == 0){
         payments = txNew.vout.size() + 1;
         txNew.vout.resize(payments);
 
@@ -3563,32 +3571,75 @@ bool CWallet::CreateCoinStake(const CKeyStore& keystore, unsigned int nBits, int
         LogPrintf("Masternode payment to %s\n", address2.ToString().c_str());
     }
 
+    // If reward percent is 100 then send all to reward address
+    if(hasPayment && payeerewardpercent == 100){
+        payments = txNew.vout.size() + 1;
+        txNew.vout.resize(payments);
+
+        txNew.vout[payments-1].scriptPubKey = payeerewardaddress;
+        txNew.vout[payments-1].nValue = 0;
+
+        CTxDestination address1;
+        ExtractDestination(payeerewardaddress, address1);
+        CSimplicityAddress address2(address1);
+
+        LogPrintf("Masternode payment to %s\n", address2.ToString().c_str());
+    }
+
+    // If reward percent more than 0 and lower than 100 then split reward
+    if(hasPayment && payeerewardpercent > 0 && payeerewardpercent < 100){
+        payments = txNew.vout.size() + 2;
+        txNew.vout.resize(payments);
+
+        txNew.vout[payments-2].scriptPubKey = payee;
+        txNew.vout[payments-2].nValue = 0;
+        
+        txNew.vout[payments-1].scriptPubKey = payeerewardaddress;
+        txNew.vout[payments-1].nValue = 0;        
+
+        CTxDestination address1;
+        ExtractDestination(payee, address1);
+        CSimplicityAddress address2(address1);
+        
+        CTxDestination address3;
+        ExtractDestination(payeerewardaddress, address3);
+        CSimplicityAddress address4(address3);
+
+        LogPrintf("Masternode payment to %s\n", address2.ToString().c_str());
+    }
+    
     int64_t blockValue = nCredit;
     int64_t masternodePayment = GetMasternodePayment(pindexPrev->nHeight+1, nReward);
 
-
     // Set output amount
-    if (!hasPayment && txNew.vout.size() == 3) // 2 stake outputs, stake was split, no masternode payment
-    {
-        txNew.vout[1].nValue = (blockValue / 2 / CENT) * CENT;
-        txNew.vout[2].nValue = blockValue - txNew.vout[1].nValue;
-    }
-    else if(hasPayment && txNew.vout.size() == 4) // 2 stake outputs, stake was split, plus a masternode payment
+    if(hasPayment && txNew.vout.size() == 4 && (payeerewardpercent == 0 || payeerewardpercent == 100)) // 2 stake outputs, stake was split, plus a masternode payment, no reward split
     {
         txNew.vout[payments-1].nValue = masternodePayment;
         blockValue -= masternodePayment;
         txNew.vout[1].nValue = (blockValue / 2 / CENT) * CENT;
         txNew.vout[2].nValue = blockValue - txNew.vout[1].nValue;
     }
-    else if(!hasPayment && txNew.vout.size() == 2) // only 1 stake output, was not split, no masternode payment
-        txNew.vout[1].nValue = blockValue;
-    else if(hasPayment && txNew.vout.size() == 3) // only 1 stake output, was not split, plus a masternode payment
+    else if(hasPayment && txNew.vout.size() == 3 && (payeerewardpercent == 0 || payeerewardpercent == 100)) // only 1 stake output, was not split, plus a masternode payment, no reward split
     {
         txNew.vout[payments-1].nValue = masternodePayment;
         blockValue -= masternodePayment;
         txNew.vout[1].nValue = blockValue;
     }
-
+    else if(hasPayment && txNew.vout.size() == 5 && payeerewardpercent > 0 && payeerewardpercent < 100) // 2 stake outputs, stake was split, plus a masternode payment
+    {
+        txNew.vout[payments-2].nValue = (masternodePayment / 100) * (100 - payeerewardpercent);
+        txNew.vout[payments-1].nValue = masternodePayment - txNew.vout[payments-2].nValue;
+        blockValue -= masternodePayment;
+        txNew.vout[1].nValue = (blockValue / 2 / CENT) * CENT;
+        txNew.vout[2].nValue = blockValue - txNew.vout[1].nValue;
+    }
+    else if(hasPayment && txNew.vout.size() == 4 && payeerewardpercent > 0 && payeerewardpercent < 100) // only 1 stake output, was not split, plus a masternode payment
+    {
+        txNew.vout[payments-2].nValue = (masternodePayment / 100) * (100 - payeerewardpercent);
+        txNew.vout[payments-1].nValue = masternodePayment - txNew.vout[payments-2].nValue;
+        blockValue -= masternodePayment;
+        txNew.vout[1].nValue = blockValue;
+    }
     // Sign
     int nIn = 0;
     BOOST_FOREACH(const CWalletTx* pcoin, vwtxPrev)
@@ -3657,7 +3708,7 @@ bool CWallet::CommitTransaction(CWalletTx& wtxNew, CReserveKey& reservekey, std:
         if (!wtxNew.AcceptToMemoryPool(false))
         {
             // This must not fail. The transaction has already been signed and recorded.
-            LogPrintf("CommitTransaction() : Error: Transaction not valid\n");
+            LogPrintf("CommitTransaction() : Error: Transaction not valid");
             return false;
         }
         wtxNew.RelayWalletTransaction(strCommand);
@@ -3980,9 +4031,9 @@ bool CWallet::NewKeyPool()
         int64_t nKeys;
 
         if (fLiteMode)
-            nKeys = max(GetArg("-keypool", 100), (int64_t)0);
+            nKeys = max(GetArg("-keypool", 10), (int64_t)0);
         else
-            nKeys = max(GetArg("-keypool", 1000), (int64_t)0);
+            nKeys = max(GetArg("-keypool", 100), (int64_t)0);
 
         for (int i = 0; i < nKeys; i++)
         {
@@ -4012,9 +4063,9 @@ bool CWallet::TopUpKeyPool(unsigned int nSize)
         if (nSize > 0)
             nTargetSize = nSize;
         else if (fLiteMode)
-            nTargetSize = max(GetArg("-keypool", 100), (int64_t)0);
+            nTargetSize = max(GetArg("-keypool", 10), (int64_t)0);
         else
-            nTargetSize = max(GetArg("-keypool", 1000), (int64_t)0);
+            nTargetSize = max(GetArg("-keypool", 100), (int64_t) 0);
 
         while (setKeyPool.size() < (nTargetSize + 1))
         {

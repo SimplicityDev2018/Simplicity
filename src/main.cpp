@@ -1,13 +1,11 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
-// Copyright (c) 2009-2012 The Bitcoin developers
+// Copyright (c) 2009-2014 The Bitcoin developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#include <boost/algorithm/string/replace.hpp>
-#include <boost/filesystem.hpp>
-#include <boost/filesystem/fstream.hpp>
-#include <boost/lexical_cast.hpp>
+#include "main.h"
 
+#include "addrman.h"
 #include "alert.h"
 #include "chainparams.h"
 #include "checkpoints.h"
@@ -24,7 +22,12 @@
 #include "masternode-payments.h"
 #include "spork.h"
 #include "smessage.h"
+#include "util.h"
 
+#include <boost/algorithm/string/replace.hpp>
+#include <boost/filesystem.hpp>
+#include <boost/filesystem/fstream.hpp>
+#include <boost/lexical_cast.hpp>
 using namespace std;
 using namespace boost;
 
@@ -82,28 +85,6 @@ CScript COINBASE_FLAGS;
 const string strMessageMagic = "Simplicity Signed Message:\n";
 
 std::set<uint256> setValidatedTx;
-
-namespace {
-// Every received block is assigned a unique and increasing identifier, so we
-// know which one to give priority in case of a fork.
-CCriticalSection cs_nBlockSequenceId;
-// Blocks loaded from disk are assigned id 0, so start the counter at 1.
-uint32_t nBlockSequenceId = 1;
-
-// Sources of received blocks, to be able to send them reject messages or ban
-// them, if processing happens afterwards. Protected by cs_main.
-map<uint256, NodeId> mapBlockSource;
-
-// Blocks that are in flight, and that are in the queue to be downloaded.
-// Protected by cs_main.
-struct QueuedBlock {
-    uint256 hash;
-    int64_t nTime;  // Time of "getdata" request in microseconds.
-    int nQueuedBefore;  // Number of blocks in flight at the time of request.
-};
-map<uint256, pair<NodeId, list<QueuedBlock>::iterator> > mapBlocksInFlight;
-map<uint256, pair<NodeId, list<uint256>::iterator> > mapBlocksToDownload;
-}
 
 //////////////////////////////////////////////////////////////////////////////
 //
@@ -172,13 +153,6 @@ void ResendWalletTransactions(bool fForce) {
 //
 
 namespace {
-
-struct CBlockReject {
-    unsigned char chRejectCode;
-    string strRejectReason;
-    uint256 hashBlock;
-};
-
 // Maintain validation-specific state about nodes, protected by cs_main, instead
 // by CNode's own locks. This simplifies asynchronous operation, where
 // processing of incoming data is done after the ProcessMessage call returns,
@@ -189,22 +163,10 @@ struct CNodeState {
     // Whether this peer should be disconnected and banned.
     bool fShouldBan;
     std::string name;
-    // List of asynchronously-determined block rejections to notify this peer about.
-    std::vector<CBlockReject> rejects;
-    list<QueuedBlock> vBlocksInFlight;
-    int nBlocksInFlight;
-    list<uint256> vBlocksToDownload;
-    int nBlocksToDownload;
-    int64_t nLastBlockReceive;
-    int64_t nLastBlockProcess;
 
     CNodeState() {
         nMisbehavior = 0;
         fShouldBan = false;
-        nBlocksToDownload = 0;
-        nBlocksInFlight = 0;
-        nLastBlockReceive = 0;
-        nLastBlockProcess = 0;
     }
 };
 
@@ -235,69 +197,7 @@ void InitializeNode(NodeId nodeid, const CNode *pnode) {
 
 void FinalizeNode(NodeId nodeid) {
     LOCK(cs_main);
-    CNodeState *state = State(nodeid);
-
-    BOOST_FOREACH(const QueuedBlock& entry, state->vBlocksInFlight)
-        mapBlocksInFlight.erase(entry.hash);
-    BOOST_FOREACH(const uint256& hash, state->vBlocksToDownload)
-        mapBlocksToDownload.erase(hash);
-
     mapNodeState.erase(nodeid);
-}
-
-// Requires cs_main.
-void MarkBlockAsReceived(const uint256 &hash, NodeId nodeFrom = -1) {
-    map<uint256, pair<NodeId, list<uint256>::iterator> >::iterator itToDownload = mapBlocksToDownload.find(hash);
-    if (itToDownload != mapBlocksToDownload.end()) {
-        CNodeState *state = State(itToDownload->second.first);
-        state->vBlocksToDownload.erase(itToDownload->second.second);
-        state->nBlocksToDownload--;
-        mapBlocksToDownload.erase(itToDownload);
-    }
-
-    map<uint256, pair<NodeId, list<QueuedBlock>::iterator> >::iterator itInFlight = mapBlocksInFlight.find(hash);
-    if (itInFlight != mapBlocksInFlight.end()) {
-        CNodeState *state = State(itInFlight->second.first);
-        state->vBlocksInFlight.erase(itInFlight->second.second);
-        state->nBlocksInFlight--;
-        if (itInFlight->second.first == nodeFrom)
-            state->nLastBlockReceive = GetTimeMicros();
-        mapBlocksInFlight.erase(itInFlight);
-    }
-
-}
-
-// Requires cs_main.
-bool AddBlockToQueue(NodeId nodeid, const uint256 &hash) {
-    if (mapBlocksToDownload.count(hash) || mapBlocksInFlight.count(hash))
-        return false;
-
-    CNodeState *state = State(nodeid);
-    if (state == NULL)
-        return false;
-
-    list<uint256>::iterator it = state->vBlocksToDownload.insert(state->vBlocksToDownload.end(), hash);
-    state->nBlocksToDownload++;
-    if (state->nBlocksToDownload > 5000)
-        Misbehaving(nodeid, 10);
-    mapBlocksToDownload[hash] = std::make_pair(nodeid, it);
-    return true;
-}
-
-// Requires cs_main.
-void MarkBlockAsInFlight(NodeId nodeid, const uint256 &hash) {
-    CNodeState *state = State(nodeid);
-    assert(state != NULL);
-
-    // Make sure it's not listed somewhere already.
-    MarkBlockAsReceived(hash);
-
-    QueuedBlock newentry = {hash, GetTimeMicros(), state->nBlocksInFlight};
-    if (state->nBlocksInFlight == 0)
-        state->nLastBlockReceive = newentry.nTime; // Reset when a first request is sent.
-    list<QueuedBlock>::iterator it = state->vBlocksInFlight.insert(state->vBlocksInFlight.end(), newentry);
-    state->nBlocksInFlight++;
-    mapBlocksInFlight[hash] = std::make_pair(nodeid, it);
 }
 
 }
@@ -670,36 +570,38 @@ unsigned int GetP2SHSigOpCount(const CTransaction& tx, const MapPrevTx& inputs)
 int CMerkleTx::SetMerkleBranch(const CBlock* pblock)
 {
     AssertLockHeld(cs_main);
-
     CBlock blockTmp;
-    if (pblock == NULL)
-    {
+
+    if (pblock == NULL) {
         // Load the block this tx is in
         CTxIndex txindex;
         if (!CTxDB("r").ReadTxIndex(GetHash(), txindex))
             return 0;
-        if (!blockTmp.ReadFromDisk(txindex.pos.nFile, txindex.pos.nBlockPos))
+        if (!blockTmp.ReadFromDisk(txindex.pos.nFile, txindex.pos.nBlockPos)) {
             return 0;
-        pblock = &blockTmp;
+            pblock = &blockTmp;
+        }
     }
 
-    // Update the tx's hashBlock
-    hashBlock = pblock->GetHash();
+    if (pblock) {
+        // Update the tx's hashBlock
+        hashBlock = pblock->GetHash();
 
-    // Locate the transaction
-    for (nIndex = 0; nIndex < (int)pblock->vtx.size(); nIndex++)
-        if (pblock->vtx[nIndex] == *(CTransaction*)this)
-            break;
-    if (nIndex == (int)pblock->vtx.size())
-    {
-        vMerkleBranch.clear();
-        nIndex = -1;
-        LogPrintf("ERROR: SetMerkleBranch() : couldn't find tx in block\n");
-        return 0;
+        // Locate the transaction
+        for (nIndex = 0; nIndex < (int)pblock->vtx.size(); nIndex++)
+            if (pblock->vtx[nIndex] == *(CTransaction*)this)
+                break;
+        if (nIndex == (int)pblock->vtx.size())
+        {
+            vMerkleBranch.clear();
+            nIndex = -1;
+            LogPrintf("ERROR: SetMerkleBranch() : couldn't find tx in block\n");
+            return 0;
+        }
+
+        // Fill in merkle branch
+        vMerkleBranch = pblock->GetMerkleBranch(nIndex);
     }
-
-    // Fill in merkle branch
-    vMerkleBranch = pblock->GetMerkleBranch(nIndex);
 
     // Is the tx in a block that's in the main chain
     map<uint256, CBlockIndex*>::iterator mi = mapBlockIndex.find(hashBlock);
@@ -2085,8 +1987,10 @@ bool CBlock::ConnectBlock(CTxDB& txdb, CBlockIndex* pindex, bool fJustCheck)
     }
 
     // ppcoin: track money supply and mint amount info
+#ifndef LOWMEM
     pindex->nMint = nValueOut - nValueIn + nFees;
     pindex->nMoneySupply = (pindex->pprev? pindex->pprev->nMoneySupply : 0) + nValueOut - nValueIn;
+#endif    
     if (!txdb.WriteBlockIndex(CDiskBlockIndex(pindex)))
         return error("Connect() : WriteBlockIndex for pindex failed");
 
@@ -2474,10 +2378,6 @@ bool CBlock::AddToBlockIndex(unsigned int nFile, unsigned int nBlockPos, const u
 
     // Construct new block index object
     CBlockIndex* pindexNew = new CBlockIndex(nFile, nBlockPos, *this);
-     {
-          LOCK(cs_nBlockSequenceId);
-          pindexNew->nSequenceId = nBlockSequenceId++;
-     }
     if (!pindexNew)
         return error("AddToBlockIndex() : new CBlockIndex failed");
     pindexNew->phashBlock = &hash;
@@ -3229,14 +3129,20 @@ void PrintBlockTree()
         // print item
         CBlock block;
         block.ReadFromDisk(pindex);
+#ifndef LOWMEM
         LogPrintf("%d (%u,%u) %s  %08x  %s  mint %7s  tx %u",
+#else
+        LogPrintf("%d (%u,%u) %s  %08x  %s  tx %u",
+#endif        
             pindex->nHeight,
             pindex->nFile,
             pindex->nBlockPos,
             block.GetHash().ToString(),
             block.nBits,
             DateTimeStrFormat("%x %H:%M:%S", block.GetBlockTime()),
+#ifndef LOWMEM
             FormatMoney(pindex->nMint),
+#endif            
             block.vtx.size());
 
         // put the main time-chain first
@@ -3605,7 +3511,7 @@ void static ProcessGetData(CNode* pfrom)
     }
 }
 
-bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv, int64_t nTimeReceived)
+bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv)
 {
     RandAddSeedPerfmon();
     LogPrint("net", "received: %s (%u bytes)\n", strCommand, vRecv.size());
@@ -3614,8 +3520,6 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv, 
         LogPrintf("dropmessagestest DROPPING RECV MESSAGE\n");
         return true;
     }
-
-    State(pfrom->GetId())->nLastBlockProcess = GetTimeMicros();
 
     if (strCommand == "version")
     {
@@ -3649,6 +3553,8 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv, 
         }
         if (!vRecv.empty())
             vRecv >> pfrom->nStartingHeight;
+        if (!vRecv.empty())
+            pfrom->fRelayTxes = true;
 
         // Disconnect if we connected to ourself
         if (nNonce == nLocalHostNonce && nNonce > 1)
@@ -3658,9 +3564,9 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv, 
             return true;
         }
 
-        pfrom->addrLocal = addrMe;
         if (pfrom->fInbound && addrMe.IsRoutable())
         {
+            pfrom->addrLocal = addrMe;
             SeenLocal(addrMe);
         }
 
@@ -3716,9 +3622,7 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv, 
         LogPrintf("receive version message: version %d, blocks=%d, us=%s, them=%s, peer=%s\n", pfrom->nVersion, pfrom->nStartingHeight, addrMe.ToString(), addrFrom.ToString(), pfrom->addr.ToString());
 
         if (GetBoolArg("-synctime", true)){
-            int64_t nTimeOffset = nTime - GetTime();
-            pfrom->nTimeOffset = nTimeOffset;
-            AddTimeData(pfrom->addr, nTimeOffset);
+            AddTimeData(pfrom->addr, nTime);
         }
 
     }
@@ -3814,6 +3718,15 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv, 
             return error("message inv size() = %u", vInv.size());
         }
 
+        // find last block in inv vector
+        unsigned int nLastBlock = (unsigned int)(-1);
+        for (unsigned int nInv = 0; nInv < vInv.size(); nInv++) {
+            if (vInv[vInv.size() - 1 - nInv].type == MSG_BLOCK) {
+                nLastBlock = vInv.size() - 1 - nInv;
+                break;
+            }
+        }
+        
         LOCK(cs_main);
         CTxDB txdb("r");
 
@@ -3828,14 +3741,17 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv, 
             LogPrint("net", "  got inventory: %s  %s\n", inv.ToString(), fAlreadyHave ? "have" : "new");
 
             if (!fAlreadyHave) {
-                if (!fImporting && !fReindex) {
-                    if (inv.type == MSG_BLOCK)
-                        AddBlockToQueue(pfrom->GetId(), inv.hash);
-                    else
-                        pfrom->AskFor(inv);
-                }
+                if (!fImporting)
+                    pfrom->AskFor(inv);
             } else if (inv.type == MSG_BLOCK && mapOrphanBlocks.count(inv.hash)) {
                 PushGetBlocks(pfrom, pindexBest, GetOrphanRoot(inv.hash));
+            } else if (nInv == nLastBlock) {
+                // In case we are on a very long side-chain, it is possible that we already have
+                // the last block in an inv bundle sent in response to getblocks. Try to detect
+                // this situation and push another getblocks to continue.
+                PushGetBlocks(pfrom, mapBlockIndex[inv.hash], uint256(0));
+                if (fDebug)
+                    LogPrintf("force request: %s\n", inv.ToString());
             }
 
             // Track requests for our stuff
@@ -3879,7 +3795,7 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv, 
         // Send the rest of the chain
         if (pindex)
             pindex = pindex->pnext;
-        int nLimit = 5000;
+        int nLimit = 500;
         LogPrint("net", "getblocks %d to %s limit %d\n", (pindex ? pindex->nHeight : -1), hashStop.ToString(), nLimit);
         for (; pindex; pindex = pindex->pnext)
         {
@@ -3950,25 +3866,25 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv, 
         //masternode signed transaction
         bool ignoreFees = false;
         CTxIn vin;
+        CInv inv;
         vector<unsigned char> vchSig;
         int64_t sigTime;
-        CInv inv;
         CTxDB txdb("r");
 
         if(strCommand == "tx") {
-            CInv inv(MSG_TX, tx.GetHash());
+            vRecv >> tx;
+            inv = CInv(MSG_TX, tx.GetHash());
             // Check for recently rejected (and do other quick existence checks)
             if (AlreadyHave(txdb, inv))
                 return true;
-
-            vRecv >> tx;
-        } else if (strCommand == "dstx") {
-            CInv inv(MSG_DSTX, tx.GetHash());
+        }
+        else if (strCommand == "dstx") {
+            vRecv >> tx >> vin >> vchSig >> sigTime;
+            inv = CInv(MSG_DSTX, tx.GetHash());
             // Check for recently rejected (and do other quick existence checks)
             if (AlreadyHave(txdb, inv))
                 return true;
             //these allow masternodes to publish a limited amount of free transactions
-            vRecv >> tx >> vin >> vchSig >> sigTime;
 
             CMasternode* pmn = mnodeman.Find(vin);
             if(pmn != NULL)
@@ -4063,7 +3979,7 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv, 
                 LogPrint("mempool", "mapOrphan overflow, removed %u tx\n", nEvicted);
         }
         if(strCommand == "dstx"){
-            CInv inv(MSG_DSTX, tx.GetHash());
+            inv = CInv(MSG_DSTX, tx.GetHash());
             RelayInventory(inv);
         }
         if (tx.nDoS) Misbehaving(pfrom->GetId(), tx.nDoS);
@@ -4082,11 +3998,8 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv, 
         pfrom->AddInventoryKnown(inv);
 
         LOCK(cs_main);
-        // Remember who we got this block from.
-        mapBlockSource[inv.hash] = pfrom->GetId();
-        MarkBlockAsReceived(inv.hash, pfrom->GetId());
-
-        ProcessBlock(pfrom, &block);
+        if (ProcessBlock(pfrom, &block))
+            mapAlreadyAskedFor.erase(inv);
         if (block.nDoS) Misbehaving(pfrom->GetId(), block.nDoS);
         if (fSecMsgEnabled)
             SecureMsgScanBlock(block);
@@ -4116,8 +4029,9 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv, 
         std::vector<uint256> vtxid;
         mempool.queryHashes(vtxid);
         vector<CInv> vInv;
+        CInv inv;
         for (unsigned int i = 0; i < vtxid.size(); i++) {
-            CInv inv(MSG_TX, vtxid[i]);
+            inv = CInv(MSG_TX, vtxid[i]);
             vInv.push_back(inv);
             if (i == (MAX_INV_SZ - 1))
                     break;
@@ -4151,7 +4065,7 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv, 
 
     else if (strCommand == "pong")
     {
-        int64_t pingUsecEnd = nTimeReceived;
+        int64_t pingUsecEnd = GetTimeMicros();
         uint64_t nonce = 0;
         size_t nAvail = vRecv.in_avail();
         bool bPingFinished = false;
@@ -4339,7 +4253,7 @@ bool ProcessMessages(CNode* pfrom)
         bool fRet = false;
         try
         {
-            fRet = ProcessMessage(pfrom, strCommand, vRecv, msg.nTime);
+            fRet = ProcessMessage(pfrom, strCommand, vRecv);
             boost::this_thread::interruption_point();
         }
         catch (std::ios_base::failure& e)
@@ -4487,20 +4401,15 @@ bool SendMessages(CNode* pto, bool fSendTrickle)
                 pto->PushMessage("addr", vAddr);
         }
 
-        CNodeState &state = *State(pto->GetId());
-        if (state.fShouldBan) {
+        if (State(pto->GetId())->fShouldBan) {
             if (pto->addr.IsLocal())
                 LogPrintf("Warning: not banning local node %s!\n", pto->addr.ToString().c_str());
             else {
                 pto->fDisconnect = true;
                 CNode::Ban(pto->addr, BanReasonNodeMisbehaving);
             }
-            state.fShouldBan = false;
+            State(pto->GetId())->fShouldBan = false;
         }
-
-        BOOST_FOREACH(const CBlockReject& reject, state.rejects)
-            pto->PushMessage("reject", (string)"block", reject.chRejectCode, reject.strRejectReason, reject.hashBlock);
-        state.rejects.clear();
 
         //
         // Message: inventory
@@ -4550,40 +4459,13 @@ bool SendMessages(CNode* pto, bool fSendTrickle)
         if (!vInv.empty())
             pto->PushMessage("inv", vInv);
 
-        // Detect stalled peers. Require that blocks are in flight, we haven't
-        // received a (requested) block in one minute, and that all blocks are
-        // in flight for over two minutes, since we first had a chance to
-        // process an incoming block.
-        int64_t nNow = GetTimeMicros();
-        if (!pto->fDisconnect && state.nBlocksInFlight && 
-            state.nLastBlockReceive < state.nLastBlockProcess - BLOCK_DOWNLOAD_TIMEOUT*1000000 && 
-            state.vBlocksInFlight.front().nTime < state.nLastBlockProcess - 2*BLOCK_DOWNLOAD_TIMEOUT*1000000) {
-            LogPrintf("Peer %s is stalling block download, disconnecting\n", state.name.c_str());
-            pto->fDisconnect = true;
-        }
-
-
         //
-        // Message: getdata (blocks)
+        // Message: getdata
         //
         vector<CInv> vGetData;
+        int64_t nNow = GetTime() * 1000000;
         CTxDB txdb("r");
-        while (!pto->fDisconnect && state.nBlocksToDownload && state.nBlocksInFlight < MAX_BLOCKS_IN_TRANSIT_PER_PEER) {
-            uint256 hash = state.vBlocksToDownload.front();
-            vGetData.push_back(CInv(MSG_BLOCK, hash));
-            MarkBlockAsInFlight(pto->GetId(), hash);
-            LogPrint("net", "Requesting block %s from %s\n", hash.ToString().c_str(), state.name.c_str());
-            if (vGetData.size() >= 1000)
-            {
-                pto->PushMessage("getdata", vGetData);
-                vGetData.clear();
-            }
-        }
-
-        //
-        // Message: getdata (non-blocks)
-        //
-        while (!pto->fDisconnect && !pto->mapAskFor.empty() && (*pto->mapAskFor.begin()).first <= nNow)
+        while (!pto->mapAskFor.empty() && (*pto->mapAskFor.begin()).first <= nNow)
         {
             const CInv& inv = (*pto->mapAskFor.begin()).second;
             if (!AlreadyHave(txdb, inv))
@@ -4596,7 +4478,6 @@ bool SendMessages(CNode* pto, bool fSendTrickle)
                     pto->PushMessage("getdata", vGetData);
                     vGetData.clear();
                 }
-                mapAlreadyAskedFor[inv] = nNow;
             } else {
                 //If we're not going to ask, don't expect a response.
                 pto->setAskFor.erase(inv.hash);

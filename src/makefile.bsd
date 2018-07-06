@@ -4,6 +4,7 @@
 
 USE_UPNP:=0
 USE_WALLET:=1
+USE_LOWMEM:=0
 
 LINK:=$(CXX)
 
@@ -39,6 +40,10 @@ endif
 ifneq (${USE_UPNP}, -)
 	LIBS += -l miniupnpc
 	DEFS += -DUSE_UPNP=$(USE_UPNP)
+endif
+
+ifeq (${USE_LOWMEM}, 1)
+    DEFS += -DLOWMEM
 endif
 
 LIBS+= \
@@ -94,7 +99,6 @@ xCXXFLAGS=-O0 -msse2 -pthread -Wall -Wextra -Wno-ignored-qualifiers -Wformat -Wf
 xLDFLAGS=$(LDHARDENING) $(LDFLAGS)
 
 OBJS= \
-    obj/irc.o \
     obj/alert.o \
     obj/allocators.o \
     obj/support/cleanse.o \
@@ -122,7 +126,6 @@ OBJS= \
     obj/rpcblockchain.o \
     obj/rpcrawtransaction.o \
     obj/rpcsmessage.o \
-    obj/timedata.o \
     obj/script.o \
     obj/scrypt.o \
     obj/sync.o \
